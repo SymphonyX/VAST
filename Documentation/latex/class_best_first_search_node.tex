@@ -1,0 +1,115 @@
+\hypertarget{class_best_first_search_node}{\section{Best\-First\-Search\-Node Class Reference}
+\label{class_best_first_search_node}\index{Best\-First\-Search\-Node@{Best\-First\-Search\-Node}}
+}
+
+
+Internal helper class used to describe a node in the best-\/first search.  
+
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{class_best_first_search_node_acd51a5e054826ba7b3b56fadc77aed2e}{Best\-First\-Search\-Node} ()
+\begin{DoxyCompactList}\small\item\em Initializes a new instance of the \hyperlink{class_best_first_search_node}{Best\-First\-Search\-Node} class. \end{DoxyCompactList}\item 
+\hyperlink{class_best_first_search_node_afda8aef3a27e03d5d6252058970ea2f1}{Best\-First\-Search\-Node} (float \-\_\-g, float \-\_\-f, ref \hyperlink{class_default_state}{Default\-State} \-\_\-previous\-State\-Ref, ref \hyperlink{class_default_action}{Default\-Action} \-\_\-next\-Action\-Ref)
+\begin{DoxyCompactList}\small\item\em Initializes a new instance of the \hyperlink{class_best_first_search_node}{Best\-First\-Search\-Node} class. \end{DoxyCompactList}\item 
+\hyperlink{class_best_first_search_node_a4f3a23969ff7be7dcc574232dc2c6344}{Best\-First\-Search\-Node} (float \-\_\-g, float \-\_\-f, ref \hyperlink{class_default_state}{Default\-State} \-\_\-previous\-State\-Ref, ref \hyperlink{class_default_state}{Default\-State} \-\_\-next\-State\-Ref)
+\begin{DoxyCompactList}\small\item\em Initializes a new instance of the \hyperlink{class_best_first_search_node}{Best\-First\-Search\-Node} class. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{class_best_first_search_node_ad6c65af451d6e2904c842833d49876c8}{float \hyperlink{class_best_first_search_node_ad6c65af451d6e2904c842833d49876c8}{g}}\label{class_best_first_search_node_ad6c65af451d6e2904c842833d49876c8}
+
+\begin{DoxyCompactList}\small\item\em Node's g value. \end{DoxyCompactList}\item 
+\hypertarget{class_best_first_search_node_a586a71b36b6621e0290f903c5b97adfd}{float \hyperlink{class_best_first_search_node_a586a71b36b6621e0290f903c5b97adfd}{f}}\label{class_best_first_search_node_a586a71b36b6621e0290f903c5b97adfd}
+
+\begin{DoxyCompactList}\small\item\em Node's f value. \end{DoxyCompactList}\item 
+\hypertarget{class_best_first_search_node_a9019b1e6f7cb4783ffb318cd58f726f4}{\hyperlink{class_default_state}{Default\-State} \hyperlink{class_best_first_search_node_a9019b1e6f7cb4783ffb318cd58f726f4}{previous\-State}}\label{class_best_first_search_node_a9019b1e6f7cb4783ffb318cd58f726f4}
+
+\begin{DoxyCompactList}\small\item\em Node's parent state. \end{DoxyCompactList}\item 
+\hypertarget{class_best_first_search_node_a8ec9adf5c8c0345a67f99e552da8e4e8}{\hyperlink{class_default_action}{Default\-Action} \hyperlink{class_best_first_search_node_a8ec9adf5c8c0345a67f99e552da8e4e8}{action}}\label{class_best_first_search_node_a8ec9adf5c8c0345a67f99e552da8e4e8}
+
+\begin{DoxyCompactList}\small\item\em Action that was taken to reach this node. \end{DoxyCompactList}\item 
+\hypertarget{class_best_first_search_node_a27b1fe54e186d21b8cabf78c87cabe02}{bool \hyperlink{class_best_first_search_node_a27b1fe54e186d21b8cabf78c87cabe02}{already\-Expanded}}\label{class_best_first_search_node_a27b1fe54e186d21b8cabf78c87cabe02}
+
+\begin{DoxyCompactList}\small\item\em Flag to determine if the node was already expanded. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Internal helper class used to describe a node in the best-\/first search. 
+
+\begin{DoxyVerb}    This class is not intended to be used directly.  Instead, use the BestFirstSearchPlanner that
+    uses this class for internal representation.
+
+    @see
+      - Documentation of the BestFirstSearchPlanner class, which describes how states and actions are used.   
+\end{DoxyVerb}
+ This class represents nodes used in best first search. 
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{class_best_first_search_node_acd51a5e054826ba7b3b56fadc77aed2e}{\index{Best\-First\-Search\-Node@{Best\-First\-Search\-Node}!Best\-First\-Search\-Node@{Best\-First\-Search\-Node}}
+\index{Best\-First\-Search\-Node@{Best\-First\-Search\-Node}!BestFirstSearchNode@{Best\-First\-Search\-Node}}
+\subsubsection[{Best\-First\-Search\-Node}]{\setlength{\rightskip}{0pt plus 5cm}Best\-First\-Search\-Node.\-Best\-First\-Search\-Node (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{class_best_first_search_node_acd51a5e054826ba7b3b56fadc77aed2e}
+
+
+Initializes a new instance of the \hyperlink{class_best_first_search_node}{Best\-First\-Search\-Node} class. 
+
+\hypertarget{class_best_first_search_node_afda8aef3a27e03d5d6252058970ea2f1}{\index{Best\-First\-Search\-Node@{Best\-First\-Search\-Node}!Best\-First\-Search\-Node@{Best\-First\-Search\-Node}}
+\index{Best\-First\-Search\-Node@{Best\-First\-Search\-Node}!BestFirstSearchNode@{Best\-First\-Search\-Node}}
+\subsubsection[{Best\-First\-Search\-Node}]{\setlength{\rightskip}{0pt plus 5cm}Best\-First\-Search\-Node.\-Best\-First\-Search\-Node (
+\begin{DoxyParamCaption}
+\item[{float}]{\-\_\-g, }
+\item[{float}]{\-\_\-f, }
+\item[{ref {\bf Default\-State}}]{\-\_\-previous\-State\-Ref, }
+\item[{ref {\bf Default\-Action}}]{\-\_\-next\-Action\-Ref}
+\end{DoxyParamCaption}
+)}}\label{class_best_first_search_node_afda8aef3a27e03d5d6252058970ea2f1}
+
+
+Initializes a new instance of the \hyperlink{class_best_first_search_node}{Best\-First\-Search\-Node} class. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em \-\_\-g} & Node's g-\/value \\
+\hline
+{\em \-\_\-f} & Node's f-\/value \\
+\hline
+{\em \-\_\-previous\-State\-Ref} & Reference to the state that originated this node \\
+\hline
+{\em \-\_\-next\-Action\-Ref} & Reference to the action that was taken to create this node \\
+\hline
+\end{DoxyParams}
+\hypertarget{class_best_first_search_node_a4f3a23969ff7be7dcc574232dc2c6344}{\index{Best\-First\-Search\-Node@{Best\-First\-Search\-Node}!Best\-First\-Search\-Node@{Best\-First\-Search\-Node}}
+\index{Best\-First\-Search\-Node@{Best\-First\-Search\-Node}!BestFirstSearchNode@{Best\-First\-Search\-Node}}
+\subsubsection[{Best\-First\-Search\-Node}]{\setlength{\rightskip}{0pt plus 5cm}Best\-First\-Search\-Node.\-Best\-First\-Search\-Node (
+\begin{DoxyParamCaption}
+\item[{float}]{\-\_\-g, }
+\item[{float}]{\-\_\-f, }
+\item[{ref {\bf Default\-State}}]{\-\_\-previous\-State\-Ref, }
+\item[{ref {\bf Default\-State}}]{\-\_\-next\-State\-Ref}
+\end{DoxyParamCaption}
+)}}\label{class_best_first_search_node_a4f3a23969ff7be7dcc574232dc2c6344}
+
+
+Initializes a new instance of the \hyperlink{class_best_first_search_node}{Best\-First\-Search\-Node} class. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em \-\_\-g} & Node's g-\/value \\
+\hline
+{\em \-\_\-f} & Node's f-\/value \\
+\hline
+{\em \-\_\-previous\-State\-Ref} & Reference to the state that was expanded to reach this node \\
+\hline
+{\em \-\_\-next\-State\-Ref} & Reference to the state this node represents \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this class was generated from the following file\-:\begin{DoxyCompactItemize}
+\item 
+V\-A\-S\-T/vast/\-Assets/\-Plannar Scripts/\-Planners In Use/Best\-First\-Search\-Planner.\-cs\end{DoxyCompactItemize}

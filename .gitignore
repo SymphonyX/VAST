@@ -1,0 +1,9 @@
+*.svn
+*.sln
+*.userprefs
+*.pidb
+*.unityproj
+ProjectSettings/
+Temp/
+*.csproj
+ADAPT sources/

@@ -1,0 +1,215 @@
+\hypertarget{class_plan_container}{\section{Plan\-Container Class Reference}
+\label{class_plan_container}\index{Plan\-Container@{Plan\-Container}}
+}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{class_plan_container_af4eac8ba49af8845098657fbce70bd5c}{Plan\-Container} (Dictionary$<$ \hyperlink{class_default_state}{Default\-State}, \hyperlink{class_a_r_astar_node}{A\-R\-Astar\-Node} $>$ \-\_\-plan)
+\begin{DoxyCompactList}\small\item\em Initializes a new instance of the \hyperlink{class_plan_container}{Plan\-Container} class. \end{DoxyCompactList}\item 
+\hyperlink{class_a_r_astar_node}{A\-R\-Astar\-Node} \hyperlink{class_plan_container_a1c5b054eddfff18de7d02631a4babdfd}{Node} (\hyperlink{class_default_state}{Default\-State} st)
+\begin{DoxyCompactList}\small\item\em Returns the node corresponding to a given state. \end{DoxyCompactList}\item 
+void \hyperlink{class_plan_container_a7fd7f8b92671e2a0f64d2bde1b508809}{Remove} (\hyperlink{class_default_state}{Default\-State} state)
+\begin{DoxyCompactList}\small\item\em Remove the specified state. \end{DoxyCompactList}\item 
+void \hyperlink{class_plan_container_a055275bf8a2330996670c669ec23f89f}{Insert\-Node} (ref \hyperlink{class_default_state}{Default\-State} st, ref \hyperlink{class_a_r_astar_node}{A\-R\-Astar\-Node} node)
+\begin{DoxyCompactList}\small\item\em Inserts the specified state and node. \end{DoxyCompactList}\item 
+void \hyperlink{class_plan_container_a91e41d4fd5a34c3cf958f0940dfb8d10}{Update\-Costs} (float cost)
+\begin{DoxyCompactList}\small\item\em Updates g values for all nodes. \end{DoxyCompactList}\item 
+void \hyperlink{class_plan_container_a16e1e615e844f1164867046b526b3ef1}{Update\-Heuristic} (\hyperlink{class_default_state}{Default\-State} goal)
+\begin{DoxyCompactList}\small\item\em Updates all nodes' heuristic. \end{DoxyCompactList}\item 
+Dictionary$<$ \hyperlink{class_default_state}{Default\-State}, \\*
+\hyperlink{class_a_r_astar_node}{A\-R\-Astar\-Node} $>$ \hyperlink{class_plan_container_a317026e533d9ccc429cc7552cbaf0a86}{Elements} ()
+\begin{DoxyCompactList}\small\item\em Returns the elements in this container. \end{DoxyCompactList}\item 
+void \hyperlink{class_plan_container_aaae2bc99a50902c06aeb128b9152b4f0}{Fill} (ref \hyperlink{class_close_container}{Close\-Container} Close, Dictionary$<$ \hyperlink{class_default_state}{Default\-State}, \hyperlink{class_a_r_astar_node}{A\-R\-Astar\-Node} $>$ Visited, ref \hyperlink{class_default_state}{Default\-State} state\-Reached, \hyperlink{class_planning_domain_base}{Planning\-Domain\-Base} domain, ref \hyperlink{class_default_state}{Default\-State} current, ref Key\-Value\-Pair$<$ \hyperlink{class_default_state}{Default\-State}, \hyperlink{class_a_r_astar_node}{A\-R\-Astar\-Node} $>$ goal\-Pair, float inflation\-Factor)
+\begin{DoxyCompactList}\small\item\em Fill the plan dictionary. \end{DoxyCompactList}\item 
+bool \hyperlink{class_plan_container_a49a5878c3e1d12926d9bac5b93ab8fbc}{Contains\-State} (\hyperlink{class_default_state}{Default\-State} state)
+\begin{DoxyCompactList}\small\item\em Determines whether the container contains the state. \end{DoxyCompactList}\item 
+void \hyperlink{class_plan_container_a16479b9695345f4ca9385f85f4632716}{Clear} ()
+\begin{DoxyCompactList}\small\item\em Clear instance all states and nodes. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+This class provides a container for the plan that is computed 
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{class_plan_container_af4eac8ba49af8845098657fbce70bd5c}{\index{Plan\-Container@{Plan\-Container}!Plan\-Container@{Plan\-Container}}
+\index{Plan\-Container@{Plan\-Container}!PlanContainer@{Plan\-Container}}
+\subsubsection[{Plan\-Container}]{\setlength{\rightskip}{0pt plus 5cm}Plan\-Container.\-Plan\-Container (
+\begin{DoxyParamCaption}
+\item[{Dictionary$<$ {\bf Default\-State}, {\bf A\-R\-Astar\-Node} $>$}]{\-\_\-plan}
+\end{DoxyParamCaption}
+)}}\label{class_plan_container_af4eac8ba49af8845098657fbce70bd5c}
+
+
+Initializes a new instance of the \hyperlink{class_plan_container}{Plan\-Container} class. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em \-\_\-plan} & The dictioanry that will contain the plan. \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{class_plan_container_a16479b9695345f4ca9385f85f4632716}{\index{Plan\-Container@{Plan\-Container}!Clear@{Clear}}
+\index{Clear@{Clear}!PlanContainer@{Plan\-Container}}
+\subsubsection[{Clear}]{\setlength{\rightskip}{0pt plus 5cm}void Plan\-Container.\-Clear (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{class_plan_container_a16479b9695345f4ca9385f85f4632716}
+
+
+Clear instance all states and nodes. 
+
+\hypertarget{class_plan_container_a49a5878c3e1d12926d9bac5b93ab8fbc}{\index{Plan\-Container@{Plan\-Container}!Contains\-State@{Contains\-State}}
+\index{Contains\-State@{Contains\-State}!PlanContainer@{Plan\-Container}}
+\subsubsection[{Contains\-State}]{\setlength{\rightskip}{0pt plus 5cm}bool Plan\-Container.\-Contains\-State (
+\begin{DoxyParamCaption}
+\item[{{\bf Default\-State}}]{state}
+\end{DoxyParamCaption}
+)}}\label{class_plan_container_a49a5878c3e1d12926d9bac5b93ab8fbc}
+
+
+Determines whether the container contains the state. 
+
+\begin{DoxyReturn}{Returns}
+True if it does, false otherwise. 
+\end{DoxyReturn}
+
+\begin{DoxyParams}{Parameters}
+{\em state} & The state we are checking for \\
+\hline
+\end{DoxyParams}
+\hypertarget{class_plan_container_a317026e533d9ccc429cc7552cbaf0a86}{\index{Plan\-Container@{Plan\-Container}!Elements@{Elements}}
+\index{Elements@{Elements}!PlanContainer@{Plan\-Container}}
+\subsubsection[{Elements}]{\setlength{\rightskip}{0pt plus 5cm}Dictionary$<${\bf Default\-State}, {\bf A\-R\-Astar\-Node}$>$ Plan\-Container.\-Elements (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{class_plan_container_a317026e533d9ccc429cc7552cbaf0a86}
+
+
+Returns the elements in this container. 
+
+\hypertarget{class_plan_container_aaae2bc99a50902c06aeb128b9152b4f0}{\index{Plan\-Container@{Plan\-Container}!Fill@{Fill}}
+\index{Fill@{Fill}!PlanContainer@{Plan\-Container}}
+\subsubsection[{Fill}]{\setlength{\rightskip}{0pt plus 5cm}void Plan\-Container.\-Fill (
+\begin{DoxyParamCaption}
+\item[{ref {\bf Close\-Container}}]{Close, }
+\item[{Dictionary$<$ {\bf Default\-State}, {\bf A\-R\-Astar\-Node} $>$}]{Visited, }
+\item[{ref {\bf Default\-State}}]{state\-Reached, }
+\item[{{\bf Planning\-Domain\-Base}}]{domain, }
+\item[{ref {\bf Default\-State}}]{current, }
+\item[{ref Key\-Value\-Pair$<$ {\bf Default\-State}, {\bf A\-R\-Astar\-Node} $>$}]{goal\-Pair, }
+\item[{float}]{inflation\-Factor}
+\end{DoxyParamCaption}
+)}}\label{class_plan_container_aaae2bc99a50902c06aeb128b9152b4f0}
+
+
+Fill the plan dictionary. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em Close} & Close container. \\
+\hline
+{\em Visited} & Dictionary containing Visited nodes. \\
+\hline
+{\em state\-Reached} & Actual state reached. If goal was reached, this will be the goal. \\
+\hline
+{\em domain} & Current domain in use. \\
+\hline
+{\em current} & Current agent state. \\
+\hline
+{\em goal\-Pair} & Key\-Value pair representing the goal state and its corresponding node. \\
+\hline
+{\em inflation\-Factor} & Inflation factor. \\
+\hline
+\end{DoxyParams}
+\hypertarget{class_plan_container_a055275bf8a2330996670c669ec23f89f}{\index{Plan\-Container@{Plan\-Container}!Insert\-Node@{Insert\-Node}}
+\index{Insert\-Node@{Insert\-Node}!PlanContainer@{Plan\-Container}}
+\subsubsection[{Insert\-Node}]{\setlength{\rightskip}{0pt plus 5cm}void Plan\-Container.\-Insert\-Node (
+\begin{DoxyParamCaption}
+\item[{ref {\bf Default\-State}}]{st, }
+\item[{ref {\bf A\-R\-Astar\-Node}}]{node}
+\end{DoxyParamCaption}
+)}}\label{class_plan_container_a055275bf8a2330996670c669ec23f89f}
+
+
+Inserts the specified state and node. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em st} & The state to be inserted \\
+\hline
+{\em node} & The node corresponding to that state \\
+\hline
+\end{DoxyParams}
+\hypertarget{class_plan_container_a1c5b054eddfff18de7d02631a4babdfd}{\index{Plan\-Container@{Plan\-Container}!Node@{Node}}
+\index{Node@{Node}!PlanContainer@{Plan\-Container}}
+\subsubsection[{Node}]{\setlength{\rightskip}{0pt plus 5cm}{\bf A\-R\-Astar\-Node} Plan\-Container.\-Node (
+\begin{DoxyParamCaption}
+\item[{{\bf Default\-State}}]{st}
+\end{DoxyParamCaption}
+)}}\label{class_plan_container_a1c5b054eddfff18de7d02631a4babdfd}
+
+
+Returns the node corresponding to a given state. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em st} & The state for which we are trying to get the corresponding node. \\
+\hline
+\end{DoxyParams}
+\hypertarget{class_plan_container_a7fd7f8b92671e2a0f64d2bde1b508809}{\index{Plan\-Container@{Plan\-Container}!Remove@{Remove}}
+\index{Remove@{Remove}!PlanContainer@{Plan\-Container}}
+\subsubsection[{Remove}]{\setlength{\rightskip}{0pt plus 5cm}void Plan\-Container.\-Remove (
+\begin{DoxyParamCaption}
+\item[{{\bf Default\-State}}]{state}
+\end{DoxyParamCaption}
+)}}\label{class_plan_container_a7fd7f8b92671e2a0f64d2bde1b508809}
+
+
+Remove the specified state. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em state} & State to be removed \\
+\hline
+\end{DoxyParams}
+\hypertarget{class_plan_container_a91e41d4fd5a34c3cf958f0940dfb8d10}{\index{Plan\-Container@{Plan\-Container}!Update\-Costs@{Update\-Costs}}
+\index{Update\-Costs@{Update\-Costs}!PlanContainer@{Plan\-Container}}
+\subsubsection[{Update\-Costs}]{\setlength{\rightskip}{0pt plus 5cm}void Plan\-Container.\-Update\-Costs (
+\begin{DoxyParamCaption}
+\item[{float}]{cost}
+\end{DoxyParamCaption}
+)}}\label{class_plan_container_a91e41d4fd5a34c3cf958f0940dfb8d10}
+
+
+Updates g values for all nodes. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em cost} & Value by which we are decreasing the cost. \\
+\hline
+\end{DoxyParams}
+\hypertarget{class_plan_container_a16e1e615e844f1164867046b526b3ef1}{\index{Plan\-Container@{Plan\-Container}!Update\-Heuristic@{Update\-Heuristic}}
+\index{Update\-Heuristic@{Update\-Heuristic}!PlanContainer@{Plan\-Container}}
+\subsubsection[{Update\-Heuristic}]{\setlength{\rightskip}{0pt plus 5cm}void Plan\-Container.\-Update\-Heuristic (
+\begin{DoxyParamCaption}
+\item[{{\bf Default\-State}}]{goal}
+\end{DoxyParamCaption}
+)}}\label{class_plan_container_a16e1e615e844f1164867046b526b3ef1}
+
+
+Updates all nodes' heuristic. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em goal} & Goal state. \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this class was generated from the following file\-:\begin{DoxyCompactItemize}
+\item 
+V\-A\-S\-T/vast/\-Assets/\-Plannar Scripts/\-Planners In Use/Containers.\-cs\end{DoxyCompactItemize}

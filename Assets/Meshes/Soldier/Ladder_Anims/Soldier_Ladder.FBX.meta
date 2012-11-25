@@ -1,0 +1,84 @@
+fileFormatVersion: 2
+guid: c8a0e8fac0d277a46b20c47eb66037e1
+ModelImporter:
+  fileIDToRecycleName:
+    4300000: LSide
+    4300002: RSide
+    4300004: Box03
+    4300006: Box04
+    4300008: Box05
+    4300010: Box06
+    4300012: Box07
+    4300014: Box08
+    4300016: Box09
+    4300018: Box10
+    4300020: Box11
+    4300022: up floor
+    4300024: Box12
+    4300026: Box13
+    4300028: Ladder
+    100100000: DataTemplate __Singleton__
+  serializedVersion: 10
+  materials:
+    importMaterials: 1
+    materialName: 1
+    materialSearch: 1
+  animations:
+    generateAnimations: 3
+    bakeSimulation: 0
+    splitAnimations: 1
+    animationCompression: 1
+    animationRotationError: .5
+    animationPositionError: .5
+    animationScaleError: .5
+    animationWrapMode: 0
+    clipAnimations: []
+  meshes:
+    lODScreenPercentages: []
+    globalScale: .00999999978
+    meshCompression: 0
+    addColliders: 0
+    swapUVChannels: 0
+    generateSecondaryUV: 1
+    useFileUnits: 1
+    optimizeMesh: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+  tangentSpace:
+    normalSmoothAngle: 60
+    splitTangentsAcrossUV: 1
+    normalImportMode: 0
+    tangentImportMode: 1
+  textMetaNamesToFileIDs:
+    //RootNode:
+      data:
+        first: 1
+        second: b8860100
+      data:
+        first: 4
+        second: 981a0600
+      data:
+        first: 23
+        second: 60182300
+      data:
+        first: 33
+        second: a05a3200
+      data:
+        first: 111
+        second: 605fa900
+    BottomPoint:
+      data:
+        first: 1
+        second: a0860100
+      data:
+        first: 4
+        second: 801a0600
+    TopPoint:
+      data:
+        first: 1
+        second: a2860100
+      data:
+        first: 4
+        second: 821a0600

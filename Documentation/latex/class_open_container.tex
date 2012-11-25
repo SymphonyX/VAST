@@ -1,0 +1,243 @@
+\hypertarget{class_open_container}{\section{Open\-Container Class Reference}
+\label{class_open_container}\index{Open\-Container@{Open\-Container}}
+}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{class_open_container_a8fe6042f8f2b6e023c0ccbeb302c3145}{Open\-Container} (\hyperlink{class_a_r_astar_planner}{A\-R\-Astar\-Planner} planner, \hyperlink{class_planning_domain_base}{Planning\-Domain\-Base} \-\_\-domain, bool \-\_\-use\-Heap=true)
+\begin{DoxyCompactList}\small\item\em Initializes a new instance of the \hyperlink{class_open_container}{Open\-Container} class. \end{DoxyCompactList}\item 
+List$<$ \hyperlink{class_default_state}{Default\-State} $>$ \hyperlink{class_open_container_a9c2ac72d426256bd0f038b7375fb184e}{keys} ()
+\begin{DoxyCompactList}\small\item\em Return all keys used keys used in the dictionary. \end{DoxyCompactList}\item 
+Dictionary$<$ \hyperlink{class_default_state}{Default\-State}, \\*
+\hyperlink{class_a_r_astar_node}{A\-R\-Astar\-Node} $>$ \hyperlink{class_open_container_ab7eb3e91880b999b099b54c4325dcec9}{Elements} ()
+\begin{DoxyCompactList}\small\item\em Returns all elementes in the dictionary. \end{DoxyCompactList}\item 
+void \hyperlink{class_open_container_a9f4b0b441dba986b7bf15d9359eb6900}{clear\-High\-Priority} ()
+\begin{DoxyCompactList}\small\item\em Clears high priority from nodes. \end{DoxyCompactList}\item 
+\hyperlink{class_a_r_astar_node}{A\-R\-Astar\-Node} \hyperlink{class_open_container_ad8c27e3618b6988966c38fe76cc87e65}{Node} (\hyperlink{class_default_state}{Default\-State} state)
+\begin{DoxyCompactList}\small\item\em Returns the specified node. \end{DoxyCompactList}\item 
+\hyperlink{class_a_r_astar_node}{A\-R\-Astar\-Node} \hyperlink{class_open_container_a19e53059762a7f0aa5bb5a96fe31506d}{First} ()
+\begin{DoxyCompactList}\small\item\em Returns the first node in the container. \end{DoxyCompactList}\item 
+int \hyperlink{class_open_container_abd9ac817ab140603feee84f8995a27a0}{List\-Count} ()
+\begin{DoxyCompactList}\small\item\em List count. \end{DoxyCompactList}\item 
+void \hyperlink{class_open_container_a5f585b8681b2e0425119f7a59caf362e}{Remove} (\hyperlink{class_default_state}{Default\-State} state)
+\begin{DoxyCompactList}\small\item\em Remove the specified node from the container. \end{DoxyCompactList}\item 
+void \hyperlink{class_open_container_a3cd8532faf8cf40de6b89fb57c685df8}{Insert} (\hyperlink{class_a_r_astar_node}{A\-R\-Astar\-Node} node)
+\begin{DoxyCompactList}\small\item\em Insert the specified node in the container. \end{DoxyCompactList}\item 
+void \hyperlink{class_open_container_a09946014eab624c239cce93a85988071}{Sort} ()
+\begin{DoxyCompactList}\small\item\em Sort instance list. If we are using the heap, it calls heapify. \end{DoxyCompactList}\item 
+void \hyperlink{class_open_container_ac3edc61c5f1a9b66c3f7c7acd0640e0d}{Update\-List} (\hyperlink{class_a_r_astar_node}{A\-R\-Astar\-Node} current\-State)
+\begin{DoxyCompactList}\small\item\em Updates the container. This is used to update references and costs. \end{DoxyCompactList}\item 
+void \hyperlink{class_open_container_a12984d3becd0ff24eca4c4371881a71b}{Update\-Heuristic} (\hyperlink{class_default_state}{Default\-State} goal)
+\begin{DoxyCompactList}\small\item\em Updates the container's nodes heuristic. \end{DoxyCompactList}\item 
+bool \hyperlink{class_open_container_ae5ef558400b142f682464bdab1174e43}{Contains\-State} (\hyperlink{class_default_state}{Default\-State} state)
+\begin{DoxyCompactList}\small\item\em Determines if the container contains the state. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{class_open_container_a656a492f930544d2691fa1780cc14e26}{\hyperlink{class_default_state}{Default\-State} \hyperlink{class_open_container_a656a492f930544d2691fa1780cc14e26}{start\-State}}\label{class_open_container_a656a492f930544d2691fa1780cc14e26}
+
+\begin{DoxyCompactList}\small\item\em Start state. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+This class represents the open container. It provides abstraction for all needed functinoality 
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{class_open_container_a8fe6042f8f2b6e023c0ccbeb302c3145}{\index{Open\-Container@{Open\-Container}!Open\-Container@{Open\-Container}}
+\index{Open\-Container@{Open\-Container}!OpenContainer@{Open\-Container}}
+\subsubsection[{Open\-Container}]{\setlength{\rightskip}{0pt plus 5cm}Open\-Container.\-Open\-Container (
+\begin{DoxyParamCaption}
+\item[{{\bf A\-R\-Astar\-Planner}}]{planner, }
+\item[{{\bf Planning\-Domain\-Base}}]{\-\_\-domain, }
+\item[{bool}]{\-\_\-use\-Heap = {\ttfamily true}}
+\end{DoxyParamCaption}
+)}}\label{class_open_container_a8fe6042f8f2b6e023c0ccbeb302c3145}
+
+
+Initializes a new instance of the \hyperlink{class_open_container}{Open\-Container} class. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em planner} & \hyperlink{class_planner}{Planner} in use. \\
+\hline
+{\em \-\_\-domain} & Planning domain in use \\
+\hline
+{\em \-\_\-use\-Heap} & Flag to determine whether we are using the heap or the list \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{class_open_container_a9f4b0b441dba986b7bf15d9359eb6900}{\index{Open\-Container@{Open\-Container}!clear\-High\-Priority@{clear\-High\-Priority}}
+\index{clear\-High\-Priority@{clear\-High\-Priority}!OpenContainer@{Open\-Container}}
+\subsubsection[{clear\-High\-Priority}]{\setlength{\rightskip}{0pt plus 5cm}void Open\-Container.\-clear\-High\-Priority (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{class_open_container_a9f4b0b441dba986b7bf15d9359eb6900}
+
+
+Clears high priority from nodes. 
+
+\hypertarget{class_open_container_ae5ef558400b142f682464bdab1174e43}{\index{Open\-Container@{Open\-Container}!Contains\-State@{Contains\-State}}
+\index{Contains\-State@{Contains\-State}!OpenContainer@{Open\-Container}}
+\subsubsection[{Contains\-State}]{\setlength{\rightskip}{0pt plus 5cm}bool Open\-Container.\-Contains\-State (
+\begin{DoxyParamCaption}
+\item[{{\bf Default\-State}}]{state}
+\end{DoxyParamCaption}
+)}}\label{class_open_container_ae5ef558400b142f682464bdab1174e43}
+
+
+Determines if the container contains the state. 
+
+\begin{DoxyReturn}{Returns}
+The true if it does, false otherwise. 
+\end{DoxyReturn}
+
+\begin{DoxyParams}{Parameters}
+{\em state} & The state we are checking for \\
+\hline
+\end{DoxyParams}
+\hypertarget{class_open_container_ab7eb3e91880b999b099b54c4325dcec9}{\index{Open\-Container@{Open\-Container}!Elements@{Elements}}
+\index{Elements@{Elements}!OpenContainer@{Open\-Container}}
+\subsubsection[{Elements}]{\setlength{\rightskip}{0pt plus 5cm}Dictionary$<${\bf Default\-State}, {\bf A\-R\-Astar\-Node}$>$ Open\-Container.\-Elements (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{class_open_container_ab7eb3e91880b999b099b54c4325dcec9}
+
+
+Returns all elementes in the dictionary. 
+
+\hypertarget{class_open_container_a19e53059762a7f0aa5bb5a96fe31506d}{\index{Open\-Container@{Open\-Container}!First@{First}}
+\index{First@{First}!OpenContainer@{Open\-Container}}
+\subsubsection[{First}]{\setlength{\rightskip}{0pt plus 5cm}{\bf A\-R\-Astar\-Node} Open\-Container.\-First (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{class_open_container_a19e53059762a7f0aa5bb5a96fe31506d}
+
+
+Returns the first node in the container. 
+
+\hypertarget{class_open_container_a3cd8532faf8cf40de6b89fb57c685df8}{\index{Open\-Container@{Open\-Container}!Insert@{Insert}}
+\index{Insert@{Insert}!OpenContainer@{Open\-Container}}
+\subsubsection[{Insert}]{\setlength{\rightskip}{0pt plus 5cm}void Open\-Container.\-Insert (
+\begin{DoxyParamCaption}
+\item[{{\bf A\-R\-Astar\-Node}}]{node}
+\end{DoxyParamCaption}
+)}}\label{class_open_container_a3cd8532faf8cf40de6b89fb57c685df8}
+
+
+Insert the specified node in the container. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em node} & Node to be inserted. \\
+\hline
+\end{DoxyParams}
+\hypertarget{class_open_container_a9c2ac72d426256bd0f038b7375fb184e}{\index{Open\-Container@{Open\-Container}!keys@{keys}}
+\index{keys@{keys}!OpenContainer@{Open\-Container}}
+\subsubsection[{keys}]{\setlength{\rightskip}{0pt plus 5cm}List$<${\bf Default\-State}$>$ Open\-Container.\-keys (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{class_open_container_a9c2ac72d426256bd0f038b7375fb184e}
+
+
+Return all keys used keys used in the dictionary. 
+
+\hypertarget{class_open_container_abd9ac817ab140603feee84f8995a27a0}{\index{Open\-Container@{Open\-Container}!List\-Count@{List\-Count}}
+\index{List\-Count@{List\-Count}!OpenContainer@{Open\-Container}}
+\subsubsection[{List\-Count}]{\setlength{\rightskip}{0pt plus 5cm}int Open\-Container.\-List\-Count (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{class_open_container_abd9ac817ab140603feee84f8995a27a0}
+
+
+List count. 
+
+\begin{DoxyReturn}{Returns}
+The number of nodes in the container. 
+\end{DoxyReturn}
+\hypertarget{class_open_container_ad8c27e3618b6988966c38fe76cc87e65}{\index{Open\-Container@{Open\-Container}!Node@{Node}}
+\index{Node@{Node}!OpenContainer@{Open\-Container}}
+\subsubsection[{Node}]{\setlength{\rightskip}{0pt plus 5cm}{\bf A\-R\-Astar\-Node} Open\-Container.\-Node (
+\begin{DoxyParamCaption}
+\item[{{\bf Default\-State}}]{state}
+\end{DoxyParamCaption}
+)}}\label{class_open_container_ad8c27e3618b6988966c38fe76cc87e65}
+
+
+Returns the specified node. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em state} & The state we are trying to get the node for \\
+\hline
+\end{DoxyParams}
+\hypertarget{class_open_container_a5f585b8681b2e0425119f7a59caf362e}{\index{Open\-Container@{Open\-Container}!Remove@{Remove}}
+\index{Remove@{Remove}!OpenContainer@{Open\-Container}}
+\subsubsection[{Remove}]{\setlength{\rightskip}{0pt plus 5cm}void Open\-Container.\-Remove (
+\begin{DoxyParamCaption}
+\item[{{\bf Default\-State}}]{state}
+\end{DoxyParamCaption}
+)}}\label{class_open_container_a5f585b8681b2e0425119f7a59caf362e}
+
+
+Remove the specified node from the container. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em state} & The state we are trying to remove. \\
+\hline
+\end{DoxyParams}
+\hypertarget{class_open_container_a09946014eab624c239cce93a85988071}{\index{Open\-Container@{Open\-Container}!Sort@{Sort}}
+\index{Sort@{Sort}!OpenContainer@{Open\-Container}}
+\subsubsection[{Sort}]{\setlength{\rightskip}{0pt plus 5cm}void Open\-Container.\-Sort (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{class_open_container_a09946014eab624c239cce93a85988071}
+
+
+Sort instance list. If we are using the heap, it calls heapify. 
+
+\hypertarget{class_open_container_a12984d3becd0ff24eca4c4371881a71b}{\index{Open\-Container@{Open\-Container}!Update\-Heuristic@{Update\-Heuristic}}
+\index{Update\-Heuristic@{Update\-Heuristic}!OpenContainer@{Open\-Container}}
+\subsubsection[{Update\-Heuristic}]{\setlength{\rightskip}{0pt plus 5cm}void Open\-Container.\-Update\-Heuristic (
+\begin{DoxyParamCaption}
+\item[{{\bf Default\-State}}]{goal}
+\end{DoxyParamCaption}
+)}}\label{class_open_container_a12984d3becd0ff24eca4c4371881a71b}
+
+
+Updates the container's nodes heuristic. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em goal} & Goal state. \\
+\hline
+\end{DoxyParams}
+\hypertarget{class_open_container_ac3edc61c5f1a9b66c3f7c7acd0640e0d}{\index{Open\-Container@{Open\-Container}!Update\-List@{Update\-List}}
+\index{Update\-List@{Update\-List}!OpenContainer@{Open\-Container}}
+\subsubsection[{Update\-List}]{\setlength{\rightskip}{0pt plus 5cm}void Open\-Container.\-Update\-List (
+\begin{DoxyParamCaption}
+\item[{{\bf A\-R\-Astar\-Node}}]{current\-State}
+\end{DoxyParamCaption}
+)}}\label{class_open_container_ac3edc61c5f1a9b66c3f7c7acd0640e0d}
+
+
+Updates the container. This is used to update references and costs. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em current\-State} & Current state. \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this class was generated from the following file\-:\begin{DoxyCompactItemize}
+\item 
+V\-A\-S\-T/vast/\-Assets/\-Plannar Scripts/\-Planners In Use/Containers.\-cs\end{DoxyCompactItemize}

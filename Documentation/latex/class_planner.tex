@@ -1,0 +1,141 @@
+\hypertarget{class_planner}{\section{Planner Class Reference}
+\label{class_planner}\index{Planner@{Planner}}
+}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+virtual Footstep\-Planning\-Action\mbox{[}$\,$\mbox{]} \hyperlink{class_planner_a547ab7ac5131f9a7b1c21a2c0315a9a5}{Get\-Output\-Plan} ()
+\begin{DoxyCompactList}\small\item\em Gets the computed plan. \end{DoxyCompactList}\item 
+\hypertarget{class_planner_a524224551fd946ebbdd3ed63fe3a6403}{virtual bool {\bfseries Is\-Empty} ()}\label{class_planner_a524224551fd946ebbdd3ed63fe3a6403}
+
+\item 
+\hypertarget{class_planner_a45faf2988ce1bb00355579b2d1db6545}{virtual bool {\bfseries Has\-Expired} ()}\label{class_planner_a45faf2988ce1bb00355579b2d1db6545}
+
+\item 
+\hypertarget{class_planner_ad0954ae572578966463be213f396ed78}{virtual bool {\bfseries There\-Still\-Time} ()}\label{class_planner_ad0954ae572578966463be213f396ed78}
+
+\item 
+\hypertarget{class_planner_ae9528547234832c67b351e6800b94ff5}{virtual void {\bfseries Recompute\-Plan} ()}\label{class_planner_ae9528547234832c67b351e6800b94ff5}
+
+\item 
+\hypertarget{class_planner_a223b6149af3af1f6ba2e61e51e6dda87}{virtual void {\bfseries Init} (Animation\-Analyzer aa, Neighbour\-Agents na, Neighbour\-Obstacles no)}\label{class_planner_a223b6149af3af1f6ba2e61e51e6dda87}
+
+\item 
+virtual int \hyperlink{class_planner_acbe375938802581e5338e61145711ca0}{Get\-Number\-Of\-Domains} ()
+\begin{DoxyCompactList}\small\item\em Gets the number of domains. \end{DoxyCompactList}\item 
+\hypertarget{class_planner_ab8dcacec087454aec674af4380286bba}{virtual bool {\bfseries Check\-Domain\-State\-Collisions} (int d, Footstep\-Planning\-State st)}\label{class_planner_ab8dcacec087454aec674af4380286bba}
+
+\item 
+virtual bool \hyperlink{class_planner_a9d3ca9d667c8330d241fcc61d5b2e8f5}{Compute\-Plan} ()
+\begin{DoxyCompactList}\small\item\em Computes the plan. \end{DoxyCompactList}\item 
+virtual Footstep\-Planning\-Action \hyperlink{class_planner_a599560668fe905b64d30794632169945}{get\-First\-Action} ()
+\begin{DoxyCompactList}\small\item\em Gets the first action. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{class_planner_a61bc5fb92926adb1d47117b3953dc838}{float \hyperlink{class_planner_a61bc5fb92926adb1d47117b3953dc838}{goal\-Time}}\label{class_planner_a61bc5fb92926adb1d47117b3953dc838}
+
+\begin{DoxyCompactList}\small\item\em Time to reach the goal. \end{DoxyCompactList}\item 
+\hypertarget{class_planner_a11545a956f32850f9bee31866e6c1854}{int \hyperlink{class_planner_a11545a956f32850f9bee31866e6c1854}{Max\-Number\-Of\-Nodes}}\label{class_planner_a11545a956f32850f9bee31866e6c1854}
+
+\begin{DoxyCompactList}\small\item\em Maximum number of nodes the planner is allowed to expand. \end{DoxyCompactList}\item 
+\hypertarget{class_planner_a25d7f8ac309c61b0c1f161c36b771a6d}{float \hyperlink{class_planner_a25d7f8ac309c61b0c1f161c36b771a6d}{max\-Time}}\label{class_planner_a25d7f8ac309c61b0c1f161c36b771a6d}
+
+\begin{DoxyCompactList}\small\item\em Maximum alloted time for the planner to run. \end{DoxyCompactList}\item 
+\hypertarget{class_planner_a935d9d44e2bf7cfb086aef8a4a272893}{Transform {\bfseries root}}\label{class_planner_a935d9d44e2bf7cfb086aef8a4a272893}
+
+\item 
+\hypertarget{class_planner_a15508936d815ce9a6cd111428e6ed819}{Transform \hyperlink{class_planner_a15508936d815ce9a6cd111428e6ed819}{current\-State\-Transform}}\label{class_planner_a15508936d815ce9a6cd111428e6ed819}
+
+\begin{DoxyCompactList}\small\item\em Current state as transform. \end{DoxyCompactList}\item 
+\hypertarget{class_planner_a30a77ede048aecc823adc2775718df2a}{Transform \hyperlink{class_planner_a30a77ede048aecc823adc2775718df2a}{goal\-State\-Transform}}\label{class_planner_a30a77ede048aecc823adc2775718df2a}
+
+\begin{DoxyCompactList}\small\item\em Goal state as transform. \end{DoxyCompactList}\item 
+\hypertarget{class_planner_af95edfb9e8e93af5dccf7e6b18d7a9c6}{Vector3 \hyperlink{class_planner_af95edfb9e8e93af5dccf7e6b18d7a9c6}{current\-Goal}}\label{class_planner_af95edfb9e8e93af5dccf7e6b18d7a9c6}
+
+\begin{DoxyCompactList}\small\item\em Goal state as Vector3. \end{DoxyCompactList}\item 
+\hypertarget{class_planner_a752390ecc83a78028b2ec28efe5b9d34}{Material \hyperlink{class_planner_a752390ecc83a78028b2ec28efe5b9d34}{goal\-Completed\-Material}}\label{class_planner_a752390ecc83a78028b2ec28efe5b9d34}
+
+\begin{DoxyCompactList}\small\item\em Material showing a goal was reached. \end{DoxyCompactList}\item 
+\hypertarget{class_planner_aead3ef24c43c10820e48e51ae21d3280}{Material \hyperlink{class_planner_aead3ef24c43c10820e48e51ae21d3280}{goal\-Material}}\label{class_planner_aead3ef24c43c10820e48e51ae21d3280}
+
+\begin{DoxyCompactList}\small\item\em Material for the goal before it was reached. \end{DoxyCompactList}\item 
+\hypertarget{class_planner_aee6e18d65f96ef4b7bfdc7fc035c5d43}{Footstep\-Planning\-State \hyperlink{class_planner_aee6e18d65f96ef4b7bfdc7fc035c5d43}{current\-State}}\label{class_planner_aee6e18d65f96ef4b7bfdc7fc035c5d43}
+
+\begin{DoxyCompactList}\small\item\em Current state as footstep planning state. \end{DoxyCompactList}\item 
+\hypertarget{class_planner_ab9722eb37c59037b8ee255d129714b62}{bool {\bfseries initialized}}\label{class_planner_ab9722eb37c59037b8ee255d129714b62}
+
+\item 
+\hypertarget{class_planner_a73e7ae359b3f55578281abd81efecae1}{bool \hyperlink{class_planner_a73e7ae359b3f55578281abd81efecae1}{is\-Plan\-Computed}}\label{class_planner_a73e7ae359b3f55578281abd81efecae1}
+
+\begin{DoxyCompactList}\small\item\em True is plan was computed, false otherwise. \end{DoxyCompactList}\item 
+\hypertarget{class_planner_a665a17a87d386ae4b9caa47633e06a24}{bool \hyperlink{class_planner_a665a17a87d386ae4b9caa47633e06a24}{plan\-Changed}}\label{class_planner_a665a17a87d386ae4b9caa47633e06a24}
+
+\begin{DoxyCompactList}\small\item\em True is plan changed, false otherwise. \end{DoxyCompactList}\item 
+\hypertarget{class_planner_a26d738b32b82068c03b47eba1f6d8c0d}{bool \hyperlink{class_planner_a26d738b32b82068c03b47eba1f6d8c0d}{goal\-Reached}}\label{class_planner_a26d738b32b82068c03b47eba1f6d8c0d}
+
+\begin{DoxyCompactList}\small\item\em True if goal was reached, false otherwise. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{class_planner_a9d3ca9d667c8330d241fcc61d5b2e8f5}{\index{Planner@{Planner}!Compute\-Plan@{Compute\-Plan}}
+\index{Compute\-Plan@{Compute\-Plan}!Planner@{Planner}}
+\subsubsection[{Compute\-Plan}]{\setlength{\rightskip}{0pt plus 5cm}virtual bool Planner.\-Compute\-Plan (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{class_planner_a9d3ca9d667c8330d241fcc61d5b2e8f5}
+
+
+Computes the plan. 
+
+\begin{DoxyReturn}{Returns}
+True is plan was found, false otherwise. 
+\end{DoxyReturn}
+\hypertarget{class_planner_a599560668fe905b64d30794632169945}{\index{Planner@{Planner}!get\-First\-Action@{get\-First\-Action}}
+\index{get\-First\-Action@{get\-First\-Action}!Planner@{Planner}}
+\subsubsection[{get\-First\-Action}]{\setlength{\rightskip}{0pt plus 5cm}virtual Footstep\-Planning\-Action Planner.\-get\-First\-Action (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{class_planner_a599560668fe905b64d30794632169945}
+
+
+Gets the first action. 
+
+\begin{DoxyReturn}{Returns}
+The first action. 
+\end{DoxyReturn}
+\hypertarget{class_planner_acbe375938802581e5338e61145711ca0}{\index{Planner@{Planner}!Get\-Number\-Of\-Domains@{Get\-Number\-Of\-Domains}}
+\index{Get\-Number\-Of\-Domains@{Get\-Number\-Of\-Domains}!Planner@{Planner}}
+\subsubsection[{Get\-Number\-Of\-Domains}]{\setlength{\rightskip}{0pt plus 5cm}virtual int Planner.\-Get\-Number\-Of\-Domains (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{class_planner_acbe375938802581e5338e61145711ca0}
+
+
+Gets the number of domains. 
+
+\begin{DoxyReturn}{Returns}
+The number of domains. 
+\end{DoxyReturn}
+\hypertarget{class_planner_a547ab7ac5131f9a7b1c21a2c0315a9a5}{\index{Planner@{Planner}!Get\-Output\-Plan@{Get\-Output\-Plan}}
+\index{Get\-Output\-Plan@{Get\-Output\-Plan}!Planner@{Planner}}
+\subsubsection[{Get\-Output\-Plan}]{\setlength{\rightskip}{0pt plus 5cm}virtual Footstep\-Planning\-Action \mbox{[}$\,$\mbox{]} Planner.\-Get\-Output\-Plan (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{class_planner_a547ab7ac5131f9a7b1c21a2c0315a9a5}
+
+
+Gets the computed plan. 
+
+\begin{DoxyReturn}{Returns}
+The computed plan. 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following file\-:\begin{DoxyCompactItemize}
+\item 
+V\-A\-S\-T/vast/\-Assets/\-Plannar Scripts/\-Planners In Use/Best\-First\-Search\-Planner.\-cs\end{DoxyCompactItemize}

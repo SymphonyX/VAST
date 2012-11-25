@@ -1,0 +1,86 @@
+\hypertarget{class_planner}{\section{Planner Class Reference}
+\label{class_planner}\index{Planner@{Planner}}
+}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{class_planner_a547ab7ac5131f9a7b1c21a2c0315a9a5}{virtual Footstep\-Planning\-Action\mbox{[}$\,$\mbox{]} {\bfseries Get\-Output\-Plan} ()}\label{class_planner_a547ab7ac5131f9a7b1c21a2c0315a9a5}
+
+\item 
+\hypertarget{class_planner_a524224551fd946ebbdd3ed63fe3a6403}{virtual bool {\bfseries Is\-Empty} ()}\label{class_planner_a524224551fd946ebbdd3ed63fe3a6403}
+
+\item 
+\hypertarget{class_planner_a45faf2988ce1bb00355579b2d1db6545}{virtual bool {\bfseries Has\-Expired} ()}\label{class_planner_a45faf2988ce1bb00355579b2d1db6545}
+
+\item 
+\hypertarget{class_planner_ad0954ae572578966463be213f396ed78}{virtual bool {\bfseries There\-Still\-Time} ()}\label{class_planner_ad0954ae572578966463be213f396ed78}
+
+\item 
+\hypertarget{class_planner_ae9528547234832c67b351e6800b94ff5}{virtual void {\bfseries Recompute\-Plan} ()}\label{class_planner_ae9528547234832c67b351e6800b94ff5}
+
+\item 
+\hypertarget{class_planner_a223b6149af3af1f6ba2e61e51e6dda87}{virtual void {\bfseries Init} (Animation\-Analyzer aa, Neighbour\-Agents na, Neighbour\-Obstacles no)}\label{class_planner_a223b6149af3af1f6ba2e61e51e6dda87}
+
+\item 
+\hypertarget{class_planner_acbe375938802581e5338e61145711ca0}{virtual int {\bfseries Get\-Number\-Of\-Domains} ()}\label{class_planner_acbe375938802581e5338e61145711ca0}
+
+\item 
+\hypertarget{class_planner_ab8dcacec087454aec674af4380286bba}{virtual bool {\bfseries Check\-Domain\-State\-Collisions} (int d, Footstep\-Planning\-State st)}\label{class_planner_ab8dcacec087454aec674af4380286bba}
+
+\item 
+\hypertarget{class_planner_a9d3ca9d667c8330d241fcc61d5b2e8f5}{virtual bool {\bfseries Compute\-Plan} ()}\label{class_planner_a9d3ca9d667c8330d241fcc61d5b2e8f5}
+
+\item 
+\hypertarget{class_planner_a599560668fe905b64d30794632169945}{virtual Footstep\-Planning\-Action {\bfseries get\-First\-Action} ()}\label{class_planner_a599560668fe905b64d30794632169945}
+
+\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{class_planner_a61bc5fb92926adb1d47117b3953dc838}{float {\bfseries goal\-Time}}\label{class_planner_a61bc5fb92926adb1d47117b3953dc838}
+
+\item 
+\hypertarget{class_planner_a11545a956f32850f9bee31866e6c1854}{int {\bfseries Max\-Number\-Of\-Nodes}}\label{class_planner_a11545a956f32850f9bee31866e6c1854}
+
+\item 
+\hypertarget{class_planner_a25d7f8ac309c61b0c1f161c36b771a6d}{float {\bfseries max\-Time}}\label{class_planner_a25d7f8ac309c61b0c1f161c36b771a6d}
+
+\item 
+\hypertarget{class_planner_a935d9d44e2bf7cfb086aef8a4a272893}{Transform {\bfseries root}}\label{class_planner_a935d9d44e2bf7cfb086aef8a4a272893}
+
+\item 
+\hypertarget{class_planner_a15508936d815ce9a6cd111428e6ed819}{Transform {\bfseries current\-State\-Transform}}\label{class_planner_a15508936d815ce9a6cd111428e6ed819}
+
+\item 
+\hypertarget{class_planner_a30a77ede048aecc823adc2775718df2a}{Transform {\bfseries goal\-State\-Transform}}\label{class_planner_a30a77ede048aecc823adc2775718df2a}
+
+\item 
+\hypertarget{class_planner_af95edfb9e8e93af5dccf7e6b18d7a9c6}{Vector3 {\bfseries current\-Goal}}\label{class_planner_af95edfb9e8e93af5dccf7e6b18d7a9c6}
+
+\item 
+\hypertarget{class_planner_a752390ecc83a78028b2ec28efe5b9d34}{Material {\bfseries goal\-Completed\-Material}}\label{class_planner_a752390ecc83a78028b2ec28efe5b9d34}
+
+\item 
+\hypertarget{class_planner_aead3ef24c43c10820e48e51ae21d3280}{Material {\bfseries goal\-Material}}\label{class_planner_aead3ef24c43c10820e48e51ae21d3280}
+
+\item 
+\hypertarget{class_planner_aee6e18d65f96ef4b7bfdc7fc035c5d43}{Footstep\-Planning\-State {\bfseries current\-State}}\label{class_planner_aee6e18d65f96ef4b7bfdc7fc035c5d43}
+
+\item 
+\hypertarget{class_planner_ab9722eb37c59037b8ee255d129714b62}{bool {\bfseries initialized}}\label{class_planner_ab9722eb37c59037b8ee255d129714b62}
+
+\item 
+\hypertarget{class_planner_a73e7ae359b3f55578281abd81efecae1}{bool {\bfseries is\-Plan\-Computed}}\label{class_planner_a73e7ae359b3f55578281abd81efecae1}
+
+\item 
+\hypertarget{class_planner_a665a17a87d386ae4b9caa47633e06a24}{bool {\bfseries plan\-Changed}}\label{class_planner_a665a17a87d386ae4b9caa47633e06a24}
+
+\item 
+\hypertarget{class_planner_a26d738b32b82068c03b47eba1f6d8c0d}{bool {\bfseries goal\-Reached}}\label{class_planner_a26d738b32b82068c03b47eba1f6d8c0d}
+
+\end{DoxyCompactItemize}
+
+
+The documentation for this class was generated from the following file\-:\begin{DoxyCompactItemize}
+\item 
+V\-A\-S\-T/vast/\-Assets/\-Plannar Scripts/\-Planners In Use/Best\-First\-Search\-Planner.\-cs\end{DoxyCompactItemize}

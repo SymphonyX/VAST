@@ -1,0 +1,147 @@
+\hypertarget{class_planning_domain_base}{\section{Planning\-Domain\-Base Class Reference}
+\label{class_planning_domain_base}\index{Planning\-Domain\-Base@{Planning\-Domain\-Base}}
+}
+
+
+A base class for implementing a planning domain used by the \hyperlink{class_best_first_search_planner}{Best\-First\-Search\-Planner}.  
+
+
+Inheritance diagram for Planning\-Domain\-Base\-:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_planning_domain_base}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+virtual bool \hyperlink{class_planning_domain_base_a56907006c1e4a4071f58da65705792d1}{is\-A\-Goal\-State} (ref \hyperlink{class_default_state}{Default\-State} state, ref \hyperlink{class_default_state}{Default\-State} ideal\-Goal\-State)
+\begin{DoxyCompactList}\small\item\em Returns true if state is a valid goal state for the planning problem. \end{DoxyCompactList}\item 
+virtual void \hyperlink{class_planning_domain_base_adbca97ccf882076eb737b8bebf1fb1ea}{generate\-Transitions} (ref \hyperlink{class_default_state}{Default\-State} current\-State, ref \hyperlink{class_default_state}{Default\-State} previous\-State, ref \hyperlink{class_default_state}{Default\-State} ideal\-Goal\-State, ref List$<$ \hyperlink{class_default_action}{Default\-Action} $>$ transitions)
+\begin{DoxyCompactList}\small\item\em Populates the list of actions that can be taken from the current state. \end{DoxyCompactList}\item 
+\hypertarget{class_planning_domain_base_ac045b562142c74659dd0624ae38f670e}{virtual void {\bfseries generate\-Neighbors} (\hyperlink{class_default_state}{Default\-State} current\-State, ref List$<$ \hyperlink{class_default_state}{Default\-State} $>$ neighbors)}\label{class_planning_domain_base_ac045b562142c74659dd0624ae38f670e}
+
+\item 
+\hypertarget{class_planning_domain_base_a94174e0d5948bd2b8f611a36050fcc95}{virtual void {\bfseries generate\-Predecessors} (\hyperlink{class_default_state}{Default\-State} current\-State, ref List$<$ \hyperlink{class_default_action}{Default\-Action} $>$ action\-List)}\label{class_planning_domain_base_a94174e0d5948bd2b8f611a36050fcc95}
+
+\item 
+virtual float \hyperlink{class_planning_domain_base_a4d0f803c0d3dfb3f59526078db674a4f}{estimate\-Total\-Cost} (ref \hyperlink{class_default_state}{Default\-State} current\-State, ref \hyperlink{class_default_state}{Default\-State} ideal\-Goal\-State, float currentg)
+\begin{DoxyCompactList}\small\item\em Computes the heuristic function (often denoted as f) that estimates the \char`\"{}goodness\char`\"{} of a state towards the goal. \end{DoxyCompactList}\item 
+\hypertarget{class_planning_domain_base_a123435365f69b0c6969b3c69f05fb007}{virtual float {\bfseries evaluate\-Domain} (ref \hyperlink{class_default_state}{Default\-State} state)}\label{class_planning_domain_base_a123435365f69b0c6969b3c69f05fb007}
+
+\item 
+\hypertarget{class_planning_domain_base_a07faaa66f466a9d7ce3c4ffe37e62984}{virtual bool {\bfseries Check\-State\-Collisions} (\hyperlink{class_default_state}{Default\-State} state)}\label{class_planning_domain_base_a07faaa66f466a9d7ce3c4ffe37e62984}
+
+\item 
+\hypertarget{class_planning_domain_base_ae897f168e9458471332f33a311f6ef0d}{virtual bool {\bfseries Check\-Transition\-Collisions} (\hyperlink{class_default_state}{Default\-State} state, \hyperlink{class_default_state}{Default\-State} prev\-State, bool sampling=true)}\label{class_planning_domain_base_ae897f168e9458471332f33a311f6ef0d}
+
+\item 
+\hypertarget{class_planning_domain_base_af2d85bdc3ba261d45e3866d14d1bed2d}{virtual float {\bfseries Compute\-Estimate} (ref \hyperlink{class_default_state}{Default\-State} \-\_\-from, ref \hyperlink{class_default_state}{Default\-State} \-\_\-to, string estimate\-Type)}\label{class_planning_domain_base_af2d85bdc3ba261d45e3866d14d1bed2d}
+
+\item 
+\hypertarget{class_planning_domain_base_a0dbe3459a5c80ef6879b1a876473783e}{virtual float {\bfseries Compute\-G\-Estimate} (\hyperlink{class_default_state}{Default\-State} \-\_\-from, \hyperlink{class_default_state}{Default\-State} \-\_\-to)}\label{class_planning_domain_base_a0dbe3459a5c80ef6879b1a876473783e}
+
+\item 
+\hypertarget{class_planning_domain_base_aa36b018efa1d0e43b79c21e0af6c8d3a}{virtual float {\bfseries Compute\-H\-Estimate} (\hyperlink{class_default_state}{Default\-State} \-\_\-form, \hyperlink{class_default_state}{Default\-State} \-\_\-to)}\label{class_planning_domain_base_aa36b018efa1d0e43b79c21e0af6c8d3a}
+
+\item 
+\hypertarget{class_planning_domain_base_af33cbec77e0c8255f8d7d01586bc9ed4}{virtual void {\bfseries generate\-Predecesors} (ref \hyperlink{class_default_state}{Default\-State} current\-State, ref \hyperlink{class_default_state}{Default\-State} previous\-State, ref \hyperlink{class_default_state}{Default\-State} ideal\-Goal\-State, ref List$<$ \hyperlink{class_default_action}{Default\-Action} $>$ transitions)}\label{class_planning_domain_base_af33cbec77e0c8255f8d7d01586bc9ed4}
+
+\item 
+\hypertarget{class_planning_domain_base_af9f3423873c7dc7e5c720bb978ba3828}{virtual bool {\bfseries equals} (\hyperlink{class_default_state}{Default\-State} s1, \hyperlink{class_default_state}{Default\-State} s2, bool is\-Start)}\label{class_planning_domain_base_af9f3423873c7dc7e5c720bb978ba3828}
+
+\item 
+\hypertarget{class_planning_domain_base_a8b9474ee3dd5760a606ac9f9bc706b12}{virtual bool {\bfseries equals} (float value1, float value2)}\label{class_planning_domain_base_a8b9474ee3dd5760a606ac9f9bc706b12}
+
+\item 
+\hypertarget{class_planning_domain_base_a3fdc90c8ec2695356dc31e8931fe20ae}{virtual \hyperlink{class_default_action}{Default\-Action} {\bfseries generate\-Action} (\hyperlink{class_default_state}{Default\-State} previous\-State, \hyperlink{class_default_state}{Default\-State} next\-State)}\label{class_planning_domain_base_a3fdc90c8ec2695356dc31e8931fe20ae}
+
+\item 
+\hypertarget{class_planning_domain_base_a55c9b54b912f437ef1d6b8f36ebaa4b6}{virtual void {\bfseries clear\-At\-Beginning\-Of\-Every\-Plan\-Iteration} ()}\label{class_planning_domain_base_a55c9b54b912f437ef1d6b8f36ebaa4b6}
+
+\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{class_planning_domain_base_a85fab48a5d3ef708964d025d7f839457}{bool {\bfseries include\-Start} = true}\label{class_planning_domain_base_a85fab48a5d3ef708964d025d7f839457}
+
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+A base class for implementing a planning domain used by the \hyperlink{class_best_first_search_planner}{Best\-First\-Search\-Planner}. 
+
+To use the \hyperlink{class_best_first_search_planner}{Best\-First\-Search\-Planner}, you must provide a class that implements the search heuristic, state transitions, and the meaning of a goal state. To make such a class, you can inherit this class and implement the functionality. Because the \hyperlink{class_best_first_search_planner}{Best\-First\-Search\-Planner} is a template class, it is not necessary to inherit this class directly, but you may find it helpful to do so. The real requirement is that your planning domain class has at least the same functionality that is contained in this class.
+
+{\bfseries Note\-:} You should not instantiate this class directly, even though it is also templatized, because you may wish to have different planning domains that use the same data type to represent state. Instead, inherit this class and then implement the functionality in your derived class.
+
+\begin{DoxySeeAlso}{See also}
+
+\begin{DoxyItemize}
+\item Refer to the details of each function in this class.
+\item Documentation of the \hyperlink{class_best_first_search_planner}{Best\-First\-Search\-Planner} class, which describes how states and actions are used. 
+\end{DoxyItemize}
+\end{DoxySeeAlso}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{class_planning_domain_base_a4d0f803c0d3dfb3f59526078db674a4f}{\index{Planning\-Domain\-Base@{Planning\-Domain\-Base}!estimate\-Total\-Cost@{estimate\-Total\-Cost}}
+\index{estimate\-Total\-Cost@{estimate\-Total\-Cost}!PlanningDomainBase@{Planning\-Domain\-Base}}
+\subsubsection[{estimate\-Total\-Cost}]{\setlength{\rightskip}{0pt plus 5cm}virtual float Planning\-Domain\-Base.\-estimate\-Total\-Cost (
+\begin{DoxyParamCaption}
+\item[{ref {\bf Default\-State}}]{current\-State, }
+\item[{ref {\bf Default\-State}}]{ideal\-Goal\-State, }
+\item[{float}]{currentg}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{class_planning_domain_base_a4d0f803c0d3dfb3f59526078db674a4f}
+
+
+Computes the heuristic function (often denoted as f) that estimates the \char`\"{}goodness\char`\"{} of a state towards the goal. 
+
+Note carerfully that this function should compute f, not h. For generalized best-\/first search, there is no explicit concept of h. For example, to implement A$\ast$, this function would return f, where f = currentg + h. In this case, h is the estimated distance or cost from the current state to the goal state. 
+
+Reimplemented in \hyperlink{class_best_first_domain_a5e473a66ee8ebaec2674a63d06e6e278}{Best\-First\-Domain}.
+
+\hypertarget{class_planning_domain_base_adbca97ccf882076eb737b8bebf1fb1ea}{\index{Planning\-Domain\-Base@{Planning\-Domain\-Base}!generate\-Transitions@{generate\-Transitions}}
+\index{generate\-Transitions@{generate\-Transitions}!PlanningDomainBase@{Planning\-Domain\-Base}}
+\subsubsection[{generate\-Transitions}]{\setlength{\rightskip}{0pt plus 5cm}virtual void Planning\-Domain\-Base.\-generate\-Transitions (
+\begin{DoxyParamCaption}
+\item[{ref {\bf Default\-State}}]{current\-State, }
+\item[{ref {\bf Default\-State}}]{previous\-State, }
+\item[{ref {\bf Default\-State}}]{ideal\-Goal\-State, }
+\item[{ref List$<$ {\bf Default\-Action} $>$}]{transitions}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{class_planning_domain_base_adbca97ccf882076eb737b8bebf1fb1ea}
+
+
+Populates the list of actions that can be taken from the current state. 
+
+When you implement this function, make sure that you initialize both the (1) cost and (2) new state of the action being generated.
+
+You may wish to use the previous\-State or the ideal\-Goal\-State as additional information that helps you decide how to generate actions. The classic example of this is when the state space is a graph, you should avoid generating an action that will take you back to the previous graph node. In another example, you may choose to generate goal-\/dependent actions. 
+
+Reimplemented in \hyperlink{class_a_r_astar_domain_a16890b0a0fea5a007b3ad3264c39dd91}{A\-R\-Astar\-Domain}, and \hyperlink{class_best_first_domain_a06d5fdd90348af45d2f2de4944eacd6f}{Best\-First\-Domain}.
+
+\hypertarget{class_planning_domain_base_a56907006c1e4a4071f58da65705792d1}{\index{Planning\-Domain\-Base@{Planning\-Domain\-Base}!is\-A\-Goal\-State@{is\-A\-Goal\-State}}
+\index{is\-A\-Goal\-State@{is\-A\-Goal\-State}!PlanningDomainBase@{Planning\-Domain\-Base}}
+\subsubsection[{is\-A\-Goal\-State}]{\setlength{\rightskip}{0pt plus 5cm}virtual bool Planning\-Domain\-Base.\-is\-A\-Goal\-State (
+\begin{DoxyParamCaption}
+\item[{ref {\bf Default\-State}}]{state, }
+\item[{ref {\bf Default\-State}}]{ideal\-Goal\-State}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{class_planning_domain_base_a56907006c1e4a4071f58da65705792d1}
+
+
+Returns true if state is a valid goal state for the planning problem. 
+
+The parameter ideal\-Goal\-State is only a reference to the goal state that the user specified when calling \hyperlink{class_best_first_search_planner_a777fb06939a33b3f3effb24b0dbda076}{Best\-First\-Search\-Planner\-::compute\-Plan()}. Depending on your planning task, you may want to ignore this value, for example, if you have multiple goals and only need to reach one of those goal states.
+
+In most cases, however, this parameter is a helpful optimization, that allows you to compute \char`\"{}distance\char`\"{} or \char`\"{}cost\char`\"{} to the goal state without having to store extra data in your planning domain class. In some cases, this allows you to use the same instance of the planning domain for all agents that are performing the same planning task, even though they have different start and goal states. 
+
+Reimplemented in \hyperlink{class_a_r_astar_domain_a98710baa163975101bee4a3b5c8ba439}{A\-R\-Astar\-Domain}, and \hyperlink{class_best_first_domain_a0f03bd6bd5617405d56f204732888d38}{Best\-First\-Domain}.
+
+
+
+The documentation for this class was generated from the following file\-:\begin{DoxyCompactItemize}
+\item 
+V\-A\-S\-T/vast/\-Assets/\-Plannar Scripts/\-Planners In Use/Best\-First\-Search\-Planner.\-cs\end{DoxyCompactItemize}

@@ -1,0 +1,270 @@
+\hypertarget{class_a_r_astar_planner}{\section{A\-R\-Astar\-Planner Class Reference}
+\label{class_a_r_astar_planner}\index{A\-R\-Astar\-Planner@{A\-R\-Astar\-Planner}}
+}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{class_a_r_astar_planner_ac104ddca5d41bcceef98695c684d6fd1}{A\-R\-Astar\-Planner} ()
+\begin{DoxyCompactList}\small\item\em Initializes a new instance of the \hyperlink{class_a_r_astar_planner}{A\-R\-Astar\-Planner} class. \end{DoxyCompactList}\item 
+void \hyperlink{class_a_r_astar_planner_adb738f472ed71c2ef472a4dcd5c4a5f9}{init} (ref List$<$ \hyperlink{class_planning_domain_base}{Planning\-Domain\-Base} $>$ new\-Planning\-Domain, int max\-Num\-Nodes\-To\-Expand)
+\begin{DoxyCompactList}\small\item\em Initializes required data for the planner. \end{DoxyCompactList}\item 
+void \hyperlink{class_a_r_astar_planner_a02a2eeca8d5662b6179d003d3b21be8c}{Perform\-One\-Step} ()
+\begin{DoxyCompactList}\small\item\em Performs one step of the planner. \end{DoxyCompactList}\item 
+Path\-Status \hyperlink{class_a_r_astar_planner_aef22ec1bfe13cad24e8c7f0f0eb526ba}{compute\-Plan} (ref \hyperlink{class_default_state}{Default\-State} current\-State, ref \hyperlink{class_default_state}{Default\-State} \-\_\-goal\-State, ref Dictionary$<$ \hyperlink{class_default_state}{Default\-State}, \hyperlink{class_a_r_astar_node}{A\-R\-Astar\-Node} $>$ plan, ref float inflation, float max\-Time)
+\begin{DoxyCompactList}\small\item\em Computes the plan. \end{DoxyCompactList}\item 
+\hyperlink{class_default_state}{Default\-State} \hyperlink{class_a_r_astar_planner_aa6fea4b120f0db2d5b23045279d51bb5}{Fill\-Plan} ()
+\begin{DoxyCompactList}\small\item\em Fills the plan. \end{DoxyCompactList}\item 
+float \hyperlink{class_a_r_astar_planner_a006ae9bee4b3f93f82e79d4e103553ad}{fvalue} (\hyperlink{class_a_r_astar_node}{A\-R\-Astar\-Node} node)
+\begin{DoxyCompactList}\small\item\em Computes a node's f-\/value. \end{DoxyCompactList}\item 
+\hypertarget{class_a_r_astar_planner_ad129d7fbfc86b727772647edcaa62bce}{bool {\bfseries \-\_\-compute\-Plan} (ref \hyperlink{class_default_state}{Default\-State} start\-State, ref \hyperlink{class_default_state}{Default\-State} ideal\-Goal\-State, Dictionary$<$ \hyperlink{class_default_state}{Default\-State}, \hyperlink{class_a_r_astar_node}{A\-R\-Astar\-Node} $>$ map, ref \hyperlink{class_default_state}{Default\-State} actual\-State\-Reached, float max\-Time)}\label{class_a_r_astar_planner_ad129d7fbfc86b727772647edcaa62bce}
+
+\item 
+void \hyperlink{class_a_r_astar_planner_a61d4f2f23e1515ef5a9eaa74924ac447}{Visualize\-Container} (Container\-Type container\-Type, Color color, float radius)
+\begin{DoxyCompactList}\small\item\em Visualizes the containers for debugging. \end{DoxyCompactList}\item 
+void \hyperlink{class_a_r_astar_planner_a11fccda58571dcb091da9babda39ebd6}{Update\-After\-Obstacle\-Moved} (\hyperlink{class_default_state}{Default\-State} prev\-Obstacle\-State, \hyperlink{class_default_state}{Default\-State} current\-Obstacle\-State)
+\begin{DoxyCompactList}\small\item\em Perfmors necessary updates after obstacle moved. \end{DoxyCompactList}\item 
+\hypertarget{class_a_r_astar_planner_afb83f1df56770d7eab8f26498d00b8b6}{void {\bfseries set\-Selected\-Domain} (\hyperlink{class_planning_domain_base}{Planning\-Domain\-Base} domain)}\label{class_a_r_astar_planner_afb83f1df56770d7eab8f26498d00b8b6}
+
+\item 
+void \hyperlink{class_a_r_astar_planner_aa5e93fed6680adb3a8e1c0d84b7a6bc1}{Update\-After\-Goal\-Moved} (\hyperlink{class_default_state}{Default\-State} current\-Goal\-State)
+\begin{DoxyCompactList}\small\item\em Performs the necessary updates after the goal moved. \end{DoxyCompactList}\item 
+void \hyperlink{class_a_r_astar_planner_a5cead1843fe3fce8f0a222fdb5ae0192}{Update\-After\-Start\-Moved} (\hyperlink{class_default_state}{Default\-State} current\-State)
+\begin{DoxyCompactList}\small\item\em Performs the necessary updates after start moved. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{class_a_r_astar_planner_a093fb1dbafd57ec94a5103ddc1679fc4}{int \hyperlink{class_a_r_astar_planner_a093fb1dbafd57ec94a5103ddc1679fc4}{\-\_\-max\-Num\-Nodes\-To\-Expand}}\label{class_a_r_astar_planner_a093fb1dbafd57ec94a5103ddc1679fc4}
+
+\begin{DoxyCompactList}\small\item\em Maximum number of nodes to expand in a plan iteration. \end{DoxyCompactList}\item 
+\hypertarget{class_a_r_astar_planner_ab31142d8f16ef4866ff6932098642fb5}{bool \hyperlink{class_a_r_astar_planner_ab31142d8f16ef4866ff6932098642fb5}{using\-Heap} = true}\label{class_a_r_astar_planner_ab31142d8f16ef4866ff6932098642fb5}
+
+\begin{DoxyCompactList}\small\item\em Flag to determine if we sort with a heap (testing) \end{DoxyCompactList}\item 
+\hypertarget{class_a_r_astar_planner_aa8318cf3bb76371812d9fffc4f4d0e9a}{float \hyperlink{class_a_r_astar_planner_aa8318cf3bb76371812d9fffc4f4d0e9a}{inflation\-Factor} = 1.\-0f}\label{class_a_r_astar_planner_aa8318cf3bb76371812d9fffc4f4d0e9a}
+
+\begin{DoxyCompactList}\small\item\em Weight applied to heuristic. \end{DoxyCompactList}\item 
+\hypertarget{class_a_r_astar_planner_a6df1ebaf2825a698b4cdec8e31da53bd}{bool \hyperlink{class_a_r_astar_planner_a6df1ebaf2825a698b4cdec8e31da53bd}{first\-Time} = true}\label{class_a_r_astar_planner_a6df1ebaf2825a698b4cdec8e31da53bd}
+
+\begin{DoxyCompactList}\small\item\em Flag to determine if it's the first iteration. \end{DoxyCompactList}\item 
+\hypertarget{class_a_r_astar_planner_aaffc01fe24f512518ba8ec49a6900f8a}{bool \hyperlink{class_a_r_astar_planner_aaffc01fe24f512518ba8ec49a6900f8a}{One\-Step} = false}\label{class_a_r_astar_planner_aaffc01fe24f512518ba8ec49a6900f8a}
+
+\begin{DoxyCompactList}\small\item\em Flag to determine if we run planner step by step. \end{DoxyCompactList}\item 
+\hypertarget{class_a_r_astar_planner_ad9b64f26b9a88475f983c4eb493de054}{List$<$ \hyperlink{class_planning_domain_base}{Planning\-Domain\-Base} $>$ \hyperlink{class_a_r_astar_planner_ad9b64f26b9a88475f983c4eb493de054}{\-\_\-planning\-Domain}}\label{class_a_r_astar_planner_ad9b64f26b9a88475f983c4eb493de054}
+
+\begin{DoxyCompactList}\small\item\em List of possible domains. \end{DoxyCompactList}\item 
+\hypertarget{class_a_r_astar_planner_aee2b292cb501a1495c039524e1ad8e94}{Dictionary$<$ \hyperlink{class_default_state}{Default\-State}, \\*
+\hyperlink{class_a_r_astar_node}{A\-R\-Astar\-Node} $>$ \hyperlink{class_a_r_astar_planner_aee2b292cb501a1495c039524e1ad8e94}{Visited}}\label{class_a_r_astar_planner_aee2b292cb501a1495c039524e1ad8e94}
+
+\begin{DoxyCompactList}\small\item\em Nodes visited so far. \end{DoxyCompactList}\item 
+\hypertarget{class_a_r_astar_planner_af023a548cb94909a1b2c0e51988502b5}{\hyperlink{class_close_container}{Close\-Container} \hyperlink{class_a_r_astar_planner_af023a548cb94909a1b2c0e51988502b5}{Close}}\label{class_a_r_astar_planner_af023a548cb94909a1b2c0e51988502b5}
+
+\begin{DoxyCompactList}\small\item\em List of nodes expanded. \end{DoxyCompactList}\item 
+\hypertarget{class_a_r_astar_planner_ad5c4d105b353c64c6f0eab3d543d68dc}{\hyperlink{class_open_container}{Open\-Container} \hyperlink{class_a_r_astar_planner_ad5c4d105b353c64c6f0eab3d543d68dc}{Open}}\label{class_a_r_astar_planner_ad5c4d105b353c64c6f0eab3d543d68dc}
+
+\begin{DoxyCompactList}\small\item\em List of nodes to expand. \end{DoxyCompactList}\item 
+\hypertarget{class_a_r_astar_planner_ab01b3701ca3e0de21ee17603597e14e9}{\hyperlink{class_incons}{Incons} \hyperlink{class_a_r_astar_planner_ab01b3701ca3e0de21ee17603597e14e9}{Incons}}\label{class_a_r_astar_planner_ab01b3701ca3e0de21ee17603597e14e9}
+
+\begin{DoxyCompactList}\small\item\em List of inconsistent nodes. \end{DoxyCompactList}\item 
+\hypertarget{class_a_r_astar_planner_a94ca878be05551532a686abeb4a1d66e}{bool {\bfseries planner\-Finished} = false}\label{class_a_r_astar_planner_a94ca878be05551532a686abeb4a1d66e}
+
+\end{DoxyCompactItemize}
+\subsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{class_a_r_astar_planner_a1e8434cfc5c8f0f3e6bd09e585296439}{static bool \hyperlink{class_a_r_astar_planner_a1e8434cfc5c8f0f3e6bd09e585296439}{moved} = false}\label{class_a_r_astar_planner_a1e8434cfc5c8f0f3e6bd09e585296439}
+
+\begin{DoxyCompactList}\small\item\em Flag to determine if agent moved. \end{DoxyCompactList}\item 
+\hypertarget{class_a_r_astar_planner_aee85a0fdc5f048dfee9cd3c58e2a6c35}{static bool \hyperlink{class_a_r_astar_planner_aee85a0fdc5f048dfee9cd3c58e2a6c35}{goal\-Moved} = false}\label{class_a_r_astar_planner_aee85a0fdc5f048dfee9cd3c58e2a6c35}
+
+\begin{DoxyCompactList}\small\item\em Flag to determine if goal moved. \end{DoxyCompactList}\item 
+\hypertarget{class_a_r_astar_planner_acd32a5682197c310f1c4f3660c218eca}{static bool \hyperlink{class_a_r_astar_planner_acd32a5682197c310f1c4f3660c218eca}{obstacle\-Moved} = false}\label{class_a_r_astar_planner_acd32a5682197c310f1c4f3660c218eca}
+
+\begin{DoxyCompactList}\small\item\em Flag to determine if obstacle moved. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+This is the main class for A\-R\-Astar \hyperlink{class_planner}{Planner} Handles all details related to the search. 
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{class_a_r_astar_planner_ac104ddca5d41bcceef98695c684d6fd1}{\index{A\-R\-Astar\-Planner@{A\-R\-Astar\-Planner}!A\-R\-Astar\-Planner@{A\-R\-Astar\-Planner}}
+\index{A\-R\-Astar\-Planner@{A\-R\-Astar\-Planner}!ARAstarPlanner@{A\-R\-Astar\-Planner}}
+\subsubsection[{A\-R\-Astar\-Planner}]{\setlength{\rightskip}{0pt plus 5cm}A\-R\-Astar\-Planner.\-A\-R\-Astar\-Planner (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{class_a_r_astar_planner_ac104ddca5d41bcceef98695c684d6fd1}
+
+
+Initializes a new instance of the \hyperlink{class_a_r_astar_planner}{A\-R\-Astar\-Planner} class. 
+
+
+
+\subsection{Member Function Documentation}
+\hypertarget{class_a_r_astar_planner_aef22ec1bfe13cad24e8c7f0f0eb526ba}{\index{A\-R\-Astar\-Planner@{A\-R\-Astar\-Planner}!compute\-Plan@{compute\-Plan}}
+\index{compute\-Plan@{compute\-Plan}!ARAstarPlanner@{A\-R\-Astar\-Planner}}
+\subsubsection[{compute\-Plan}]{\setlength{\rightskip}{0pt plus 5cm}Path\-Status A\-R\-Astar\-Planner.\-compute\-Plan (
+\begin{DoxyParamCaption}
+\item[{ref {\bf Default\-State}}]{current\-State, }
+\item[{ref {\bf Default\-State}}]{\-\_\-goal\-State, }
+\item[{ref Dictionary$<$ {\bf Default\-State}, {\bf A\-R\-Astar\-Node} $>$}]{plan, }
+\item[{ref float}]{inflation, }
+\item[{float}]{max\-Time}
+\end{DoxyParamCaption}
+)}}\label{class_a_r_astar_planner_aef22ec1bfe13cad24e8c7f0f0eb526ba}
+
+
+Computes the plan. 
+
+\begin{DoxyReturn}{Returns}
+Plan status. 
+\end{DoxyReturn}
+
+\begin{DoxyParams}{Parameters}
+{\em current\-State} & Agent state. \\
+\hline
+{\em \-\_\-goal\-State} & Goal state. \\
+\hline
+{\em plan} & Dictionary where plan will be stored. \\
+\hline
+{\em inflation} & Inflation factor. \\
+\hline
+{\em max\-Time} & Maximum alloted time. \\
+\hline
+\end{DoxyParams}
+\hypertarget{class_a_r_astar_planner_aa6fea4b120f0db2d5b23045279d51bb5}{\index{A\-R\-Astar\-Planner@{A\-R\-Astar\-Planner}!Fill\-Plan@{Fill\-Plan}}
+\index{Fill\-Plan@{Fill\-Plan}!ARAstarPlanner@{A\-R\-Astar\-Planner}}
+\subsubsection[{Fill\-Plan}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Default\-State} A\-R\-Astar\-Planner.\-Fill\-Plan (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{class_a_r_astar_planner_aa6fea4b120f0db2d5b23045279d51bb5}
+
+
+Fills the plan. 
+
+\begin{DoxyReturn}{Returns}
+Closest state reached. 
+\end{DoxyReturn}
+\hypertarget{class_a_r_astar_planner_a006ae9bee4b3f93f82e79d4e103553ad}{\index{A\-R\-Astar\-Planner@{A\-R\-Astar\-Planner}!fvalue@{fvalue}}
+\index{fvalue@{fvalue}!ARAstarPlanner@{A\-R\-Astar\-Planner}}
+\subsubsection[{fvalue}]{\setlength{\rightskip}{0pt plus 5cm}float A\-R\-Astar\-Planner.\-fvalue (
+\begin{DoxyParamCaption}
+\item[{{\bf A\-R\-Astar\-Node}}]{node}
+\end{DoxyParamCaption}
+)}}\label{class_a_r_astar_planner_a006ae9bee4b3f93f82e79d4e103553ad}
+
+
+Computes a node's f-\/value. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em node} & Node. \\
+\hline
+\end{DoxyParams}
+\hypertarget{class_a_r_astar_planner_adb738f472ed71c2ef472a4dcd5c4a5f9}{\index{A\-R\-Astar\-Planner@{A\-R\-Astar\-Planner}!init@{init}}
+\index{init@{init}!ARAstarPlanner@{A\-R\-Astar\-Planner}}
+\subsubsection[{init}]{\setlength{\rightskip}{0pt plus 5cm}void A\-R\-Astar\-Planner.\-init (
+\begin{DoxyParamCaption}
+\item[{ref List$<$ {\bf Planning\-Domain\-Base} $>$}]{new\-Planning\-Domain, }
+\item[{int}]{max\-Num\-Nodes\-To\-Expand}
+\end{DoxyParamCaption}
+)}}\label{class_a_r_astar_planner_adb738f472ed71c2ef472a4dcd5c4a5f9}
+
+
+Initializes required data for the planner. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em new\-Planning\-Domain} & List of domains to be used \\
+\hline
+{\em max\-Num\-Nodes\-To\-Expand} & Maximum number of nodes to expand. \\
+\hline
+\end{DoxyParams}
+\hypertarget{class_a_r_astar_planner_a02a2eeca8d5662b6179d003d3b21be8c}{\index{A\-R\-Astar\-Planner@{A\-R\-Astar\-Planner}!Perform\-One\-Step@{Perform\-One\-Step}}
+\index{Perform\-One\-Step@{Perform\-One\-Step}!ARAstarPlanner@{A\-R\-Astar\-Planner}}
+\subsubsection[{Perform\-One\-Step}]{\setlength{\rightskip}{0pt plus 5cm}void A\-R\-Astar\-Planner.\-Perform\-One\-Step (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{class_a_r_astar_planner_a02a2eeca8d5662b6179d003d3b21be8c}
+
+
+Performs one step of the planner. 
+
+\hypertarget{class_a_r_astar_planner_aa5e93fed6680adb3a8e1c0d84b7a6bc1}{\index{A\-R\-Astar\-Planner@{A\-R\-Astar\-Planner}!Update\-After\-Goal\-Moved@{Update\-After\-Goal\-Moved}}
+\index{Update\-After\-Goal\-Moved@{Update\-After\-Goal\-Moved}!ARAstarPlanner@{A\-R\-Astar\-Planner}}
+\subsubsection[{Update\-After\-Goal\-Moved}]{\setlength{\rightskip}{0pt plus 5cm}void A\-R\-Astar\-Planner.\-Update\-After\-Goal\-Moved (
+\begin{DoxyParamCaption}
+\item[{{\bf Default\-State}}]{current\-Goal\-State}
+\end{DoxyParamCaption}
+)}}\label{class_a_r_astar_planner_aa5e93fed6680adb3a8e1c0d84b7a6bc1}
+
+
+Performs the necessary updates after the goal moved. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em current\-Goal\-State} & Current goal state. \\
+\hline
+\end{DoxyParams}
+\hypertarget{class_a_r_astar_planner_a11fccda58571dcb091da9babda39ebd6}{\index{A\-R\-Astar\-Planner@{A\-R\-Astar\-Planner}!Update\-After\-Obstacle\-Moved@{Update\-After\-Obstacle\-Moved}}
+\index{Update\-After\-Obstacle\-Moved@{Update\-After\-Obstacle\-Moved}!ARAstarPlanner@{A\-R\-Astar\-Planner}}
+\subsubsection[{Update\-After\-Obstacle\-Moved}]{\setlength{\rightskip}{0pt plus 5cm}void A\-R\-Astar\-Planner.\-Update\-After\-Obstacle\-Moved (
+\begin{DoxyParamCaption}
+\item[{{\bf Default\-State}}]{prev\-Obstacle\-State, }
+\item[{{\bf Default\-State}}]{current\-Obstacle\-State}
+\end{DoxyParamCaption}
+)}}\label{class_a_r_astar_planner_a11fccda58571dcb091da9babda39ebd6}
+
+
+Perfmors necessary updates after obstacle moved. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em prev\-Obstacle\-State} & State were the obstacle was previously in. \\
+\hline
+{\em current\-Obstacle\-State} & State where the obstacle is currently in. \\
+\hline
+\end{DoxyParams}
+\hypertarget{class_a_r_astar_planner_a5cead1843fe3fce8f0a222fdb5ae0192}{\index{A\-R\-Astar\-Planner@{A\-R\-Astar\-Planner}!Update\-After\-Start\-Moved@{Update\-After\-Start\-Moved}}
+\index{Update\-After\-Start\-Moved@{Update\-After\-Start\-Moved}!ARAstarPlanner@{A\-R\-Astar\-Planner}}
+\subsubsection[{Update\-After\-Start\-Moved}]{\setlength{\rightskip}{0pt plus 5cm}void A\-R\-Astar\-Planner.\-Update\-After\-Start\-Moved (
+\begin{DoxyParamCaption}
+\item[{{\bf Default\-State}}]{current\-State}
+\end{DoxyParamCaption}
+)}}\label{class_a_r_astar_planner_a5cead1843fe3fce8f0a222fdb5ae0192}
+
+
+Performs the necessary updates after start moved. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em current\-State} & Current state. \\
+\hline
+\end{DoxyParams}
+\hypertarget{class_a_r_astar_planner_a61d4f2f23e1515ef5a9eaa74924ac447}{\index{A\-R\-Astar\-Planner@{A\-R\-Astar\-Planner}!Visualize\-Container@{Visualize\-Container}}
+\index{Visualize\-Container@{Visualize\-Container}!ARAstarPlanner@{A\-R\-Astar\-Planner}}
+\subsubsection[{Visualize\-Container}]{\setlength{\rightskip}{0pt plus 5cm}void A\-R\-Astar\-Planner.\-Visualize\-Container (
+\begin{DoxyParamCaption}
+\item[{Container\-Type}]{container\-Type, }
+\item[{Color}]{color, }
+\item[{float}]{radius}
+\end{DoxyParamCaption}
+)}}\label{class_a_r_astar_planner_a61d4f2f23e1515ef5a9eaa74924ac447}
+
+
+Visualizes the containers for debugging. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em container\-Type} & Container type. \\
+\hline
+{\em color} & Color used for visualization. \\
+\hline
+{\em radius} & Radius of sphere. \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this class was generated from the following file\-:\begin{DoxyCompactItemize}
+\item 
+V\-A\-S\-T/vast/\-Assets/\-Plannar Scripts/\-Planners In Use/A\-R\-Astar\-Planner.\-cs\end{DoxyCompactItemize}

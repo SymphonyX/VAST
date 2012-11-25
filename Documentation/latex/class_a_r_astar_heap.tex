@@ -1,0 +1,148 @@
+\hypertarget{class_a_r_astar_heap}{\section{A\-R\-Astar\-Heap Class Reference}
+\label{class_a_r_astar_heap}\index{A\-R\-Astar\-Heap@{A\-R\-Astar\-Heap}}
+}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{class_a_r_astar_heap_a699bf0a23b37f6f30ff2c04d2d445740}{A\-R\-Astar\-Heap} (float inflation\-Factor)
+\begin{DoxyCompactList}\small\item\em Initializes a new instance of the \hyperlink{class_a_r_astar_heap}{A\-R\-Astar\-Heap} class. \end{DoxyCompactList}\item 
+\hyperlink{class_a_r_astar_node}{A\-R\-Astar\-Node} \hyperlink{class_a_r_astar_heap_aeb5fa05fb217b9650d2cd62b105b9a25}{Heap\-Maximum} ()
+\begin{DoxyCompactList}\small\item\em Returns the root node of the heap. \end{DoxyCompactList}\item 
+\hyperlink{class_a_r_astar_node}{A\-R\-Astar\-Node} \hyperlink{class_a_r_astar_heap_a535db2f13d9af1e23757671601ad0f70}{Extract\-Max} ()
+\begin{DoxyCompactList}\small\item\em Extract the rrot node of the heap. \end{DoxyCompactList}\item 
+void \hyperlink{class_a_r_astar_heap_a3ec8e0df935cb41937a202061caac700}{Insert} (\hyperlink{class_a_r_astar_node}{A\-R\-Astar\-Node} node)
+\begin{DoxyCompactList}\small\item\em Insert the specified node in the heap. \end{DoxyCompactList}\item 
+int \hyperlink{class_a_r_astar_heap_a9ee6d644c983c0155159ee5ffa4d2801}{Count} ()
+\begin{DoxyCompactList}\small\item\em Returns the number of nodes in the heap. \end{DoxyCompactList}\item 
+void \hyperlink{class_a_r_astar_heap_aae69fc99cd7df772bbfcfb6f3431c2ae}{Remove} (\hyperlink{class_a_r_astar_node}{A\-R\-Astar\-Node} node)
+\begin{DoxyCompactList}\small\item\em Remove the specified node from the heap. \end{DoxyCompactList}\item 
+void \hyperlink{class_a_r_astar_heap_a700bc67c2fb4973bc75e3e9ad0fc4bca}{Heapify} ()
+\begin{DoxyCompactList}\small\item\em Heapify this instance. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{class_a_r_astar_heap_ae0f2f230149af325a9ee9865b0254a64}{List$<$ \hyperlink{class_a_r_astar_heap_node}{A\-R\-Astar\-Heap\-Node} $>$ \hyperlink{class_a_r_astar_heap_ae0f2f230149af325a9ee9865b0254a64}{heap}}\label{class_a_r_astar_heap_ae0f2f230149af325a9ee9865b0254a64}
+
+\begin{DoxyCompactList}\small\item\em The root of the heap. \end{DoxyCompactList}\item 
+\hypertarget{class_a_r_astar_heap_a2e92991656c5366efe99143fd372ee94}{float \hyperlink{class_a_r_astar_heap_a2e92991656c5366efe99143fd372ee94}{current\-Weight}}\label{class_a_r_astar_heap_a2e92991656c5366efe99143fd372ee94}
+
+\begin{DoxyCompactList}\small\item\em The current weight used by the planner. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\begin{DoxyVerb}This class represents the optional heap used to sort nodes in the open container. 
+\end{DoxyVerb}
+ It should be more efficient in all sorting opertaions than a list. 
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{class_a_r_astar_heap_a699bf0a23b37f6f30ff2c04d2d445740}{\index{A\-R\-Astar\-Heap@{A\-R\-Astar\-Heap}!A\-R\-Astar\-Heap@{A\-R\-Astar\-Heap}}
+\index{A\-R\-Astar\-Heap@{A\-R\-Astar\-Heap}!ARAstarHeap@{A\-R\-Astar\-Heap}}
+\subsubsection[{A\-R\-Astar\-Heap}]{\setlength{\rightskip}{0pt plus 5cm}A\-R\-Astar\-Heap.\-A\-R\-Astar\-Heap (
+\begin{DoxyParamCaption}
+\item[{float}]{inflation\-Factor}
+\end{DoxyParamCaption}
+)}}\label{class_a_r_astar_heap_a699bf0a23b37f6f30ff2c04d2d445740}
+
+
+Initializes a new instance of the \hyperlink{class_a_r_astar_heap}{A\-R\-Astar\-Heap} class. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em inflation\-Factor} & The current inflation factor used by the planner \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{class_a_r_astar_heap_a9ee6d644c983c0155159ee5ffa4d2801}{\index{A\-R\-Astar\-Heap@{A\-R\-Astar\-Heap}!Count@{Count}}
+\index{Count@{Count}!ARAstarHeap@{A\-R\-Astar\-Heap}}
+\subsubsection[{Count}]{\setlength{\rightskip}{0pt plus 5cm}int A\-R\-Astar\-Heap.\-Count (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{class_a_r_astar_heap_a9ee6d644c983c0155159ee5ffa4d2801}
+
+
+Returns the number of nodes in the heap. 
+
+\hypertarget{class_a_r_astar_heap_a535db2f13d9af1e23757671601ad0f70}{\index{A\-R\-Astar\-Heap@{A\-R\-Astar\-Heap}!Extract\-Max@{Extract\-Max}}
+\index{Extract\-Max@{Extract\-Max}!ARAstarHeap@{A\-R\-Astar\-Heap}}
+\subsubsection[{Extract\-Max}]{\setlength{\rightskip}{0pt plus 5cm}{\bf A\-R\-Astar\-Node} A\-R\-Astar\-Heap.\-Extract\-Max (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{class_a_r_astar_heap_a535db2f13d9af1e23757671601ad0f70}
+
+
+Extract the rrot node of the heap. 
+
+\begin{DoxyReturn}{Returns}
+The root of the heap. 
+\end{DoxyReturn}
+
+\begin{DoxyExceptions}{Exceptions}
+{\em Invalid\-Operation\-Exception} & Is thrown when an operation cannot be performed. \\
+\hline
+\end{DoxyExceptions}
+\hypertarget{class_a_r_astar_heap_a700bc67c2fb4973bc75e3e9ad0fc4bca}{\index{A\-R\-Astar\-Heap@{A\-R\-Astar\-Heap}!Heapify@{Heapify}}
+\index{Heapify@{Heapify}!ARAstarHeap@{A\-R\-Astar\-Heap}}
+\subsubsection[{Heapify}]{\setlength{\rightskip}{0pt plus 5cm}void A\-R\-Astar\-Heap.\-Heapify (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{class_a_r_astar_heap_a700bc67c2fb4973bc75e3e9ad0fc4bca}
+
+
+Heapify this instance. 
+
+\hypertarget{class_a_r_astar_heap_aeb5fa05fb217b9650d2cd62b105b9a25}{\index{A\-R\-Astar\-Heap@{A\-R\-Astar\-Heap}!Heap\-Maximum@{Heap\-Maximum}}
+\index{Heap\-Maximum@{Heap\-Maximum}!ARAstarHeap@{A\-R\-Astar\-Heap}}
+\subsubsection[{Heap\-Maximum}]{\setlength{\rightskip}{0pt plus 5cm}{\bf A\-R\-Astar\-Node} A\-R\-Astar\-Heap.\-Heap\-Maximum (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{class_a_r_astar_heap_aeb5fa05fb217b9650d2cd62b105b9a25}
+
+
+Returns the root node of the heap. 
+
+\begin{DoxyReturn}{Returns}
+The root of the heap. 
+\end{DoxyReturn}
+\hypertarget{class_a_r_astar_heap_a3ec8e0df935cb41937a202061caac700}{\index{A\-R\-Astar\-Heap@{A\-R\-Astar\-Heap}!Insert@{Insert}}
+\index{Insert@{Insert}!ARAstarHeap@{A\-R\-Astar\-Heap}}
+\subsubsection[{Insert}]{\setlength{\rightskip}{0pt plus 5cm}void A\-R\-Astar\-Heap.\-Insert (
+\begin{DoxyParamCaption}
+\item[{{\bf A\-R\-Astar\-Node}}]{node}
+\end{DoxyParamCaption}
+)}}\label{class_a_r_astar_heap_a3ec8e0df935cb41937a202061caac700}
+
+
+Insert the specified node in the heap. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em node} & Node to be inserted. \\
+\hline
+\end{DoxyParams}
+\hypertarget{class_a_r_astar_heap_aae69fc99cd7df772bbfcfb6f3431c2ae}{\index{A\-R\-Astar\-Heap@{A\-R\-Astar\-Heap}!Remove@{Remove}}
+\index{Remove@{Remove}!ARAstarHeap@{A\-R\-Astar\-Heap}}
+\subsubsection[{Remove}]{\setlength{\rightskip}{0pt plus 5cm}void A\-R\-Astar\-Heap.\-Remove (
+\begin{DoxyParamCaption}
+\item[{{\bf A\-R\-Astar\-Node}}]{node}
+\end{DoxyParamCaption}
+)}}\label{class_a_r_astar_heap_aae69fc99cd7df772bbfcfb6f3431c2ae}
+
+
+Remove the specified node from the heap. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em node} & Node to be removed. \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this class was generated from the following file\-:\begin{DoxyCompactItemize}
+\item 
+V\-A\-S\-T/vast/\-Assets/\-Plannar Scripts/\-Planners In Use/Heap.\-cs\end{DoxyCompactItemize}

@@ -1,0 +1,245 @@
+\hypertarget{class_a_r_astar_domain}{\section{A\-R\-Astar\-Domain Class Reference}
+\label{class_a_r_astar_domain}\index{A\-R\-Astar\-Domain@{A\-R\-Astar\-Domain}}
+}
+Inheritance diagram for A\-R\-Astar\-Domain\-:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_a_r_astar_domain}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{class_a_r_astar_domain_a6bf71019a03f9d4f0fdfb7bca1b26f60}{A\-R\-Astar\-Domain} ()
+\begin{DoxyCompactList}\small\item\em Initializes a new instance of the \hyperlink{class_a_r_astar_domain}{A\-R\-Astar\-Domain} class. \end{DoxyCompactList}\item 
+\hypertarget{class_a_r_astar_domain_a4dc68e076d4738c797c22a52f7853fc3}{void {\bfseries set\-Planning\-Task} (Task t\-\_\-planning\-Task)}\label{class_a_r_astar_domain_a4dc68e076d4738c797c22a52f7853fc3}
+
+\item 
+override \hyperlink{class_default_action}{Default\-Action} \hyperlink{class_a_r_astar_domain_ab246607e9d2bcc02d129dc0414a4de33}{generate\-Action} (\hyperlink{class_default_state}{Default\-State} previous\-State, \hyperlink{class_default_state}{Default\-State} next\-State)
+\begin{DoxyCompactList}\small\item\em Generates a new action. \end{DoxyCompactList}\item 
+\hypertarget{class_a_r_astar_domain_a84137b03c38d5085c79ce15d42b8fa21}{override void {\bfseries clear\-At\-Beginning\-Of\-Every\-Plan\-Iteration} ()}\label{class_a_r_astar_domain_a84137b03c38d5085c79ce15d42b8fa21}
+
+\item 
+override bool \hyperlink{class_a_r_astar_domain_a98710baa163975101bee4a3b5c8ba439}{is\-A\-Goal\-State} (ref \hyperlink{class_default_state}{Default\-State} state, ref \hyperlink{class_default_state}{Default\-State} ideal\-Goal\-State)
+\begin{DoxyCompactList}\small\item\em Determines whether the given state is a goal or not. \end{DoxyCompactList}\item 
+\hypertarget{class_a_r_astar_domain_ae4a5180a514904b4e689da12746f1412}{override float {\bfseries evaluate\-Domain} (ref \hyperlink{class_default_state}{Default\-State} state)}\label{class_a_r_astar_domain_ae4a5180a514904b4e689da12746f1412}
+
+\item 
+override float \hyperlink{class_a_r_astar_domain_a94b2a2fb1766938d4da597ebf3fa16fd}{Compute\-H\-Estimate} (\hyperlink{class_default_state}{Default\-State} \-\_\-from, \hyperlink{class_default_state}{Default\-State} \-\_\-to)
+\begin{DoxyCompactList}\small\item\em Computes the H estimate. \end{DoxyCompactList}\item 
+override float \hyperlink{class_a_r_astar_domain_ae5d72a77811f6c7ec9eb48e2c4d895f0}{Compute\-G\-Estimate} (\hyperlink{class_default_state}{Default\-State} \-\_\-from, \hyperlink{class_default_state}{Default\-State} \-\_\-to)
+\begin{DoxyCompactList}\small\item\em Computes the G estimate. \end{DoxyCompactList}\item 
+override bool \hyperlink{class_a_r_astar_domain_a3da7327f8e5bf0594ba9ddb5c183475c}{equals} (\hyperlink{class_default_state}{Default\-State} s1, \hyperlink{class_default_state}{Default\-State} s2, bool is\-Start)
+\begin{DoxyCompactList}\small\item\em Determines whether s1 is equals to s2. \end{DoxyCompactList}\item 
+override void \hyperlink{class_a_r_astar_domain_a9d17ca7a84828a5af57ae2d8df034354}{generate\-Predecessors} (\hyperlink{class_default_state}{Default\-State} current\-State, ref List$<$ \hyperlink{class_default_action}{Default\-Action} $>$ action\-List)
+\begin{DoxyCompactList}\small\item\em Generates the predecessors. \end{DoxyCompactList}\item 
+override void \hyperlink{class_a_r_astar_domain_a16890b0a0fea5a007b3ad3264c39dd91}{generate\-Transitions} (ref \hyperlink{class_default_state}{Default\-State} current\-State, ref \hyperlink{class_default_state}{Default\-State} previous\-State, ref \hyperlink{class_default_state}{Default\-State} ideal\-Goal\-State, ref List$<$ \hyperlink{class_default_action}{Default\-Action} $>$ transitions)
+\begin{DoxyCompactList}\small\item\em Generates possible transitions. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Additional Inherited Members}
+
+
+\subsection{Detailed Description}
+Defines domain used in grid domain test 
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{class_a_r_astar_domain_a6bf71019a03f9d4f0fdfb7bca1b26f60}{\index{A\-R\-Astar\-Domain@{A\-R\-Astar\-Domain}!A\-R\-Astar\-Domain@{A\-R\-Astar\-Domain}}
+\index{A\-R\-Astar\-Domain@{A\-R\-Astar\-Domain}!ARAstarDomain@{A\-R\-Astar\-Domain}}
+\subsubsection[{A\-R\-Astar\-Domain}]{\setlength{\rightskip}{0pt plus 5cm}A\-R\-Astar\-Domain.\-A\-R\-Astar\-Domain (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{class_a_r_astar_domain_a6bf71019a03f9d4f0fdfb7bca1b26f60}
+
+
+Initializes a new instance of the \hyperlink{class_a_r_astar_domain}{A\-R\-Astar\-Domain} class. 
+
+
+
+\subsection{Member Function Documentation}
+\hypertarget{class_a_r_astar_domain_ae5d72a77811f6c7ec9eb48e2c4d895f0}{\index{A\-R\-Astar\-Domain@{A\-R\-Astar\-Domain}!Compute\-G\-Estimate@{Compute\-G\-Estimate}}
+\index{Compute\-G\-Estimate@{Compute\-G\-Estimate}!ARAstarDomain@{A\-R\-Astar\-Domain}}
+\subsubsection[{Compute\-G\-Estimate}]{\setlength{\rightskip}{0pt plus 5cm}override float A\-R\-Astar\-Domain.\-Compute\-G\-Estimate (
+\begin{DoxyParamCaption}
+\item[{{\bf Default\-State}}]{\-\_\-from, }
+\item[{{\bf Default\-State}}]{\-\_\-to}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{class_a_r_astar_domain_ae5d72a77811f6c7ec9eb48e2c4d895f0}
+
+
+Computes the G estimate. 
+
+\begin{DoxyReturn}{Returns}
+The G estimate value. 
+\end{DoxyReturn}
+
+\begin{DoxyParams}{Parameters}
+{\em \-\_\-from} & The node for which we are trying to obtain the g estimate. \\
+\hline
+{\em \-\_\-to} & The node to which we are trying to obtain the cost. \\
+\hline
+\end{DoxyParams}
+
+
+Reimplemented from \hyperlink{class_planning_domain_base}{Planning\-Domain\-Base}.
+
+\hypertarget{class_a_r_astar_domain_a94b2a2fb1766938d4da597ebf3fa16fd}{\index{A\-R\-Astar\-Domain@{A\-R\-Astar\-Domain}!Compute\-H\-Estimate@{Compute\-H\-Estimate}}
+\index{Compute\-H\-Estimate@{Compute\-H\-Estimate}!ARAstarDomain@{A\-R\-Astar\-Domain}}
+\subsubsection[{Compute\-H\-Estimate}]{\setlength{\rightskip}{0pt plus 5cm}override float A\-R\-Astar\-Domain.\-Compute\-H\-Estimate (
+\begin{DoxyParamCaption}
+\item[{{\bf Default\-State}}]{\-\_\-from, }
+\item[{{\bf Default\-State}}]{\-\_\-to}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{class_a_r_astar_domain_a94b2a2fb1766938d4da597ebf3fa16fd}
+
+
+Computes the H estimate. 
+
+\begin{DoxyReturn}{Returns}
+The H estimate value. 
+\end{DoxyReturn}
+
+\begin{DoxyParams}{Parameters}
+{\em \-\_\-from} & The node for which we are trying to obtain the h estimate. \\
+\hline
+{\em \-\_\-to} & The goal node. \\
+\hline
+\end{DoxyParams}
+
+
+Reimplemented from \hyperlink{class_planning_domain_base}{Planning\-Domain\-Base}.
+
+\hypertarget{class_a_r_astar_domain_a3da7327f8e5bf0594ba9ddb5c183475c}{\index{A\-R\-Astar\-Domain@{A\-R\-Astar\-Domain}!equals@{equals}}
+\index{equals@{equals}!ARAstarDomain@{A\-R\-Astar\-Domain}}
+\subsubsection[{equals}]{\setlength{\rightskip}{0pt plus 5cm}override bool A\-R\-Astar\-Domain.\-equals (
+\begin{DoxyParamCaption}
+\item[{{\bf Default\-State}}]{s1, }
+\item[{{\bf Default\-State}}]{s2, }
+\item[{bool}]{is\-Start}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{class_a_r_astar_domain_a3da7327f8e5bf0594ba9ddb5c183475c}
+
+
+Determines whether s1 is equals to s2. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em s1} & State 1 \\
+\hline
+{\em s2} & State 2 \\
+\hline
+{\em is\-Start} & is\-Start is a flag that could be used in case comparing start and goal use different thresholds. \\
+\hline
+\end{DoxyParams}
+
+
+Reimplemented from \hyperlink{class_planning_domain_base}{Planning\-Domain\-Base}.
+
+\hypertarget{class_a_r_astar_domain_ab246607e9d2bcc02d129dc0414a4de33}{\index{A\-R\-Astar\-Domain@{A\-R\-Astar\-Domain}!generate\-Action@{generate\-Action}}
+\index{generate\-Action@{generate\-Action}!ARAstarDomain@{A\-R\-Astar\-Domain}}
+\subsubsection[{generate\-Action}]{\setlength{\rightskip}{0pt plus 5cm}override {\bf Default\-Action} A\-R\-Astar\-Domain.\-generate\-Action (
+\begin{DoxyParamCaption}
+\item[{{\bf Default\-State}}]{previous\-State, }
+\item[{{\bf Default\-State}}]{next\-State}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{class_a_r_astar_domain_ab246607e9d2bcc02d129dc0414a4de33}
+
+
+Generates a new action. 
+
+\begin{DoxyReturn}{Returns}
+Action generated. 
+\end{DoxyReturn}
+
+\begin{DoxyParams}{Parameters}
+{\em previous\-State} & State where the action is being generated from. \\
+\hline
+{\em next\-State} & State where the action is being generated to. \\
+\hline
+\end{DoxyParams}
+
+
+Reimplemented from \hyperlink{class_planning_domain_base}{Planning\-Domain\-Base}.
+
+\hypertarget{class_a_r_astar_domain_a9d17ca7a84828a5af57ae2d8df034354}{\index{A\-R\-Astar\-Domain@{A\-R\-Astar\-Domain}!generate\-Predecessors@{generate\-Predecessors}}
+\index{generate\-Predecessors@{generate\-Predecessors}!ARAstarDomain@{A\-R\-Astar\-Domain}}
+\subsubsection[{generate\-Predecessors}]{\setlength{\rightskip}{0pt plus 5cm}override void A\-R\-Astar\-Domain.\-generate\-Predecessors (
+\begin{DoxyParamCaption}
+\item[{{\bf Default\-State}}]{current\-State, }
+\item[{ref List$<$ {\bf Default\-Action} $>$}]{action\-List}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{class_a_r_astar_domain_a9d17ca7a84828a5af57ae2d8df034354}
+
+
+Generates the predecessors. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em current\-State} & Current state. \\
+\hline
+{\em action\-List} & List that will contain all allowed actions to generate predecessors. \\
+\hline
+\end{DoxyParams}
+
+
+Reimplemented from \hyperlink{class_planning_domain_base}{Planning\-Domain\-Base}.
+
+\hypertarget{class_a_r_astar_domain_a16890b0a0fea5a007b3ad3264c39dd91}{\index{A\-R\-Astar\-Domain@{A\-R\-Astar\-Domain}!generate\-Transitions@{generate\-Transitions}}
+\index{generate\-Transitions@{generate\-Transitions}!ARAstarDomain@{A\-R\-Astar\-Domain}}
+\subsubsection[{generate\-Transitions}]{\setlength{\rightskip}{0pt plus 5cm}override void A\-R\-Astar\-Domain.\-generate\-Transitions (
+\begin{DoxyParamCaption}
+\item[{ref {\bf Default\-State}}]{current\-State, }
+\item[{ref {\bf Default\-State}}]{previous\-State, }
+\item[{ref {\bf Default\-State}}]{ideal\-Goal\-State, }
+\item[{ref List$<$ {\bf Default\-Action} $>$}]{transitions}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{class_a_r_astar_domain_a16890b0a0fea5a007b3ad3264c39dd91}
+
+
+Generates possible transitions. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em current\-State} & Current state. \\
+\hline
+{\em previous\-State} & Previous state. \\
+\hline
+{\em ideal\-Goal\-State} & Ideal goal state. \\
+\hline
+{\em transitions} & List that will contain all allowed transitions. \\
+\hline
+\end{DoxyParams}
+
+
+Reimplemented from \hyperlink{class_planning_domain_base_adbca97ccf882076eb737b8bebf1fb1ea}{Planning\-Domain\-Base}.
+
+\hypertarget{class_a_r_astar_domain_a98710baa163975101bee4a3b5c8ba439}{\index{A\-R\-Astar\-Domain@{A\-R\-Astar\-Domain}!is\-A\-Goal\-State@{is\-A\-Goal\-State}}
+\index{is\-A\-Goal\-State@{is\-A\-Goal\-State}!ARAstarDomain@{A\-R\-Astar\-Domain}}
+\subsubsection[{is\-A\-Goal\-State}]{\setlength{\rightskip}{0pt plus 5cm}override bool A\-R\-Astar\-Domain.\-is\-A\-Goal\-State (
+\begin{DoxyParamCaption}
+\item[{ref {\bf Default\-State}}]{state, }
+\item[{ref {\bf Default\-State}}]{ideal\-Goal\-State}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{class_a_r_astar_domain_a98710baa163975101bee4a3b5c8ba439}
+
+
+Determines whether the given state is a goal or not. 
+
+\begin{DoxyReturn}{Returns}
+True if it is a goal and false otherwise. 
+\end{DoxyReturn}
+
+\begin{DoxyParams}{Parameters}
+{\em state} & The state we are comparing to the goal \\
+\hline
+{\em ideal\-Goal\-State} & The goal staet we are trying to reach. \\
+\hline
+\end{DoxyParams}
+
+
+Reimplemented from \hyperlink{class_planning_domain_base_a56907006c1e4a4071f58da65705792d1}{Planning\-Domain\-Base}.
+
+
+
+The documentation for this class was generated from the following file\-:\begin{DoxyCompactItemize}
+\item 
+V\-A\-S\-T/vast/\-Assets/\-Plannar Scripts/\-Planners In Use/A\-R\-Astar\-Test.\-cs\end{DoxyCompactItemize}

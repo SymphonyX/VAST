@@ -1,0 +1,206 @@
+\hypertarget{class_best_first_search_planner}{\section{Best\-First\-Search\-Planner Class Reference}
+\label{class_best_first_search_planner}\index{Best\-First\-Search\-Planner@{Best\-First\-Search\-Planner}}
+}
+
+
+A state-\/space planning algorithm that uses a generalized best-\/first search.  
+
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{class_best_first_search_planner_a00c06f79faf00907ec4906086c37776f}{void \hyperlink{class_best_first_search_planner_a00c06f79faf00907ec4906086c37776f}{init} (ref List$<$ \hyperlink{class_planning_domain_base}{Planning\-Domain\-Base} $>$ new\-Planning\-Domain, int max\-Num\-Nodes\-To\-Expand)}\label{class_best_first_search_planner_a00c06f79faf00907ec4906086c37776f}
+
+\begin{DoxyCompactList}\small\item\em Initializes the planner to use the specified instance of the planning domain, and sets the search horizon limit. \end{DoxyCompactList}\item 
+\hypertarget{class_best_first_search_planner_ab9066bb695cb64fc787f747a4972d878}{bool {\bfseries \-\_\-compute\-Plan} (ref \hyperlink{class_default_state}{Default\-State} start\-State, ref \hyperlink{class_default_state}{Default\-State} ideal\-Goal\-State, Dictionary$<$ \hyperlink{class_default_state}{Default\-State}, \hyperlink{class_best_first_search_node}{Best\-First\-Search\-Node} $>$ state\-Map, ref \hyperlink{class_default_state}{Default\-State} actual\-State\-Reached, float max\-Time)}\label{class_best_first_search_planner_ab9066bb695cb64fc787f747a4972d878}
+
+\item 
+\hypertarget{class_best_first_search_planner_a97dc3cad80e236bde9c7d9c44759c7ba}{bool {\bfseries \-\_\-compute\-One\-Step} (ref \hyperlink{class_default_state}{Default\-State} start\-State, ref \hyperlink{class_default_state}{Default\-State} ideal\-Goal\-State, Dictionary$<$ \hyperlink{class_default_state}{Default\-State}, \hyperlink{class_best_first_search_node}{Best\-First\-Search\-Node} $>$ state\-Map, ref \hyperlink{class_default_state}{Default\-State} actual\-State\-Reached, float max\-Time)}\label{class_best_first_search_planner_a97dc3cad80e236bde9c7d9c44759c7ba}
+
+\item 
+\hypertarget{class_best_first_search_planner_a777fb06939a33b3f3effb24b0dbda076}{bool \hyperlink{class_best_first_search_planner_a777fb06939a33b3f3effb24b0dbda076}{compute\-Plan} (ref \hyperlink{class_default_state}{Default\-State} start\-State, ref \hyperlink{class_default_state}{Default\-State} goal\-State, ref Stack$<$ \hyperlink{class_default_state}{Default\-State} $>$ plan, float max\-Time)}\label{class_best_first_search_planner_a777fb06939a33b3f3effb24b0dbda076}
+
+\begin{DoxyCompactList}\small\item\em Computes a plan as a sequence of states; returns true if the planner could reach the goal, or false if the plan is only partial and could not reach the goal within the specified horizon. \end{DoxyCompactList}\item 
+\hypertarget{class_best_first_search_planner_a0367a0321408a4d7c9796739650b2bee}{bool \hyperlink{class_best_first_search_planner_a0367a0321408a4d7c9796739650b2bee}{compute\-Plan} (ref \hyperlink{class_default_state}{Default\-State} start\-State, ref \hyperlink{class_default_state}{Default\-State} goal\-State, ref Stack$<$ \hyperlink{class_default_action}{Default\-Action} $>$ plan, float max\-Time)}\label{class_best_first_search_planner_a0367a0321408a4d7c9796739650b2bee}
+
+\begin{DoxyCompactList}\small\item\em Computes a plan as a sequence of actions; returns true if the planner could reach the goal, or false if the plan is only partial and could not reach the goal within the specified horizon. \end{DoxyCompactList}\item 
+\hypertarget{class_best_first_search_planner_af0e16fec4b04283bf4da46b5dcd6efe3}{void {\bfseries Visualize\-Container} (Container\-Type container\-Type, Color color, float radius)}\label{class_best_first_search_planner_af0e16fec4b04283bf4da46b5dcd6efe3}
+
+\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{class_best_first_search_planner_a6cf3eaf1dece9104e57734fe46dc5c18}{int {\bfseries \-\_\-max\-Num\-Nodes\-To\-Expand}}\label{class_best_first_search_planner_a6cf3eaf1dece9104e57734fe46dc5c18}
+
+\item 
+\hypertarget{class_best_first_search_planner_a1ad8d9c366c660e9f9713118abdd9274}{List$<$ \hyperlink{class_planning_domain_base}{Planning\-Domain\-Base} $>$ {\bfseries \-\_\-planning\-Domain}}\label{class_best_first_search_planner_a1ad8d9c366c660e9f9713118abdd9274}
+
+\item 
+\hypertarget{class_best_first_search_planner_a257de3dcc541f70ef5be8bcb63ce8471}{bool {\bfseries one\-Step} = false}\label{class_best_first_search_planner_a257de3dcc541f70ef5be8bcb63ce8471}
+
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+A state-\/space planning algorithm that uses a generalized best-\/first search. 
+
+This class implements an easy-\/to-\/use, generalized best-\/first search. This class has no knowledge of the actual planning task. To use this class, you must provide information about the planning task using three template parameters\-:
+\begin{DoxyItemize}
+\item Planning\-Domain is a simple user-\/defined class that defines the search heuristic, state transitions, and the meaning of a goal state.
+\item Planning\-State is the data type used to represent a state.
+\item Planning\-Action is an optional data type used to represent an action. If an action data type is not specified, the compact \hyperlink{class_default_action}{Default\-Action} $<$Planning\-State$>$ class is used.
+\end{DoxyItemize}
+
+Depending on how you define the action costs and heuristic function, the search can work like A$\ast$, near-\/optimal best-\/first search, greedy best-\/first, or any other best-\/first search technique. An example of using this planner is given below.
+
+\paragraph*{Background }
+
+To compute a plan, the planner needs the following information (i.\-e., the planning domain)\-:
+\begin{DoxyItemize}
+\item A state space, which is the space of all possible states that can occur in the problem,
+\item An action space, which describes the space of actions that transition from one state to another,
+\item Costs associated with each action,
+\item A heuristic to estimate the \char`\"{}goodness\char`\"{} of a given state, denoted as f, which tells the planner what to search next.
+\item A notion of what it means to be a goal state.
+\end{DoxyItemize}
+
+The user implicitly provides all this information with the template parameters when instantiating the planner.
+
+\paragraph*{How to use this class }
+
+Using this class is very straightforward\-:
+
+
+\begin{DoxyEnumerate}
+\item Choose the data types you will use to represent state and action.
+\item Implement a class that describes the state and action spaces, providing functionality that is the same as Steer\-Lib\-::\-Planning\-Domain\-Base.
+\item Instantiate the \hyperlink{class_best_first_search_planner}{Best\-First\-Search\-Planner} specifying the template parameters for your planning domain class, the data type for a state, and (optionally) the data type for an action.
+\item Initialize the planner using \hyperlink{class_best_first_search_planner_a00c06f79faf00907ec4906086c37776f}{init()}.
+\item Call \hyperlink{class_best_first_search_planner_a777fb06939a33b3f3effb24b0dbda076}{compute\-Plan()}, specifying your start state and goal state.
+\end{DoxyEnumerate}
+
+{\bfseries  Notes\-: }
+
+
+\begin{DoxyItemize}
+\item The data type you use for a State must implement the assignment \char`\"{}=\char`\"{}, equals \char`\"{}==\char`\"{}, and comparison \char`\"{}$<$\char`\"{} operators so that it can be used by this planner. It may be a good idea to test these operators using an S\-T\-L set and an S\-T\-L map, because that is what we use for internal data structures.
+\end{DoxyItemize}
+
+
+\begin{DoxyItemize}
+\item It is optional to specify an action data type, otherwise the \hyperlink{class_default_action}{Default\-Action} $<$Planning\-State$>$ data type will be used. This default simply contains the cost of the action, and the resulting new state of the action, which is compact and suitable for most common planning tasks.
+\end{DoxyItemize}
+
+
+\begin{DoxyItemize}
+\item When \hyperlink{class_best_first_search_planner_a777fb06939a33b3f3effb24b0dbda076}{compute\-Plan()} is called, the planner will compute either a sequence of states or a sequence of actions, depending on which overloaded function was called.
+\end{DoxyItemize}
+
+
+\begin{DoxyItemize}
+\item Depending on how you implemented the planning domain class, it may be possible to call \hyperlink{class_best_first_search_planner_a777fb06939a33b3f3effb24b0dbda076}{compute\-Plan()} any number of times using the same instance of the planner. Furthermore, the planner class maintains no state internally, so it is possible to use separate threads for separate planning tasks using the same instance of the planner (assuming the search horizon stays the same).
+\end{DoxyItemize}
+
+
+\begin{DoxyItemize}
+\item During initialization, a search horizon is specified. This allows the user to limit the number of nodes expanded during the search process (i.\-e. the number of times that Steer\-Lib\-::\-Planning\-Domain\-Base\-::generate\-Transitions() will be called). If a complete plan is not found within the allowed number of nodes to expand, \hyperlink{class_best_first_search_planner_a777fb06939a33b3f3effb24b0dbda076}{compute\-Plan()} will return false, but will still provide an incomplete plan that it can construct to the node that had the best heuristic f value.
+\end{DoxyItemize}
+
+{\bfseries  Recommendations\-: }
+
+
+\begin{DoxyItemize}
+\item Instead of using larger data structures for State and Action, many times it is appropriate to use an integer I\-D or a pointer reference for your State data type. This reference/index would then refer to the actual data corresponding to that State/\-Action. This allows you to maintain a \char`\"{}cache\char`\"{} of states for yourself, which is useful for gathering statistics, debugging your implementation, and for performance of this planner.
+\end{DoxyItemize}
+
+
+\begin{DoxyItemize}
+\item When possible, performance can be improved by inlining the functions you implement in your Planning\-Domain class.
+\end{DoxyItemize}
+
+\paragraph*{Implementing the state and action spaces }
+
+The first template parameter, Planning\-Domain, is a class that describes the state space and action space of the planner. This class should be implemented by the user, and it must have at least the same functionality as the Steer\-Lib\-::\-Planning\-Domain\-Base class. Refer to the documentation in the Steer\-Lib\-::\-Planning\-Domain\-Base class for more information about the three functions that must be implemented.
+
+It is not necessary to inherit the Steer\-Lib\-::\-Planning\-Domain\-Base class; it is only required to have the same functionality.
+
+\begin{DoxySeeAlso}{See also}
+
+\begin{DoxyItemize}
+\item Documentation of the Steer\-Lib\-::\-Planning\-Domain\-Base class, which describes how states and actions are specified to the planner.
+\end{DoxyItemize}
+\end{DoxySeeAlso}
+\paragraph*{Code example }
+
+
+\begin{DoxyCode}
+           \textcolor{keyword}{class }ExamplePlanningDomain \{
+             \textcolor{keyword}{public}:
+               \textcolor{keywordtype}{bool} isAGoalState( \textcolor{keyword}{const} \textcolor{keywordtype}{int} & state,
+                                  \textcolor{keyword}{const} \textcolor{keywordtype}{int} & idealGoalState)
+               \{
+                   \textcolor{keywordflow}{return} state == idealGoalState;
+               \}
+          
+               \textcolor{keywordtype}{float} estimateTotalCost( \textcolor{keyword}{const} \textcolor{keywordtype}{int} & currentState, 
+                                        \textcolor{keyword}{const} \textcolor{keywordtype}{int} & idealGoalState,
+                                        \textcolor{keywordtype}{float} currentg)
+               \{
+                   \textcolor{comment}{// if distance() is admissible, then this implementation is
+       an A* search.}
+                   \textcolor{keywordtype}{float} h = distance( currentState, idealGoalState);
+                   \textcolor{keywordtype}{float} f = currentg + h;  
+                   \textcolor{keywordflow}{return} f;
+               \}
+          
+               \textcolor{keywordtype}{void} generateTransitions( \textcolor{keyword}{const} \textcolor{keywordtype}{int} & currentState,
+                                         \textcolor{keyword}{const} \textcolor{keywordtype}{int} & previousState, 
+                                         \textcolor{keyword}{const} \textcolor{keywordtype}{int} & idealGoalState,
+                                         std::vector<
+      SteerLib::DefaultAction<int> > & transitions )
+               \{
+                   \hyperlink{class_default_action}{DefaultAction<int>} newAction;
+                   for\_each\_transition\_possible\_from\_currentState \{
+                       newAction.cost = cost\_of\_this\_specific\_transition;
+                       newAction.state = new\_state\_after\_transition;
+                       transitions.push\_back( newAction );
+                   \}
+               \}
+          
+           \};
+          
+           \textcolor{keywordtype}{int} main( )
+           \{
+               \textcolor{comment}{// Of course, in your code these variables would need to be
+       initialized properly.}
+               ExamplePlanningDomain domain;
+               \textcolor{keywordtype}{int} currentState, goalState;
+          
+               \textcolor{comment}{// This example has effectively no limited horizon.}
+               \textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{int} numNodesInHorizon = UINT\_MAX;
+          
+               \textcolor{comment}{// Instantiate and initialize the planner}
+               \hyperlink{class_best_first_search_planner}{BestFirstSearchPlanner<ExamplePlanningDomain, int>}
+       examplePlanner;
+               examplePlanner.\hyperlink{class_best_first_search_planner_a00c06f79faf00907ec4906086c37776f}{init}( &domain, numNodesInHorizon);
+          
+               \textcolor{comment}{// Compute the plan}
+               std::stack<int> outputPlan;
+               examplePlanner.\hyperlink{class_best_first_search_planner_a777fb06939a33b3f3effb24b0dbda076}{computePlan}(currentState, goalState, 
+      outputPlan);
+          
+               \textcolor{comment}{// Use the plan}
+               \textcolor{keywordflow}{while} (!outputPlan.empty()) \{
+                   \textcolor{keywordtype}{int} nextState = outputPlan.pop();
+          
+                   ... \textcolor{comment}{// other code}
+               \}
+          
+               \textcolor{keywordflow}{return} 0;
+           \}
+\end{DoxyCode}
+ 
+
+The documentation for this class was generated from the following file\-:\begin{DoxyCompactItemize}
+\item 
+V\-A\-S\-T/vast/\-Assets/\-Plannar Scripts/\-Planners In Use/Best\-First\-Search\-Planner.\-cs\end{DoxyCompactItemize}

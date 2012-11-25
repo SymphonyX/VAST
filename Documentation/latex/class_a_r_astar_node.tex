@@ -1,0 +1,128 @@
+\hypertarget{class_a_r_astar_node}{\section{A\-R\-Astar\-Node Class Reference}
+\label{class_a_r_astar_node}\index{A\-R\-Astar\-Node@{A\-R\-Astar\-Node}}
+}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{class_a_r_astar_node_a9ab926f281a411131bce6855c7dffb8d}{\hyperlink{class_a_r_astar_node_a9ab926f281a411131bce6855c7dffb8d}{A\-R\-Astar\-Node} ()}\label{class_a_r_astar_node_a9ab926f281a411131bce6855c7dffb8d}
+
+\begin{DoxyCompactList}\small\item\em Empty constructor. \end{DoxyCompactList}\item 
+\hyperlink{class_a_r_astar_node_a248e2bfe43c8587087c91a9058cf1800}{A\-R\-Astar\-Node} (float \-\_\-g, float \-\_\-h, \hyperlink{class_default_state}{Default\-State} \-\_\-previous\-State\-Ref, \hyperlink{class_default_action}{Default\-Action} \-\_\-action\-Ref)
+\begin{DoxyCompactList}\small\item\em Initializes a new instance of the \hyperlink{class_a_r_astar_node}{A\-R\-Astar\-Node} class. \end{DoxyCompactList}\item 
+\hyperlink{class_a_r_astar_node_a99cdbb993be9eecbdd75614ce34f3131}{A\-R\-Astar\-Node} (float \-\_\-g, float \-\_\-h, \hyperlink{class_default_state}{Default\-State} \-\_\-previous\-State\-Ref, \hyperlink{class_default_state}{Default\-State} \-\_\-state\-Ref)
+\begin{DoxyCompactList}\small\item\em Initializes a new instance of the \hyperlink{class_a_r_astar_node}{A\-R\-Astar\-Node} class. \end{DoxyCompactList}\item 
+float\mbox{[}$\,$\mbox{]} \hyperlink{class_a_r_astar_node_ad270a3400cf18c3e937e9dd7e5d59c19}{Key} (float inflation\-Factor)
+\begin{DoxyCompactList}\small\item\em Computes the given node's key. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{class_a_r_astar_node_ad8d5a3ba74c94fe21aafeb8b964c8a94}{float \hyperlink{class_a_r_astar_node_ad8d5a3ba74c94fe21aafeb8b964c8a94}{g}}\label{class_a_r_astar_node_ad8d5a3ba74c94fe21aafeb8b964c8a94}
+
+\begin{DoxyCompactList}\small\item\em Node's g-\/value. \end{DoxyCompactList}\item 
+\hypertarget{class_a_r_astar_node_aa9bc1b92b44c724c0b2c366fa9a37088}{float \hyperlink{class_a_r_astar_node_aa9bc1b92b44c724c0b2c366fa9a37088}{h}}\label{class_a_r_astar_node_aa9bc1b92b44c724c0b2c366fa9a37088}
+
+\begin{DoxyCompactList}\small\item\em Node's h-\/value. \end{DoxyCompactList}\item 
+\hypertarget{class_a_r_astar_node_a468f25ef194017b3c14eba82d6d35158}{float \hyperlink{class_a_r_astar_node_a468f25ef194017b3c14eba82d6d35158}{rhs}}\label{class_a_r_astar_node_a468f25ef194017b3c14eba82d6d35158}
+
+\begin{DoxyCompactList}\small\item\em Node's one-\/step lookahead value. \end{DoxyCompactList}\item 
+\hypertarget{class_a_r_astar_node_a653e0d399e1e9a7f4f970bb87fcaf257}{float \hyperlink{class_a_r_astar_node_a653e0d399e1e9a7f4f970bb87fcaf257}{weight\-Expanded} = 0}\label{class_a_r_astar_node_a653e0d399e1e9a7f4f970bb87fcaf257}
+
+\begin{DoxyCompactList}\small\item\em Weight with which this node was created. \end{DoxyCompactList}\item 
+\hypertarget{class_a_r_astar_node_ad3d169703b521311929565674575bf0d}{bool \hyperlink{class_a_r_astar_node_ad3d169703b521311929565674575bf0d}{is\-Dirty} = false}\label{class_a_r_astar_node_ad3d169703b521311929565674575bf0d}
+
+\begin{DoxyCompactList}\small\item\em Dirty flag. \end{DoxyCompactList}\item 
+\hypertarget{class_a_r_astar_node_ad77944d7b8ba8a5ea378a97e9a499f01}{bool \hyperlink{class_a_r_astar_node_ad77944d7b8ba8a5ea378a97e9a499f01}{touched} = false}\label{class_a_r_astar_node_ad77944d7b8ba8a5ea378a97e9a499f01}
+
+\begin{DoxyCompactList}\small\item\em Touch flag. \end{DoxyCompactList}\item 
+\hypertarget{class_a_r_astar_node_a04c5f46f811642b3d1ae617ad5587a10}{bool \hyperlink{class_a_r_astar_node_a04c5f46f811642b3d1ae617ad5587a10}{updated} = false}\label{class_a_r_astar_node_a04c5f46f811642b3d1ae617ad5587a10}
+
+\begin{DoxyCompactList}\small\item\em Updated flag. \end{DoxyCompactList}\item 
+\hypertarget{class_a_r_astar_node_a5b12783d756a225d773ae224a09cfa86}{int \hyperlink{class_a_r_astar_node_a5b12783d756a225d773ae224a09cfa86}{high\-Priority} = 0}\label{class_a_r_astar_node_a5b12783d756a225d773ae224a09cfa86}
+
+\begin{DoxyCompactList}\small\item\em High priority counter. \end{DoxyCompactList}\item 
+\hypertarget{class_a_r_astar_node_a9e2207d73d5a7aae1d08116c9da0e219}{\hyperlink{class_default_state}{Default\-State} \hyperlink{class_a_r_astar_node_a9e2207d73d5a7aae1d08116c9da0e219}{previous\-State}}\label{class_a_r_astar_node_a9e2207d73d5a7aae1d08116c9da0e219}
+
+\begin{DoxyCompactList}\small\item\em Node's parent state. \end{DoxyCompactList}\item 
+\hypertarget{class_a_r_astar_node_aa5991da6b78bc9e6c707c4906bef7e44}{\hyperlink{class_default_action}{Default\-Action} \hyperlink{class_a_r_astar_node_aa5991da6b78bc9e6c707c4906bef7e44}{action}}\label{class_a_r_astar_node_aa5991da6b78bc9e6c707c4906bef7e44}
+
+\begin{DoxyCompactList}\small\item\em Action taken to reach this node. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+A\-R\-Astar Node This class represents a given state reached from a particular state. Many nodes could be associated with the same state as long as their parents differ from each other. 
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{class_a_r_astar_node_a248e2bfe43c8587087c91a9058cf1800}{\index{A\-R\-Astar\-Node@{A\-R\-Astar\-Node}!A\-R\-Astar\-Node@{A\-R\-Astar\-Node}}
+\index{A\-R\-Astar\-Node@{A\-R\-Astar\-Node}!ARAstarNode@{A\-R\-Astar\-Node}}
+\subsubsection[{A\-R\-Astar\-Node}]{\setlength{\rightskip}{0pt plus 5cm}A\-R\-Astar\-Node.\-A\-R\-Astar\-Node (
+\begin{DoxyParamCaption}
+\item[{float}]{\-\_\-g, }
+\item[{float}]{\-\_\-h, }
+\item[{{\bf Default\-State}}]{\-\_\-previous\-State\-Ref, }
+\item[{{\bf Default\-Action}}]{\-\_\-action\-Ref}
+\end{DoxyParamCaption}
+)}}\label{class_a_r_astar_node_a248e2bfe43c8587087c91a9058cf1800}
+
+
+Initializes a new instance of the \hyperlink{class_a_r_astar_node}{A\-R\-Astar\-Node} class. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em \-\_\-g} & Node g-\/value \\
+\hline
+{\em \-\_\-h} & Node h-\/value \\
+\hline
+{\em \-\_\-previous\-State\-Ref} & Node's parent's state \\
+\hline
+{\em \-\_\-action\-Ref} & Action taken to generate node \\
+\hline
+\end{DoxyParams}
+\hypertarget{class_a_r_astar_node_a99cdbb993be9eecbdd75614ce34f3131}{\index{A\-R\-Astar\-Node@{A\-R\-Astar\-Node}!A\-R\-Astar\-Node@{A\-R\-Astar\-Node}}
+\index{A\-R\-Astar\-Node@{A\-R\-Astar\-Node}!ARAstarNode@{A\-R\-Astar\-Node}}
+\subsubsection[{A\-R\-Astar\-Node}]{\setlength{\rightskip}{0pt plus 5cm}A\-R\-Astar\-Node.\-A\-R\-Astar\-Node (
+\begin{DoxyParamCaption}
+\item[{float}]{\-\_\-g, }
+\item[{float}]{\-\_\-h, }
+\item[{{\bf Default\-State}}]{\-\_\-previous\-State\-Ref, }
+\item[{{\bf Default\-State}}]{\-\_\-state\-Ref}
+\end{DoxyParamCaption}
+)}}\label{class_a_r_astar_node_a99cdbb993be9eecbdd75614ce34f3131}
+
+
+Initializes a new instance of the \hyperlink{class_a_r_astar_node}{A\-R\-Astar\-Node} class. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em \-\_\-g} & Node's g-\/value \\
+\hline
+{\em \-\_\-h} & Node's h-\/value \\
+\hline
+{\em \-\_\-previous\-State\-Ref} & Node's parent's state \\
+\hline
+{\em \-\_\-state\-Ref} & Node's state \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{class_a_r_astar_node_ad270a3400cf18c3e937e9dd7e5d59c19}{\index{A\-R\-Astar\-Node@{A\-R\-Astar\-Node}!Key@{Key}}
+\index{Key@{Key}!ARAstarNode@{A\-R\-Astar\-Node}}
+\subsubsection[{Key}]{\setlength{\rightskip}{0pt plus 5cm}float \mbox{[}$\,$\mbox{]} A\-R\-Astar\-Node.\-Key (
+\begin{DoxyParamCaption}
+\item[{float}]{inflation\-Factor}
+\end{DoxyParamCaption}
+)}}\label{class_a_r_astar_node_ad270a3400cf18c3e937e9dd7e5d59c19}
+
+
+Computes the given node's key. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em inflation\-Factor} & \hyperlink{class_planner}{Planner}'s current inflation factor \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this class was generated from the following file\-:\begin{DoxyCompactItemize}
+\item 
+V\-A\-S\-T/vast/\-Assets/\-Plannar Scripts/\-Planners In Use/A\-R\-Astar\-Node.\-cs\end{DoxyCompactItemize}
