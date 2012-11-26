@@ -25,7 +25,6 @@ public struct StateStruct {
 public class DLLTest : MonoBehaviour {
 	
 	const float NEEDSUPDATE = -1.0f;
-	const float UPDATEPRIORITY = -5.0f;
 	const float GOALSTATE = -3.0f;
 	const float STARTSTATE = 0.0f;
 	const float OBSTACLESTATE = 50000.0f;
@@ -369,7 +368,6 @@ public class DLLTest : MonoBehaviour {
 	private int computeCostsMinIndexCPU()
 	{
 		int minIndex = 0;
-		bool priorityUpdate = false;
 		List<int> indexesToUpdate = new List<int>();
 		for (int i = 0; i < rows; i++) {
 			for (int j = 0; j < columns; j++) {
@@ -383,9 +381,6 @@ public class DLLTest : MonoBehaviour {
 				}
 				
 				if (computedCosts[index] < 0 && hasNieghborToUpdate) {
-					if (computedCosts[index] == UPDATEPRIORITY) {
-						priorityUpdate = true;	
-					}
 					indexesToUpdate.Add(index);	
 				}
 			}
@@ -394,11 +389,6 @@ public class DLLTest : MonoBehaviour {
 		float minCost = Mathf.Infinity;
 		for (int a = 0; a < indexesToUpdate.Count; a++) {
 			int updateIndex = indexesToUpdate[a];
-			if (priorityUpdate) {
-				if (computedCosts[updateIndex] != UPDATEPRIORITY) {
-					continue;	
-				}
-			}
 			int x = updateIndex%columns;
 			int y = updateIndex/columns;
 			List<int> neighborsToUpdateIndex = neighborsForPosition(x, y);
