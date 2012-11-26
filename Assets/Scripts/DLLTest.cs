@@ -43,6 +43,7 @@ public class DLLTest : MonoBehaviour {
 	private float[] stateColorValues;
 	private float[] stateGrayScaleValues;
 	private float[] hMap;
+	private StateStruct[] minIndexStates;
 	private float minh, maxh, minf, maxf;
 	public bool showColorMap, showGrayScaleMap;
 	List<Vector3> path;
@@ -233,6 +234,7 @@ public class DLLTest : MonoBehaviour {
 		for (int i = 0; i < rows*columns; i++) {
 			gValuesForCPUMinIndex[i] = Mathf.Infinity;	
 		}
+
 		runKernel();
 		
 		path = constructPath();
@@ -478,7 +480,11 @@ public class DLLTest : MonoBehaviour {
 		}
 		foreach (Vector3 pathState in path) {
 			if (pathState == newState) {
-				checkPredecessor(newState);
+				if (minIndexOptimal) {
+					
+				} else {
+					checkPredecessor(newState);
+				}
 				break;
 			}
 		}
@@ -508,11 +514,7 @@ public class DLLTest : MonoBehaviour {
 					if (neighborState.predx == (int)state.x && neighborState.predy == (int)state.z) {
 						int neighborx = Mathf.RoundToInt(neighbor.x); 
 						int neighbory = Mathf.RoundToInt(neighbor.y);
-						if (minIndexOptimal) {
-							computedCosts[neighbory*columns+neighborx] = NEEDSUPDATE;
-						} else {
-							insertValuesInMap(neighborx, neighbory, NEEDSUPDATE, 1.0f);	
-						}
+						insertValuesInMap(neighborx, neighbory, NEEDSUPDATE, 1.0f);	
 					}
 				}
 			}
