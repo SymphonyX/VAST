@@ -175,6 +175,7 @@ public class DLLTest : MonoBehaviour {
 			float f = Mathf.Infinity;
 			float g = Mathf.Infinity;
 			Vector2 predecessorPosition = new Vector2();
+			StateStruct state = minIndexStates[Mathf.RoundToInt(y)*columns+Mathf.RoundToInt(x)];
 			foreach(Vector2 neighbor in neighbors) {
 				if (!isValidNeighbor(neighbor)) 
 					continue;
@@ -193,6 +194,9 @@ public class DLLTest : MonoBehaviour {
 					predecessorPosition = neighbor;
 				}
 			}
+			state.predx = Mathf.RoundToInt(predecessorPosition.x);
+			state.predy = Mathf.RoundToInt(predecessorPosition.y);
+			minIndexStates[Mathf.RoundToInt(y)*columns+Mathf.RoundToInt(x)] = state;
 			x = predecessorPosition.x;
 			y = predecessorPosition.y;
 		} while(x != start.transform.position.x || y != start.transform.position.z);
@@ -444,7 +448,7 @@ public class DLLTest : MonoBehaviour {
 	
 	void updateSuccessorMinIndexCPU(int stateIndex)
 	{
-		int statex = stateIndex % columns;; 
+		int statex = stateIndex % columns; 
 		int statey = stateIndex / columns;
 		List<int> neighbors = neighborsForPosition(statex, statey);
 		for (int i = 0; i < neighbors.Count; i++) {
@@ -510,7 +514,8 @@ public class DLLTest : MonoBehaviour {
 		int prevy = Mathf.RoundToInt(previousState.z);
 		if (minIndexOptimal) {
 			computedCosts[prevy*columns+prevx] = NEEDSUPDATE;
-			computedCosts[newy*columns+newx] = NEEDSUPDATE;
+			computedCosts[newy*columns+newx] = OBSTACLESTATE;
+			gValuesForCPUMinIndex[newy*columns+newx] = OBSTACLESTATE;
 		} else {
 			insertValuesInMap(newx, newy, OBSTACLESTATE, 20.0f);
 			insertValuesInMap(prevx, prevy, NEEDSUPDATE, 1.0f);
@@ -518,7 +523,8 @@ public class DLLTest : MonoBehaviour {
 		foreach (Vector3 pathState in path) {
 			if (pathState == newState) {
 				if (minIndexOptimal) {
-					
+					int index = newy*columns+newx;
+					updateSuccessorMinIndexCPU(index);
 				} else {
 					checkPredecessor(newState);
 				}
