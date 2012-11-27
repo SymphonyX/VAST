@@ -430,6 +430,7 @@ public class DLLTest : MonoBehaviour {
 					StateStruct state = minIndexStates[updateIndex];
 					state.f = newCost; state.g = neighborG+Vector2.Distance(vec1, vec2);
 					state.predx = neighbor_x; state.predy = neighbor_y;
+					updateSuccessorMinIndexCPU(updateIndex);
 					minIndexStates[updateIndex] = state;
 					if (newCost <= minCost) {
 						minCost = newCost;
@@ -439,6 +440,20 @@ public class DLLTest : MonoBehaviour {
 			}
 		}
 		return minIndex;
+	}
+	
+	void updateSuccessorMinIndexCPU(int stateIndex)
+	{
+		int statex = stateIndex % columns;; 
+		int statey = stateIndex / columns;
+		List<int> neighbors = neighborsForPosition(statex, statey);
+		for (int i = 0; i < neighbors.Count; i++) {
+			int neighborIndex = neighbors[i];
+			if (minIndexStates[neighborIndex].predx == statex && minIndexStates[neighborIndex].predy == statey) {
+				//state is this neighbor's predecessor
+				computedCosts[neighborIndex] = NEEDSUPDATE;
+			}
+		}
 	}
 	
 	/********************************
