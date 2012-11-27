@@ -222,6 +222,23 @@ public class DLLTest : MonoBehaviour {
 		int starty = Mathf.RoundToInt(start.transform.position.z);
 		insertStart(startx, starty, 1.0f);
 		
+		minIndexStates = new StateStruct[rows*columns];
+		for (int i = 0; i < rows; i++) {
+			for (int j = 0; j < columns; j++) {
+				StateStruct state = new StateStruct();
+				state.x = j; state.y = i;
+				if (i == startx && j == starty) {
+					state.f = 0.0f; state.g = 0.0f;
+				} else {
+					state.f = Mathf.Infinity; state.g = Mathf.Infinity;
+				}
+				minIndexStates[i*columns+j] = state;
+			}
+		}
+		
+		
+
+		
 		obstacles = GameObject.FindGameObjectsWithTag("movable obstacles");
 		for(int i = 0; i < obstacles.Length; ++i) {
 			int obstaclex = Mathf.RoundToInt(obstacles[i].transform.position.x);
@@ -393,6 +410,7 @@ public class DLLTest : MonoBehaviour {
 			int updateIndex = indexesToUpdate[a];
 			int x = updateIndex%columns;
 			int y = updateIndex/columns;
+			
 			List<int> neighborsToUpdateIndex = neighborsForPosition(x, y);
 			for (int s = 0; s < neighborsToUpdateIndex.Count; s++) {
 				
@@ -409,6 +427,10 @@ public class DLLTest : MonoBehaviour {
 				if (neighborCost != NEEDSUPDATE && (newCost < costToUpdate || costToUpdate < 0)) {
 					computedCosts[updateIndex] = newCost;
 					gValuesForCPUMinIndex[updateIndex] = neighborG+Vector2.Distance(vec1, vec2);
+					StateStruct state = minIndexStates[updateIndex];
+					state.f = newCost; state.g = neighborG+Vector2.Distance(vec1, vec2);
+					state.predx = neighbor_x; state.predy = neighbor_y;
+					minIndexStates[updateIndex] = state;
 					if (newCost <= minCost) {
 						minCost = newCost;
 						minIndex = updateIndex;	
