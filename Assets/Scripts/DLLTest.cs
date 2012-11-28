@@ -46,7 +46,7 @@ public class DLLTest : MonoBehaviour {
 	private StateStruct[] minIndexStates;
 	private float minh, maxh, minf, maxf;
 	public bool showColorMap, showGrayScaleMap;
-	List<Vector3> path;
+	List<StateStruct> path;
 	
 	[DllImport("CUDA-DLL")]
 	private static extern void generateTexture(int rows, int columns);
@@ -149,59 +149,72 @@ public class DLLTest : MonoBehaviour {
 		
 	}
 	
-	private List<Vector2> getNeighbors(int x, int y)
+	private List<StateStruct> getStateNeighbors(StateStruct state)
 	{
-		List<Vector2> neighbors = new List<Vector2>();
-		neighbors.Add(new Vector2(x+1, y));
-		neighbors.Add(new Vector2(x-1, y));
-		neighbors.Add(new Vector2(x, y+1));
-		neighbors.Add(new Vector2(x, y-1));
-		neighbors.Add(new Vector2(x+1, y+1));
-		neighbors.Add(new Vector2(x+1, y-1));
-		neighbors.Add(new Vector2(x-1, y+1));
-		neighbors.Add(new Vector2(x-1, y-1));
+		List<StateStruct> neighbors = new List<StateStruct>();
+		if (state.x < columns-1) {
+			neighbors.Add(stateAtPosition(state.x+1, state.y));
+		}
+		if (state.x > 0) {
+			neighbors.Add(stateAtPosition(state.x-1, state.y));
+		}
+		if (state.y < rows-1) {
+			neighbors.Add(stateAtPosition(state.x, state.y+1));
+		}
+		if (state.y > 0) {
+			neighbors.Add(stateAtPosition(state.x, state.y-1));
+		}
+		if (state.x < columns-1 && state.y < rows-1) {
+			neighbors.Add(stateAtPosition(state.x+1, state.y+1));
+		}
+		if (state.x < columns-1 && state.y > 0) {
+			neighbors.Add(stateAtPosition(state.x+1, state.y-1));
+		}
+		if (state.x > 0 && state.y < rows-1) {
+			neighbors.Add(stateAtPosition(state.x-1, state.y+1));
+		}
+		if (state.x > 0 && state.y > 0) {
+			neighbors.Add(stateAtPosition(state.x-1, state.y-1));
+		}
 		return neighbors;
 	}
 	
-	private List<Vector3> constructPath()
+	private List<StateStruct> constructPath()
 	{
-		List<Vector3> path = new List<Vector3>();
-		List<Vector2> neighbors = new List<Vector2>();
+		List<StateStruct> statePath = new List<StateStruct>();
+		List<StateStruct> neighbors = new List<StateStruct>();
+		StateStruct state = stateAtPosition(Mathf.RoundToInt(goal.transform.position.x), Mathf.RoundToInt(goal.transform.position.z));
 		float x = goal.transform.position.x;
 		float y = goal.transform.position.z;
 		do {
-			path.Add(new Vector3(x, 0.5f, y));
-			neighbors = getNeighbors(Mathf.RoundToInt(x), Mathf.RoundToInt(y));
+			statePath.Add(state);
+			neighbors = getStateNeighbors(state);
 			float f = Mathf.Infinity;
 			float g = Mathf.Infinity;
-			Vector2 predecessorPosition = new Vector2();
-			StateStruct state = minIndexStates[Mathf.RoundToInt(y)*columns+Mathf.RoundToInt(x)];
-			foreach(Vector2 neighbor in neighbors) {
-				if (!isValidNeighbor(neighbor)) 
-					continue;
-				int neighbor_x = Mathf.RoundToInt(neighbor.x);
-				int neighbor_z = Mathf.RoundToInt(neighbor.y);
-				float newf = computedCosts[neighbor_x+rows*neighbor_z];
+			StateStruct predecessor = new StateStruct();
+			foreach(StateStruct neighbor in neighbors) {
+				if (neighbor.f == OBSTACLESTATE) {
+					continue;	
+				}
 				float newg = 0;
 				if (minIndexOptimal) {
-					newg = gValuesForCPUMinIndex[neighbor_z*columns+neighbor_x];	
+					newg = gValuesForCPUMinIndex[neighbor.y*columns+neighbor.x];	
 				} else {
-					newg = gValueForPosition(neighbor_x, neighbor_z);	
+					newg = neighbor.g;	
 				}
-				if (newg < g && newf >= 0) {
+				if (newg < g && neighbor.f >= 0) {
 					//f = newf;	
 					g = newg;
-					predecessorPosition = neighbor;
+					predecessor = neighbor;
 				}
 			}
-			state.predx = Mathf.RoundToInt(predecessorPosition.x);
-			state.predy = Mathf.RoundToInt(predecessorPosition.y);
-			minIndexStates[Mathf.RoundToInt(y)*columns+Mathf.RoundToInt(x)] = state;
-			x = predecessorPosition.x;
-			y = predecessorPosition.y;
+			minIndexStates[Mathf.RoundToInt(y)*columns+Mathf.RoundToInt(x)] = predecessor;
+			state = predecessor;
+			x = predecessor.x;
+			y = predecessor.y;
 		} while(x != start.transform.position.x || y != start.transform.position.z);
 		
-		return path;
+		return statePath;
 	}
 	
 	bool isValidNeighbor(Vector2 neighbor)
@@ -469,13 +482,11 @@ public class DLLTest : MonoBehaviour {
 		int newStateX = Mathf.RoundToInt(newState.x);
 		int newStateY = Mathf.RoundToInt(newState.z);
 		insertStart(newStateX, newStateY, 1.0f);
-		List<Vector2> neighbors = getNeighbors(newStateX, newStateY);
-		foreach (Vector2 neighbor in neighbors) {
-			if (isValidNeighbor(neighbor)) {
-				StateStruct neighborState = stateAtPosition(Mathf.RoundToInt(neighbor.x), Mathf.RoundToInt(neighbor.y));
-				if (stateIsNotAnObstacle(neighborState)) {
-					insertValuesInMap(Mathf.RoundToInt(neighbor.x), Mathf.RoundToInt(neighbor.y), NEEDSUPDATE, 1.0f);	
-				}
+		StateStruct state = stateAtPosition(newStateX, newStateY);
+		List<StateStruct> neighbors = getStateNeighbors(state);
+		foreach (StateStruct neighbor in neighbors) {
+			if (stateIsNotAnObstacle(neighbor)) {
+				insertValuesInMap(neighbor.x, neighbor.y, NEEDSUPDATE, 1.0f);	
 			}
 		}
 		runKernel();
@@ -500,10 +511,27 @@ public class DLLTest : MonoBehaviour {
 			computedCosts[previousStateY*columns+previousStateX] = NEEDSUPDATE;
 			computedCosts[newStateY*columns+newStateX] = NEEDSUPDATE;
 		} else {
+			StateStruct stateToUpdate = stateAtPosition(previousStateX, previousStateY);
 			insertValuesInMap(previousStateX, previousStateY, NEEDSUPDATE, 1.0f);	
+			updateNeighborsToState(stateToUpdate);
 		}
 		runKernel();
 		path = constructPath();
+	}
+	
+	void updateNeighborsToState(StateStruct state)
+	{
+		List<StateStruct> neighbors = getStateNeighbors(state);
+		List<StateStruct> listToUpdate = new List<StateStruct>();
+		foreach (StateStruct neighbor in neighbors) {
+			if (neighbor.predx == state.x && neighbor.predy == state.y) {
+				listToUpdate.Add(neighbor);	
+			}
+		}
+		foreach (StateStruct updateNeighbor in listToUpdate) {
+			insertValuesInMap(updateNeighbor.x, updateNeighbor.y, NEEDSUPDATE, 1.0f);	
+			helper(updateNeighbor);
+		}
 	}
 	
 	void handleObstacleMovement(Vector3 previousState, Vector3 newState) 
@@ -520,8 +548,8 @@ public class DLLTest : MonoBehaviour {
 			insertValuesInMap(newx, newy, OBSTACLESTATE, 20.0f);
 			insertValuesInMap(prevx, prevy, NEEDSUPDATE, 1.0f);
 		}
-		foreach (Vector3 pathState in path) {
-			if (pathState == newState) {
+		foreach (StateStruct pathState in path) {
+			if (pathState.x == newState.x && pathState.y == newState.z) {
 				if (minIndexOptimal) {
 					int index = newy*columns+newx;
 					updateSuccessorMinIndexCPU(index);
@@ -548,17 +576,13 @@ public class DLLTest : MonoBehaviour {
 	
 	void checkPredecessor(Vector3 state)
 	{
-		List<Vector2> neighbors = new List<Vector2>();
-		neighbors = getNeighbors((int)state.x, (int)state.z);
-		foreach(Vector2 neighbor in neighbors) {
-			if (isValidNeighbor(neighbor)) {
-				StateStruct neighborState = stateAtPosition((int)neighbor.x, (int)neighbor.y);
-				if (stateIsNotAnObstacle(neighborState)) {
-					if (neighborState.predx == (int)state.x && neighborState.predy == (int)state.z) {
-						int neighborx = Mathf.RoundToInt(neighbor.x); 
-						int neighbory = Mathf.RoundToInt(neighbor.y);
-						insertValuesInMap(neighborx, neighbory, NEEDSUPDATE, 1.0f);	
-					}
+		List<StateStruct> neighbors = new List<StateStruct>();
+		StateStruct stateStruct = stateAtPosition((int)state.x, (int)state.z);
+		neighbors = getStateNeighbors(stateStruct);
+		foreach(StateStruct neighbor in neighbors) {
+			if (stateIsNotAnObstacle(neighbor)) {
+				if (neighbor.predx == stateStruct.x && neighbor.predy == stateStruct.y) {
+					insertValuesInMap(neighbor.x, neighbor.y, NEEDSUPDATE, 1.0f);	
 				}
 			}
 		}
@@ -568,9 +592,9 @@ public class DLLTest : MonoBehaviour {
 	
 	void OnDrawGizmos() {
 		if(path	!= null) {
-			foreach(Vector3 position in path) {
+			foreach(StateStruct state in path) {
 				Gizmos.color = Color.blue;
-				Gizmos.DrawSphere(position, 0.25f);	
+				Gizmos.DrawSphere(new Vector3((float)state.x, 0.5f, (float)state.y), 0.25f);	
 			}
 		}
 		Gizmos.color = Color.yellow;
