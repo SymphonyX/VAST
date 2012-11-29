@@ -530,7 +530,7 @@ public class DLLTest : MonoBehaviour {
 		}
 		foreach (StateStruct updateNeighbor in listToUpdate) {
 			insertValuesInMap(updateNeighbor.x, updateNeighbor.y, NEEDSUPDATE, 1.0f);	
-			helper(updateNeighbor);
+			updateNeighborsToState(updateNeighbor);
 		}
 	}
 	
@@ -554,7 +554,8 @@ public class DLLTest : MonoBehaviour {
 					int index = newy*columns+newx;
 					updateSuccessorMinIndexCPU(index);
 				} else {
-					checkPredecessor(newState);
+					StateStruct stateToUpdate = stateAtPosition(newx, newy);
+					updateNeighborsToState(stateToUpdate);
 				}
 				break;
 			}
@@ -573,22 +574,6 @@ public class DLLTest : MonoBehaviour {
 		}
 		return true;
 	}
-	
-	void checkPredecessor(Vector3 state)
-	{
-		List<StateStruct> neighbors = new List<StateStruct>();
-		StateStruct stateStruct = stateAtPosition((int)state.x, (int)state.z);
-		neighbors = getStateNeighbors(stateStruct);
-		foreach(StateStruct neighbor in neighbors) {
-			if (stateIsNotAnObstacle(neighbor)) {
-				if (neighbor.predx == stateStruct.x && neighbor.predy == stateStruct.y) {
-					insertValuesInMap(neighbor.x, neighbor.y, NEEDSUPDATE, 1.0f);	
-				}
-			}
-		}
-	}
-	
-
 	
 	void OnDrawGizmos() {
 		if(path	!= null) {
