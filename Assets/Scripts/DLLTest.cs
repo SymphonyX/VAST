@@ -40,12 +40,12 @@ public class DLLTest : MonoBehaviour {
 	private GameObject selectedGameObject;
 	private float[] computedCosts;
 	private float[] gValuesForCPUMinIndex;
-	private float[] stateColorValues;
+	private float[] stateHValues, stateGValues, stateCostValues;
 	private float[] stateGrayScaleValues;
-	private float[] hMap;
+	private float[] hMap, gMap, costMap;
 	private StateStruct[] minIndexStates;
-	private float minh, maxh, minf, maxf;
-	public bool showColorMap, showGrayScaleMap;
+	private float minh, maxh, minf, maxf, ming, maxg;
+	public bool showHMap, showFMap, showGMap, showCostMap;
 	List<StateStruct> path;
 	
 	[DllImport("CUDA-DLL")]
@@ -84,6 +84,12 @@ public class DLLTest : MonoBehaviour {
 	[DllImport("CUDA-DLL")]
 	private static extern void returnHMap(float[] hMap);
 	
+	[DllImport("CUDA-DLL")]
+	private static extern void returnGMap(float[] gMap);
+	
+	[DllImport("CUDA-DLL")]
+	private static extern void returnCostMap(float[] costMap);
+	
 	private void getCostsMarshal()
 	{
 		computedCosts = new float[rows*columns];
@@ -101,22 +107,39 @@ public class DLLTest : MonoBehaviour {
 				if (maxf < cost && cost != OBSTACLESTATE) maxf = cost;
 			}
 		}
-		generateGrayScaleValues();
+		stateGrayScaleValues = generateScaledValues(computedCosts, maxf);
 	}
 	
-	private void generateGrayScaleValues()
+	private float[] generateScaledValues(float[] rawValuesMap, float maxValues)
 	{
-		stateGrayScaleValues = new float[rows*columns];
+		float[] scaledValues = new float[rows*columns];
 		for (int i = 0; i < rows; i++) {
 			for (int j = 0; j < columns; j++) {
 				int index = i*columns+j;
-				if (computedCosts[index] == OBSTACLESTATE) {
-					stateGrayScaleValues[index] = OBSTACLESTATE;	
+				if (rawValuesMap[index] == OBSTACLESTATE) {
+					scaledValues[index] = OBSTACLESTATE;	
 				} else {
-					stateGrayScaleValues[index] = computedCosts[index] / maxf;
+					scaledValues[index] = rawValuesMap[index] / maxValues;
 				}
 			}
 		}
+		return scaledValues;
+	}
+	
+	private void generateGMap()
+	{
+		ming = Mathf.Infinity;
+		maxg = Mathf.NegativeInfinity;
+		gMap = new float[rows*columns];
+		returnGMap(gMap);
+		for (int i = 0; i < rows; i++) {
+			for (int j = 0; j < columns; j++) {
+				float g = gMap[i*columns+j];
+				if (ming > g) ming = g;
+				if (maxg < g && g != OBSTACLESTATE) maxg = g;
+			}
+		}
+		stateGValues = generateScaledValues(gMap, maxg);
 	}
 	
 	private void generateHMap()
@@ -134,19 +157,19 @@ public class DLLTest : MonoBehaviour {
 				
 			}
 		}
-		generateColorValues();
+		stateHValues = generateMapValues(hMap);
 	}
 	
-	private void generateColorValues()
+	private float[] generateMapValues(float[] map)
 	{
-		stateColorValues = new float[rows*columns];
+		float[] colorValues = new float[rows*columns];
 		for (int i = 0; i < rows; i++) {
 			for (int j = 0; j < columns; j++) {
 				int index = i*columns+j;
-				stateColorValues[index] = hMap[index] / maxh;	
+				colorValues[index] = map[index] / maxh;	
 			}
 		}
-		
+		return colorValues;
 	}
 	
 	private List<StateStruct> getStateNeighbors(StateStruct state)
@@ -273,6 +296,7 @@ public class DLLTest : MonoBehaviour {
 		
 		path = constructPath();
 		generateHMap();
+		generateGMap();
 		generateFMap();	
 	}
 	
@@ -342,6 +366,7 @@ public class DLLTest : MonoBehaviour {
 			handleObstacleMovement(previousState, selectedGameObject.transform.position);
 		}
 		generateFMap();
+		generateGMap();
 	}
 	
 	int indexOfState(Vector3 vec)
@@ -592,10 +617,10 @@ public class DLLTest : MonoBehaviour {
 		
 		Gizmos.DrawWireCube(new Vector3(columns/2, 1.0f, rows/2), new Vector3(columns, 0.0f, rows)); 
 		
-		if (showColorMap && stateColorValues != null) {
+		if (showHMap && stateHValues != null) {
 		 	for (int i = 0; i < rows; i++) {
 				for (int j = 0; j < columns; j++) {
-					float val = stateColorValues[i*columns+j];
+					float val = stateHValues[i*columns+j];
 
 					float blue = 1 * val;
 					float green = 1 - blue;
@@ -606,12 +631,26 @@ public class DLLTest : MonoBehaviour {
 			}
 		}
 		
-		if (showGrayScaleMap && stateGrayScaleValues != null) {
+		if (showGMap && stateGValues != null) {
+		 	for (int i = 0; i < rows; i++) {
+				for (int j = 0; j < columns; j++) {
+					float val = stateGValues[i*columns+j];
+					if (val == OBSTACLESTATE) {
+						Gizmos.color = Color.black;	
+					} else {
+						Gizmos.color = new Color(1-val, 1-val, 1-val, 0.5f);	
+					}
+					Gizmos.DrawCube(new Vector3(j, 1.0f, i), new Vector3(1.0f, 0.0f, 1.0f));
+				}
+			}
+		}
+		
+		if (showFMap && stateGrayScaleValues != null) {
 		 	for (int i = 0; i < rows; i++) {
 				for (int j = 0; j < columns; j++) {
 					float val = stateGrayScaleValues[i*columns+j];
 					
-					if (val == 50000.0f) {
+					if (val == OBSTACLESTATE) {
 						Gizmos.color = Color.black;	
 					} else {
 						Gizmos.color = new Color(1-val, 1-val, 1-val, 0.5f);	
