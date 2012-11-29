@@ -44,7 +44,7 @@ public class DLLTest : MonoBehaviour {
 	private float[] stateGrayScaleValues;
 	private float[] hMap, gMap, costMap;
 	private StateStruct[] minIndexStates;
-	private float minh, maxh, minf, maxf, ming, maxg;
+	private float minh, maxh, minf, maxf, ming, maxg, minCost, maxCost;
 	public bool showHMap, showFMap, showGMap, showCostMap;
 	List<StateStruct> path;
 	
@@ -110,22 +110,6 @@ public class DLLTest : MonoBehaviour {
 		stateGrayScaleValues = generateScaledValues(computedCosts, maxf);
 	}
 	
-	private float[] generateScaledValues(float[] rawValuesMap, float maxValues)
-	{
-		float[] scaledValues = new float[rows*columns];
-		for (int i = 0; i < rows; i++) {
-			for (int j = 0; j < columns; j++) {
-				int index = i*columns+j;
-				if (rawValuesMap[index] == OBSTACLESTATE) {
-					scaledValues[index] = OBSTACLESTATE;	
-				} else {
-					scaledValues[index] = rawValuesMap[index] / maxValues;
-				}
-			}
-		}
-		return scaledValues;
-	}
-	
 	private void generateGMap()
 	{
 		ming = Mathf.Infinity;
@@ -142,6 +126,22 @@ public class DLLTest : MonoBehaviour {
 		stateGValues = generateScaledValues(gMap, maxg);
 	}
 	
+	private float[] generateScaledValues(float[] rawValuesMap, float maxValues)
+	{
+		float[] scaledValues = new float[rows*columns];
+		for (int i = 0; i < rows; i++) {
+			for (int j = 0; j < columns; j++) {
+				int index = i*columns+j;
+				if (rawValuesMap[index] == OBSTACLESTATE) {
+					scaledValues[index] = OBSTACLESTATE;	
+				} else {
+					scaledValues[index] = rawValuesMap[index] / maxValues;
+				}
+			}
+		}
+		return scaledValues;
+	}
+		
 	private void generateHMap()
 	{
 		hMap = new float[rows*columns];
@@ -157,16 +157,34 @@ public class DLLTest : MonoBehaviour {
 				
 			}
 		}
-		stateHValues = generateMapValues(hMap);
+		stateHValues = generateMapValues(hMap, maxh);
 	}
 	
-	private float[] generateMapValues(float[] map)
+	private void generateCostMap()
+	{
+		costMap = new float[rows*columns];
+		returnCostMap(costMap);
+		minCost = Mathf.Infinity;
+		maxCost = Mathf.NegativeInfinity;
+		for (int i = 0; i < rows; i++) {
+			for (int j = 0; j < columns; j++) {
+				float cost = costMap[i*columns+j];
+				
+				if (minCost > cost) minCost = cost;
+				if (maxCost < cost) maxCost = cost;
+				
+			}
+		}
+		stateCostValues = generateMapValues(costMap, maxCost);
+	}
+	
+	private float[] generateMapValues(float[] map, float maxvalue)
 	{
 		float[] colorValues = new float[rows*columns];
 		for (int i = 0; i < rows; i++) {
 			for (int j = 0; j < columns; j++) {
 				int index = i*columns+j;
-				colorValues[index] = map[index] / maxh;	
+				colorValues[index] = map[index] / maxvalue;	
 			}
 		}
 		return colorValues;
@@ -298,6 +316,7 @@ public class DLLTest : MonoBehaviour {
 		generateHMap();
 		generateGMap();
 		generateFMap();	
+		generateCostMap();
 	}
 	
 		// Update is called once per frame
@@ -367,6 +386,7 @@ public class DLLTest : MonoBehaviour {
 		}
 		generateFMap();
 		generateGMap();
+		generateCostMap();
 	}
 	
 	int indexOfState(Vector3 vec)
@@ -621,6 +641,20 @@ public class DLLTest : MonoBehaviour {
 		 	for (int i = 0; i < rows; i++) {
 				for (int j = 0; j < columns; j++) {
 					float val = stateHValues[i*columns+j];
+
+					float blue = 1 * val;
+					float green = 1 - blue;
+					Gizmos.color = new Color(0.0f, green, blue, 0.5f);	
+					
+					Gizmos.DrawCube(new Vector3(j, 1.0f, i), new Vector3(1.0f, 0.0f, 1.0f));
+				}
+			}
+		}
+		
+		if (showCostMap && stateCostValues != null) {
+		 	for (int i = 0; i < rows; i++) {
+				for (int j = 0; j < columns; j++) {
+					float val = stateCostValues[i*columns+j];
 
 					float blue = 1 * val;
 					float green = 1 - blue;
