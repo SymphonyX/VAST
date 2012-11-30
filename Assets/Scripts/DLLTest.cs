@@ -224,32 +224,24 @@ public class DLLTest : MonoBehaviour {
 	{
 		List<StateStruct> statePath = new List<StateStruct>();
 		List<StateStruct> neighbors = new List<StateStruct>();
+		List<int> neighborsForMinIndex = new List<int>();
 		StateStruct state = stateAtPosition(Mathf.RoundToInt(goal.transform.position.x), Mathf.RoundToInt(goal.transform.position.z));
+		if (minIndexOptimal) {
+			state = minIndexStates[Mathf.RoundToInt(goal.transform.position.z)*columns+Mathf.RoundToInt(goal.transform.position.x)];	
+		}
 		float x = goal.transform.position.x;
 		float y = goal.transform.position.z;
 		do {
 			statePath.Add(state);
-			neighbors = getStateNeighbors(state);
+			StateStruct predecessor = new StateStruct();
+			if (minIndexOptimal) {
+				predecessor = minIndexStates[state.predy*columns+state.predx];
+			} else {
+				predecessor = stateAtPosition(state.predx, state.predy);
+			}
 			float f = Mathf.Infinity;
 			float g = Mathf.Infinity;
-			StateStruct predecessor = new StateStruct();
-			foreach(StateStruct neighbor in neighbors) {
-				if (neighbor.f == OBSTACLESTATE) {
-					continue;	
-				}
-				float newg = 0;
-				if (minIndexOptimal) {
-					newg = gValuesForCPUMinIndex[neighbor.y*columns+neighbor.x];	
-				} else {
-					newg = neighbor.g;	
-				}
-				if (newg < g && neighbor.f >= 0) {
-					//f = newf;	
-					g = newg;
-					predecessor = neighbor;
-				}
-			}
-			minIndexStates[Mathf.RoundToInt(y)*columns+Mathf.RoundToInt(x)] = predecessor;
+			
 			state = predecessor;
 			x = predecessor.x;
 			y = predecessor.y;
@@ -286,9 +278,9 @@ public class DLLTest : MonoBehaviour {
 				StateStruct state = new StateStruct();
 				state.x = j; state.y = i;
 				if (i == startx && j == starty) {
-					state.f = 0.0f; state.g = 0.0f;
+					state.f = STARTSTATE; state.g = STARTSTATE;
 				} else {
-					state.f = Mathf.Infinity; state.g = Mathf.Infinity;
+					state.f = NEEDSUPDATE; state.g = NEEDSUPDATE;
 				}
 				minIndexStates[i*columns+j] = state;
 			}
@@ -302,6 +294,9 @@ public class DLLTest : MonoBehaviour {
 			int obstaclex = Mathf.RoundToInt(obstacles[i].transform.position.x);
 			int obstacley = Mathf.RoundToInt(obstacles[i].transform.position.z);
 			insertValuesInMap(obstaclex, obstacley, OBSTACLESTATE, 20.0f);	
+			StateStruct state = minIndexStates[obstacley*columns+obstaclex];
+			state.f = OBSTACLESTATE; state.g = OBSTACLESTATE;
+			minIndexStates[obstacley*columns+obstaclex] = state;
 		}
 				
 		getCostsMarshal();
@@ -404,7 +399,6 @@ public class DLLTest : MonoBehaviour {
 			getCostsMarshal();
 		} else if (minIndexOptimal) {
 			int startIndex = Mathf.RoundToInt(start.transform.position.z*columns+start.transform.position.x);
-			gValuesForCPUMinIndex[startIndex] = STARTSTATE;
 			int minIndex = 0;
 			int goalIndex = Mathf.RoundToInt(goal.transform.position.z*columns+goal.transform.position.x);
 			do {
@@ -449,50 +443,42 @@ public class DLLTest : MonoBehaviour {
 	private int computeCostsMinIndexCPU()
 	{
 		int minIndex = 0;
-		List<int> indexesToUpdate = new List<int>();
+		List<StateStruct> statesToUpdate = new List<StateStruct>();
 		for (int i = 0; i < rows; i++) {
 			for (int j = 0; j < columns; j++) {
 				int index = i*columns+j;
 				List<int> neighbors = neighborsForPosition(j, i);
 				bool hasNieghborToUpdate = false;
 				for(int s = 0; s < neighbors.Count; s++) {
-					if (computedCosts[neighbors[s]] > -1 && computedCosts[neighbors[s]] != OBSTACLESTATE) {
+					if (minIndexStates[neighbors[s]].f > -1 && minIndexStates[neighbors[s]].f != OBSTACLESTATE) {
 						hasNieghborToUpdate = true;	
 					}
 				}
 				
-				if (computedCosts[index] < 0 && hasNieghborToUpdate) {
-					indexesToUpdate.Add(index);	
+				if (minIndexStates[index].f < 0 && hasNieghborToUpdate) {
+					statesToUpdate.Add(minIndexStates[index]);	
 				}
 			}
 		}
 		
 		float minCost = Mathf.Infinity;
-		for (int a = 0; a < indexesToUpdate.Count; a++) {
-			int updateIndex = indexesToUpdate[a];
-			int x = updateIndex%columns;
-			int y = updateIndex/columns;
-			
-			List<int> neighborsToUpdateIndex = neighborsForPosition(x, y);
+		for (int i = 0; i < statesToUpdate.Count; i++) {
+			StateStruct state = statesToUpdate[i];
+			List<int> neighborsToUpdateIndex = neighborsForPosition(state.x, state.y);
+			int updateIndex = state.y*columns+state.x;
 			for (int s = 0; s < neighborsToUpdateIndex.Count; s++) {
+				StateStruct neighbor = minIndexStates[neighborsToUpdateIndex[s]];
 				
-				float neighborCost = computedCosts[neighborsToUpdateIndex[s]];
-				float neighborG = gValuesForCPUMinIndex[neighborsToUpdateIndex[s]];
-				int neighbor_x = neighborsToUpdateIndex[s]%columns;
-				int neighbor_y = neighborsToUpdateIndex[s]/columns;
-				Vector2 vec1 = new Vector2((float)x, (float)y);
-				Vector2 vec2 = new Vector2((float)neighbor_x, (float)neighbor_y);
+				Vector2 vec1 = new Vector2((float)state.x, (float)state.y);
+				Vector2 vec2 = new Vector2((float)neighbor.x, (float)neighbor.y);
 				Vector2 goalVec = new Vector2(goal.transform.position.x, goal.transform.position.z);
-				float costToUpdate = computedCosts[updateIndex];
-				float newCost = neighborG+Vector2.Distance(vec1, vec2)+Vector2.Distance(vec1,goalVec);
+				float newCost = neighbor.g+Vector2.Distance(vec1, vec2)+Vector2.Distance(vec1,goalVec);
 				
-				if (neighborCost != NEEDSUPDATE && (newCost < costToUpdate || costToUpdate < 0)) {
+				if (neighbor.f != NEEDSUPDATE && (newCost < state.f || state.f < 0)) {
 					computedCosts[updateIndex] = newCost;
-					gValuesForCPUMinIndex[updateIndex] = neighborG+Vector2.Distance(vec1, vec2);
-					StateStruct state = minIndexStates[updateIndex];
-					state.f = newCost; state.g = neighborG+Vector2.Distance(vec1, vec2);
-					state.predx = neighbor_x; state.predy = neighbor_y;
-					updateSuccessorMinIndexCPU(updateIndex);
+					state.f = newCost; state.g = neighbor.g+Vector2.Distance(vec1, vec2);
+					state.predx = neighbor.x; state.predy = neighbor.y;
+					updateSuccessorMinIndexCPU(state);
 					minIndexStates[updateIndex] = state;
 					if (newCost <= minCost) {
 						minCost = newCost;
@@ -504,15 +490,16 @@ public class DLLTest : MonoBehaviour {
 		return minIndex;
 	}
 	
-	void updateSuccessorMinIndexCPU(int stateIndex)
+	void updateSuccessorMinIndexCPU(StateStruct state)
 	{
-		int statex = stateIndex % columns; 
-		int statey = stateIndex / columns;
-		List<int> neighbors = neighborsForPosition(statex, statey);
+		List<int> neighbors = neighborsForPosition(state.x, state.y);
 		for (int i = 0; i < neighbors.Count; i++) {
 			int neighborIndex = neighbors[i];
-			if (minIndexStates[neighborIndex].predx == statex && minIndexStates[neighborIndex].predy == statey) {
+			StateStruct neighbor = minIndexStates[neighborIndex];
+			if (neighbor.predx == state.x && neighbor.predy == state.y) {
 				//state is this neighbor's predecessor
+				neighbor.f = NEEDSUPDATE; neighbor.g = NEEDSUPDATE;
+				minIndexStates[neighborIndex] = neighbor;
 				computedCosts[neighborIndex] = NEEDSUPDATE;
 			}
 		}
@@ -597,7 +584,7 @@ public class DLLTest : MonoBehaviour {
 			if (pathState.x == newState.x && pathState.y == newState.z) {
 				if (minIndexOptimal) {
 					int index = newy*columns+newx;
-					updateSuccessorMinIndexCPU(index);
+					updateSuccessorMinIndexCPU(minIndexStates[index]);
 				} else {
 					StateStruct stateToUpdate = stateAtPosition(newx, newy);
 					updateNeighborsToState(stateToUpdate);
