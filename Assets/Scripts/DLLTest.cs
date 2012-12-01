@@ -39,13 +39,13 @@ public class DLLTest : MonoBehaviour {
 	private GameObject[] obstacles;
 	private GameObject selectedGameObject;
 	private float[] computedCosts;
-	private float[] gValuesForCPUMinIndex;
-	private float[] stateColorValues;
+	private float[] stateHValues, stateGValues, stateCostValues;
 	private float[] stateGrayScaleValues;
-	private float[] hMap;
-	private float minh, maxh, minf, maxf;
-	public bool showColorMap, showGrayScaleMap;
-	List<Vector3> path;
+	private float[] hMap, gMap, costMap;
+	private StateStruct[] minIndexStates;
+	private float minh, maxh, minf, maxf, ming, maxg, minCost, maxCost;
+	public bool showHMap, showFMap, showGMap, showCostMap;
+	List<StateStruct> path;
 	
 	[DllImport("CUDA-DLL")]
 	private static extern void generateTexture(int rows, int columns);
@@ -83,6 +83,12 @@ public class DLLTest : MonoBehaviour {
 	[DllImport("CUDA-DLL")]
 	private static extern void returnHMap(float[] hMap);
 	
+	[DllImport("CUDA-DLL")]
+	private static extern void returnGMap(float[] gMap);
+	
+	[DllImport("CUDA-DLL")]
+	private static extern void returnCostMap(float[] costMap);
+	
 	private void getCostsMarshal()
 	{
 		computedCosts = new float[rows*columns];
@@ -100,24 +106,41 @@ public class DLLTest : MonoBehaviour {
 				if (maxf < cost && cost != OBSTACLESTATE) maxf = cost;
 			}
 		}
-		generateGrayScaleValues();
+		stateGrayScaleValues = generateScaledValues(computedCosts, maxf);
 	}
 	
-	private void generateGrayScaleValues()
+	private void generateGMap()
 	{
-		stateGrayScaleValues = new float[rows*columns];
+		ming = Mathf.Infinity;
+		maxg = Mathf.NegativeInfinity;
+		gMap = new float[rows*columns];
+		returnGMap(gMap);
+		for (int i = 0; i < rows; i++) {
+			for (int j = 0; j < columns; j++) {
+				float g = gMap[i*columns+j];
+				if (ming > g) ming = g;
+				if (maxg < g && g != OBSTACLESTATE) maxg = g;
+			}
+		}
+		stateGValues = generateScaledValues(gMap, maxg);
+	}
+	
+	private float[] generateScaledValues(float[] rawValuesMap, float maxValues)
+	{
+		float[] scaledValues = new float[rows*columns];
 		for (int i = 0; i < rows; i++) {
 			for (int j = 0; j < columns; j++) {
 				int index = i*columns+j;
-				if (computedCosts[index] == OBSTACLESTATE) {
-					stateGrayScaleValues[index] = OBSTACLESTATE;	
+				if (rawValuesMap[index] == OBSTACLESTATE) {
+					scaledValues[index] = OBSTACLESTATE;	
 				} else {
-					stateGrayScaleValues[index] = computedCosts[index] / maxf;
+					scaledValues[index] = rawValuesMap[index] / maxValues;
 				}
 			}
 		}
+		return scaledValues;
 	}
-	
+		
 	private void generateHMap()
 	{
 		hMap = new float[rows*columns];
@@ -133,70 +156,97 @@ public class DLLTest : MonoBehaviour {
 				
 			}
 		}
-		generateColorValues();
+		stateHValues = generateMapValues(hMap, maxh);
 	}
 	
-	private void generateColorValues()
+	private void generateCostMap()
 	{
-		stateColorValues = new float[rows*columns];
+		costMap = new float[rows*columns];
+		returnCostMap(costMap);
+		minCost = Mathf.Infinity;
+		maxCost = Mathf.NegativeInfinity;
+		for (int i = 0; i < rows; i++) {
+			for (int j = 0; j < columns; j++) {
+				float cost = costMap[i*columns+j];
+				
+				if (minCost > cost) minCost = cost;
+				if (maxCost < cost) maxCost = cost;
+				
+			}
+		}
+		stateCostValues = generateMapValues(costMap, maxCost);
+	}
+	
+	private float[] generateMapValues(float[] map, float maxvalue)
+	{
+		float[] colorValues = new float[rows*columns];
 		for (int i = 0; i < rows; i++) {
 			for (int j = 0; j < columns; j++) {
 				int index = i*columns+j;
-				stateColorValues[index] = hMap[index] / maxh;	
+				colorValues[index] = map[index] / maxvalue;	
 			}
 		}
-		
+		return colorValues;
 	}
 	
-	private List<Vector2> getNeighbors(int x, int y)
+	private List<StateStruct> getStateNeighbors(StateStruct state)
 	{
-		List<Vector2> neighbors = new List<Vector2>();
-		neighbors.Add(new Vector2(x+1, y));
-		neighbors.Add(new Vector2(x-1, y));
-		neighbors.Add(new Vector2(x, y+1));
-		neighbors.Add(new Vector2(x, y-1));
-		neighbors.Add(new Vector2(x+1, y+1));
-		neighbors.Add(new Vector2(x+1, y-1));
-		neighbors.Add(new Vector2(x-1, y+1));
-		neighbors.Add(new Vector2(x-1, y-1));
+		List<StateStruct> neighbors = new List<StateStruct>();
+		if (state.x < columns-1) {
+			neighbors.Add(stateAtPosition(state.x+1, state.y));
+		}
+		if (state.x > 0) {
+			neighbors.Add(stateAtPosition(state.x-1, state.y));
+		}
+		if (state.y < rows-1) {
+			neighbors.Add(stateAtPosition(state.x, state.y+1));
+		}
+		if (state.y > 0) {
+			neighbors.Add(stateAtPosition(state.x, state.y-1));
+		}
+		if (state.x < columns-1 && state.y < rows-1) {
+			neighbors.Add(stateAtPosition(state.x+1, state.y+1));
+		}
+		if (state.x < columns-1 && state.y > 0) {
+			neighbors.Add(stateAtPosition(state.x+1, state.y-1));
+		}
+		if (state.x > 0 && state.y < rows-1) {
+			neighbors.Add(stateAtPosition(state.x-1, state.y+1));
+		}
+		if (state.x > 0 && state.y > 0) {
+			neighbors.Add(stateAtPosition(state.x-1, state.y-1));
+		}
 		return neighbors;
 	}
 	
-	private List<Vector3> constructPath()
+	private List<StateStruct> constructPath()
 	{
-		List<Vector3> path = new List<Vector3>();
-		List<Vector2> neighbors = new List<Vector2>();
+		List<StateStruct> statePath = new List<StateStruct>();
+		List<StateStruct> neighbors = new List<StateStruct>();
+		List<int> neighborsForMinIndex = new List<int>();
+		StateStruct state = stateAtPosition(Mathf.RoundToInt(goal.transform.position.x), Mathf.RoundToInt(goal.transform.position.z));
+		if (minIndexOptimal) {
+			state = minIndexStates[Mathf.RoundToInt(goal.transform.position.z)*columns+Mathf.RoundToInt(goal.transform.position.x)];	
+		}
 		float x = goal.transform.position.x;
 		float y = goal.transform.position.z;
 		do {
-			path.Add(new Vector3(x, 0.5f, y));
-			neighbors = getNeighbors(Mathf.RoundToInt(x), Mathf.RoundToInt(y));
+			statePath.Add(state);
+			StateStruct predecessor = new StateStruct();
+			if (minIndexOptimal) {
+				predecessor = minIndexStates[state.predy*columns+state.predx];
+			} else {
+				predecessor = stateAtPosition(state.predx, state.predy);
+			}
 			float f = Mathf.Infinity;
 			float g = Mathf.Infinity;
-			Vector2 predecessorPosition = new Vector2();
-			foreach(Vector2 neighbor in neighbors) {
-				if (!isValidNeighbor(neighbor)) 
-					continue;
-				int neighbor_x = Mathf.RoundToInt(neighbor.x);
-				int neighbor_z = Mathf.RoundToInt(neighbor.y);
-				float newf = computedCosts[neighbor_x+rows*neighbor_z];
-				float newg = 0;
-				if (minIndexOptimal) {
-					newg = gValuesForCPUMinIndex[neighbor_z*columns+neighbor_x];	
-				} else {
-					newg = gValueForPosition(neighbor_x, neighbor_z);	
-				}
-				if (newg < g && newf >= 0) {
-					//f = newf;	
-					g = newg;
-					predecessorPosition = neighbor;
-				}
-			}
-			x = predecessorPosition.x;
-			y = predecessorPosition.y;
+			
+			state = predecessor;
+			x = predecessor.x;
+			y = predecessor.y;
 		} while(x != start.transform.position.x || y != start.transform.position.z);
 		
-		return path;
+		return statePath;
 	}
 	
 	bool isValidNeighbor(Vector2 neighbor)
@@ -221,23 +271,43 @@ public class DLLTest : MonoBehaviour {
 		int starty = Mathf.RoundToInt(start.transform.position.z);
 		insertStart(startx, starty, 1.0f);
 		
+		minIndexStates = new StateStruct[rows*columns];
+		for (int i = 0; i < rows; i++) {
+			for (int j = 0; j < columns; j++) {
+				StateStruct state = new StateStruct();
+				state.x = j; state.y = i;
+				if (i == startx && j == starty) {
+					state.f = STARTSTATE; state.g = STARTSTATE;
+				} else {
+					state.f = NEEDSUPDATE; state.g = NEEDSUPDATE;
+				}
+				minIndexStates[i*columns+j] = state;
+			}
+		}
+		
+		
+
+		
 		obstacles = GameObject.FindGameObjectsWithTag("movable obstacles");
 		for(int i = 0; i < obstacles.Length; ++i) {
 			int obstaclex = Mathf.RoundToInt(obstacles[i].transform.position.x);
 			int obstacley = Mathf.RoundToInt(obstacles[i].transform.position.z);
 			insertValuesInMap(obstaclex, obstacley, OBSTACLESTATE, 20.0f);	
+			StateStruct state = minIndexStates[obstacley*columns+obstaclex];
+			state.f = OBSTACLESTATE; state.g = OBSTACLESTATE;
+			state.predx = -1; state.predy = -1;
+			minIndexStates[obstacley*columns+obstaclex] = state;
 		}
 				
 		getCostsMarshal();
-		gValuesForCPUMinIndex = new float[rows*columns];
-		for (int i = 0; i < rows*columns; i++) {
-			gValuesForCPUMinIndex[i] = Mathf.Infinity;	
-		}
+
 		runKernel();
 		
 		path = constructPath();
 		generateHMap();
+		generateGMap();
 		generateFMap();	
+		generateCostMap();
 	}
 	
 		// Update is called once per frame
@@ -306,6 +376,8 @@ public class DLLTest : MonoBehaviour {
 			handleObstacleMovement(previousState, selectedGameObject.transform.position);
 		}
 		generateFMap();
+		generateGMap();
+		generateCostMap();
 	}
 	
 	int indexOfState(Vector3 vec)
@@ -323,10 +395,12 @@ public class DLLTest : MonoBehaviour {
 			getCostsMarshal();
 		} else if (minIndexOptimal) {
 			int startIndex = Mathf.RoundToInt(start.transform.position.z*columns+start.transform.position.x);
-			gValuesForCPUMinIndex[startIndex] = STARTSTATE;
 			int minIndex = 0;
 			int goalIndex = Mathf.RoundToInt(goal.transform.position.z*columns+goal.transform.position.x);
 			do {
+				StateStruct goalState = minIndexStates[goalIndex];
+				goalState.f = NEEDSUPDATE; goalState.g = NEEDSUPDATE;
+				minIndexStates[goalIndex] = goalState;
 				minIndex = computeCostsMinIndexCPU();	
 			} while (minIndex != goalIndex);
 			//computeCostsMinIndex();
@@ -368,45 +442,42 @@ public class DLLTest : MonoBehaviour {
 	private int computeCostsMinIndexCPU()
 	{
 		int minIndex = 0;
-		List<int> indexesToUpdate = new List<int>();
+		List<StateStruct> statesToUpdate = new List<StateStruct>();
 		for (int i = 0; i < rows; i++) {
 			for (int j = 0; j < columns; j++) {
 				int index = i*columns+j;
 				List<int> neighbors = neighborsForPosition(j, i);
 				bool hasNieghborToUpdate = false;
 				for(int s = 0; s < neighbors.Count; s++) {
-					if (computedCosts[neighbors[s]] > -1 && computedCosts[neighbors[s]] != OBSTACLESTATE) {
+					if (minIndexStates[neighbors[s]].f > -1 && minIndexStates[neighbors[s]].f != OBSTACLESTATE) {
 						hasNieghborToUpdate = true;	
 					}
 				}
 				
-				if (computedCosts[index] < 0 && hasNieghborToUpdate) {
-					indexesToUpdate.Add(index);	
+				if (minIndexStates[index].f < 0 && hasNieghborToUpdate) {
+					statesToUpdate.Add(minIndexStates[index]);	
 				}
 			}
 		}
 		
 		float minCost = Mathf.Infinity;
-		for (int a = 0; a < indexesToUpdate.Count; a++) {
-			int updateIndex = indexesToUpdate[a];
-			int x = updateIndex%columns;
-			int y = updateIndex/columns;
-			List<int> neighborsToUpdateIndex = neighborsForPosition(x, y);
+		for (int i = 0; i < statesToUpdate.Count; i++) {
+			StateStruct state = statesToUpdate[i];
+			List<int> neighborsToUpdateIndex = neighborsForPosition(state.x, state.y);
+			int updateIndex = state.y*columns+state.x;
 			for (int s = 0; s < neighborsToUpdateIndex.Count; s++) {
+				StateStruct neighbor = minIndexStates[neighborsToUpdateIndex[s]];
 				
-				float neighborCost = computedCosts[neighborsToUpdateIndex[s]];
-				float neighborG = gValuesForCPUMinIndex[neighborsToUpdateIndex[s]];
-				int neighbor_x = neighborsToUpdateIndex[s]%columns;
-				int neighbor_y = neighborsToUpdateIndex[s]/columns;
-				Vector2 vec1 = new Vector2((float)x, (float)y);
-				Vector2 vec2 = new Vector2((float)neighbor_x, (float)neighbor_y);
+				Vector2 vec1 = new Vector2((float)state.x, (float)state.y);
+				Vector2 vec2 = new Vector2((float)neighbor.x, (float)neighbor.y);
 				Vector2 goalVec = new Vector2(goal.transform.position.x, goal.transform.position.z);
-				float costToUpdate = computedCosts[updateIndex];
-				float newCost = neighborG+Vector2.Distance(vec1, vec2)+Vector2.Distance(vec1,goalVec);
+				float newCost = neighbor.g+Vector2.Distance(vec1, vec2)+Vector2.Distance(vec1,goalVec);
 				
-				if (neighborCost != NEEDSUPDATE && (newCost < costToUpdate || costToUpdate < 0)) {
+				if (neighbor.f != NEEDSUPDATE && (newCost < state.f || state.f < 0)) {
 					computedCosts[updateIndex] = newCost;
-					gValuesForCPUMinIndex[updateIndex] = neighborG+Vector2.Distance(vec1, vec2);
+					state.f = newCost; state.g = neighbor.g+Vector2.Distance(vec1, vec2);
+					state.predx = neighbor.x; state.predy = neighbor.y;
+					minIndexStates[updateIndex] = state;
 					if (newCost <= minCost) {
 						minCost = newCost;
 						minIndex = updateIndex;	
@@ -415,6 +486,26 @@ public class DLLTest : MonoBehaviour {
 			}
 		}
 		return minIndex;
+	}
+	
+	void updateSuccessorMinIndexCPU(StateStruct state)
+	{	
+		List<StateStruct> listToUpdate = new List<StateStruct>();
+		List<int> neighbors = neighborsForPosition(state.x, state.y);
+		for (int i = 0; i < neighbors.Count; i++) {
+			int neighborIndex = neighbors[i];
+			StateStruct neighbor = minIndexStates[neighborIndex];
+			if (neighbor.predx == state.x && neighbor.predy == state.y && neighbor.f != OBSTACLESTATE) {
+				listToUpdate.Add(neighbor);
+			}
+		}
+		for (int i = 0; i < listToUpdate.Count; i++) {
+			StateStruct updateNeighbor = listToUpdate[i];
+			updateNeighbor.f = NEEDSUPDATE; updateNeighbor.g = NEEDSUPDATE;
+			minIndexStates[updateNeighbor.y*columns+updateNeighbor.x] = updateNeighbor;
+			computedCosts[updateNeighbor.y*columns+updateNeighbor.x] = NEEDSUPDATE;
+			updateSuccessorMinIndexCPU(updateNeighbor);
+		}
 	}
 	
 	/********************************
@@ -426,13 +517,11 @@ public class DLLTest : MonoBehaviour {
 		int newStateX = Mathf.RoundToInt(newState.x);
 		int newStateY = Mathf.RoundToInt(newState.z);
 		insertStart(newStateX, newStateY, 1.0f);
-		List<Vector2> neighbors = getNeighbors(newStateX, newStateY);
-		foreach (Vector2 neighbor in neighbors) {
-			if (isValidNeighbor(neighbor)) {
-				StateStruct neighborState = stateAtPosition(Mathf.RoundToInt(neighbor.x), Mathf.RoundToInt(neighbor.y));
-				if (stateIsNotAnObstacle(neighborState)) {
-					insertValuesInMap(Mathf.RoundToInt(neighbor.x), Mathf.RoundToInt(neighbor.y), NEEDSUPDATE, 1.0f);	
-				}
+		StateStruct state = stateAtPosition(newStateX, newStateY);
+		List<StateStruct> neighbors = getStateNeighbors(state);
+		foreach (StateStruct neighbor in neighbors) {
+			if (stateIsNotAnObstacle(neighbor)) {
+				insertValuesInMap(neighbor.x, neighbor.y, NEEDSUPDATE, 1.0f);	
 			}
 		}
 		runKernel();
@@ -446,21 +535,37 @@ public class DLLTest : MonoBehaviour {
 		int newStateX = Mathf.RoundToInt(newState.x);
 		int newStateY = Mathf.RoundToInt(newState.z);
 		if (minIndexOptimal) {
-			for (int i = 0; i < rows; ++i) {
-				for (int j = 0; j < columns; ++j) {
-					int index = i*columns+j;
-					if (computedCosts[index] > -1 && computedCosts[index] != OBSTACLESTATE) {
-						computedCosts[index] = gValuesForCPUMinIndex[index] + hMap[index];
-					}
-				}
-			}
+			StateStruct state = minIndexStates[previousStateY*columns+previousStateX];
+			state.f = NEEDSUPDATE; state.g = NEEDSUPDATE;
+			minIndexStates[previousStateY*columns+previousStateX] = state;
+			
+			state = minIndexStates[newStateY*columns+newStateX];
+			state.f = NEEDSUPDATE; state.g = NEEDSUPDATE;
+			minIndexStates[newStateY*columns+newStateX] = state;
 			computedCosts[previousStateY*columns+previousStateX] = NEEDSUPDATE;
 			computedCosts[newStateY*columns+newStateX] = NEEDSUPDATE;
 		} else {
+			StateStruct stateToUpdate = stateAtPosition(previousStateX, previousStateY);
 			insertValuesInMap(previousStateX, previousStateY, NEEDSUPDATE, 1.0f);	
+			updateNeighborsToState(stateToUpdate);
 		}
 		runKernel();
 		path = constructPath();
+	}
+	
+	void updateNeighborsToState(StateStruct state)
+	{
+		List<StateStruct> neighbors = getStateNeighbors(state);
+		List<StateStruct> listToUpdate = new List<StateStruct>();
+		foreach (StateStruct neighbor in neighbors) {
+			if (neighbor.predx == state.x && neighbor.predy == state.y) {
+				listToUpdate.Add(neighbor);	
+			}
+		}
+		foreach (StateStruct updateNeighbor in listToUpdate) {
+			insertValuesInMap(updateNeighbor.x, updateNeighbor.y, NEEDSUPDATE, 1.0f);	
+			updateNeighborsToState(updateNeighbor);
+		}
 	}
 	
 	void handleObstacleMovement(Vector3 previousState, Vector3 newState) 
@@ -470,15 +575,30 @@ public class DLLTest : MonoBehaviour {
 		int prevx = Mathf.RoundToInt(previousState.x); 
 		int prevy = Mathf.RoundToInt(previousState.z);
 		if (minIndexOptimal) {
+			StateStruct state = minIndexStates[prevy*columns+prevx];
+			state.f = NEEDSUPDATE; state.g = NEEDSUPDATE;
+			minIndexStates[prevy*columns+prevx] = state;
+			
+			state = minIndexStates[newy*columns+newx];
+			state.f = OBSTACLESTATE; state.g = OBSTACLESTATE;
+			state.predx = -1; state.predy = -1;
+			minIndexStates[newy*columns+newx] = state;
+			
 			computedCosts[prevy*columns+prevx] = NEEDSUPDATE;
-			computedCosts[newy*columns+newx] = NEEDSUPDATE;
+			computedCosts[newy*columns+newx] = OBSTACLESTATE;
 		} else {
 			insertValuesInMap(newx, newy, OBSTACLESTATE, 20.0f);
 			insertValuesInMap(prevx, prevy, NEEDSUPDATE, 1.0f);
 		}
-		foreach (Vector3 pathState in path) {
-			if (pathState == newState) {
-				checkPredecessor(newState);
+		foreach (StateStruct pathState in path) {
+			if (pathState.x == newx && pathState.y == newy) {
+				if (minIndexOptimal) {
+					int index = newy*columns+newx;
+					updateSuccessorMinIndexCPU(minIndexStates[index]);
+				} else {
+					StateStruct stateToUpdate = stateAtPosition(newx, newy);
+					updateNeighborsToState(stateToUpdate);
+				}
 				break;
 			}
 		}
@@ -497,35 +617,11 @@ public class DLLTest : MonoBehaviour {
 		return true;
 	}
 	
-	void checkPredecessor(Vector3 state)
-	{
-		List<Vector2> neighbors = new List<Vector2>();
-		neighbors = getNeighbors((int)state.x, (int)state.z);
-		foreach(Vector2 neighbor in neighbors) {
-			if (isValidNeighbor(neighbor)) {
-				StateStruct neighborState = stateAtPosition((int)neighbor.x, (int)neighbor.y);
-				if (stateIsNotAnObstacle(neighborState)) {
-					if (neighborState.predx == (int)state.x && neighborState.predy == (int)state.z) {
-						int neighborx = Mathf.RoundToInt(neighbor.x); 
-						int neighbory = Mathf.RoundToInt(neighbor.y);
-						if (minIndexOptimal) {
-							computedCosts[neighbory*columns+neighborx] = NEEDSUPDATE;
-						} else {
-							insertValuesInMap(neighborx, neighbory, NEEDSUPDATE, 1.0f);	
-						}
-					}
-				}
-			}
-		}
-	}
-	
-
-	
 	void OnDrawGizmos() {
 		if(path	!= null) {
-			foreach(Vector3 position in path) {
+			foreach(StateStruct state in path) {
 				Gizmos.color = Color.blue;
-				Gizmos.DrawSphere(position, 0.25f);	
+				Gizmos.DrawSphere(new Vector3((float)state.x, 0.5f, (float)state.y), 0.25f);	
 			}
 		}
 		Gizmos.color = Color.yellow;
@@ -538,10 +634,10 @@ public class DLLTest : MonoBehaviour {
 		
 		Gizmos.DrawWireCube(new Vector3(columns/2, 1.0f, rows/2), new Vector3(columns, 0.0f, rows)); 
 		
-		if (showColorMap && stateColorValues != null) {
+		if (showHMap && stateHValues != null) {
 		 	for (int i = 0; i < rows; i++) {
 				for (int j = 0; j < columns; j++) {
-					float val = stateColorValues[i*columns+j];
+					float val = stateHValues[i*columns+j];
 
 					float blue = 1 * val;
 					float green = 1 - blue;
@@ -552,12 +648,40 @@ public class DLLTest : MonoBehaviour {
 			}
 		}
 		
-		if (showGrayScaleMap && stateGrayScaleValues != null) {
+		if (showCostMap && stateCostValues != null) {
+		 	for (int i = 0; i < rows; i++) {
+				for (int j = 0; j < columns; j++) {
+					float val = stateCostValues[i*columns+j];
+
+					float blue = 1 * val;
+					float green = 1 - blue;
+					Gizmos.color = new Color(0.0f, green, blue, 0.5f);	
+					
+					Gizmos.DrawCube(new Vector3(j, 1.0f, i), new Vector3(1.0f, 0.0f, 1.0f));
+				}
+			}
+		}
+		
+		if (showGMap && stateGValues != null) {
+		 	for (int i = 0; i < rows; i++) {
+				for (int j = 0; j < columns; j++) {
+					float val = stateGValues[i*columns+j];
+					if (val == OBSTACLESTATE) {
+						Gizmos.color = Color.black;	
+					} else {
+						Gizmos.color = new Color(1-val, 1-val, 1-val, 0.5f);	
+					}
+					Gizmos.DrawCube(new Vector3(j, 1.0f, i), new Vector3(1.0f, 0.0f, 1.0f));
+				}
+			}
+		}
+		
+		if (showFMap && stateGrayScaleValues != null) {
 		 	for (int i = 0; i < rows; i++) {
 				for (int j = 0; j < columns; j++) {
 					float val = stateGrayScaleValues[i*columns+j];
 					
-					if (val == 50000.0f) {
+					if (val == OBSTACLESTATE) {
 						Gizmos.color = Color.black;	
 					} else {
 						Gizmos.color = new Color(1-val, 1-val, 1-val, 0.5f);	
