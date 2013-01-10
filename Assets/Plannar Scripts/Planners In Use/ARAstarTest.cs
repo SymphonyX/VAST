@@ -479,9 +479,11 @@ public class ARAstarTest : MonoBehaviour {
 		}
 		
 		if(Input.GetKeyDown(KeyCode.Return)){
-			ARAstarAction action = actions.Pop();
-			Debug.Log("Direction: " + action.direction);
-			startObject.transform.Translate(action.direction);
+			if (actions.Count > 0) {
+				ARAstarAction action = actions.Pop();
+				Debug.Log("Direction: " + action.direction);
+				startObject.transform.Translate(action.direction);
+			}
 			ARAstarPlanner.moved = true;
 		}
 		if(selectedGameObject != null){ 

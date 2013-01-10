@@ -710,7 +710,6 @@ public class ARAstarPlanner : IPlannerInterface<Dictionary<DefaultState, ARAstar
 			float actionCost = Plan.Node(currentState).action.cost;
 			Plan.UpdateCosts(actionCost);
 			Open.UpdateList (Plan.Node(currentState));
-			moved = false;
 		}
 		else
 		{
@@ -718,12 +717,12 @@ public class ARAstarPlanner : IPlannerInterface<Dictionary<DefaultState, ARAstar
 			// can we treat this like the obstacle movement splitting up the search graph 
 			firstTime = true; 
 			inflationFactor = 2.5f;
-			//Open.CleanContainer ();
 			Close.Clear ();
 			Plan.Clear ();
 			Incons.Clear ();
 			
 		}
+		moved = false;
 	}
 	
 	/// <summary>

@@ -21,6 +21,7 @@ public struct StateStruct {
 	public int predy;
 };
 
+public enum PlannerType {Optimal = 0, SubOptimal = 1, MinIndex = 2};
 
 public class DLLTest : MonoBehaviour {
 	
@@ -32,9 +33,7 @@ public class DLLTest : MonoBehaviour {
 	enum Direction {Left, Right, Up, Down};
 	
 	public GameObject start, goal;
-	public bool optimal;
-	public bool suboptimal;
-	public bool minIndexOptimal;
+	public PlannerType plannerType = PlannerType.Optimal;
 	public int rows, columns;
 	private GameObject[] obstacles;
 	private GameObject selectedGameObject;
@@ -225,7 +224,7 @@ public class DLLTest : MonoBehaviour {
 		List<StateStruct> neighbors = new List<StateStruct>();
 		List<int> neighborsForMinIndex = new List<int>();
 		StateStruct state = stateAtPosition(Mathf.RoundToInt(goal.transform.position.x), Mathf.RoundToInt(goal.transform.position.z));
-		if (minIndexOptimal) {
+		if (plannerType == PlannerType.MinIndex) {
 			state = minIndexStates[Mathf.RoundToInt(goal.transform.position.z)*columns+Mathf.RoundToInt(goal.transform.position.x)];	
 		}
 		float x = goal.transform.position.x;
@@ -233,7 +232,7 @@ public class DLLTest : MonoBehaviour {
 		do {
 			statePath.Add(state);
 			StateStruct predecessor = new StateStruct();
-			if (minIndexOptimal) {
+			if (plannerType == PlannerType.MinIndex) {
 				predecessor = minIndexStates[state.predy*columns+state.predx];
 			} else {
 				predecessor = stateAtPosition(state.predx, state.predy);
@@ -387,13 +386,13 @@ public class DLLTest : MonoBehaviour {
 	
 	void runKernel()
 	{
-		if (optimal) {
+		if (plannerType == PlannerType.Optimal) {
 			computeCostsOptimal();	
 			getCostsMarshal();
-		} else if (suboptimal) {
+		} else if (plannerType == PlannerType.SubOptimal) {
 			computeCostsSubOptimal();	
 			getCostsMarshal();
-		} else if (minIndexOptimal) {
+		} else if (plannerType == PlannerType.MinIndex) {
 			int startIndex = Mathf.RoundToInt(start.transform.position.z*columns+start.transform.position.x);
 			int minIndex = 0;
 			int goalIndex = Mathf.RoundToInt(goal.transform.position.z*columns+goal.transform.position.x);
@@ -402,9 +401,42 @@ public class DLLTest : MonoBehaviour {
 				goalState.f = NEEDSUPDATE; goalState.g = NEEDSUPDATE;
 				minIndexStates[goalIndex] = goalState;
 				minIndex = computeCostsMinIndexCPU();	
-			} while (minIndex != goalIndex);
+			} while (minIndex != goalIndex && !statesAreConsistentMinIndexCPU());
 			//computeCostsMinIndex();
 		}
+	}
+	
+	bool statesAreConsistentMinIndexCPU()
+	{
+		List<StateStruct> statesToCheck = new List<StateStruct>();
+		for (int i = 0; i < rows; i++) {
+			for (int j = 0; j < columns; j++) {
+				StateStruct state = minIndexStates[i*columns+j];
+				if (state.f != NEEDSUPDATE && state.f != OBSTACLESTATE) {
+					statesToCheck.Add(state);	
+				}
+			}
+		}
+		
+		for (int i = 0; i < statesToCheck.Count; i++) {
+			StateStruct state = statesToCheck[i];
+			if (!stateIsConsistent(state)) {
+				return false;	
+			}
+		}
+		return true;
+	}
+	
+	bool stateIsConsistent(StateStruct state) 
+	{
+		List<StateStruct> neighbors = getStateNeighbors(state);
+		for (int i = 0; i < neighbors.Count; i++) {
+			StateStruct neighbor = neighbors[i];
+			if (neighbor.f < minIndexStates[state.predy*columns+state.predx].f) {
+				return false;	
+			}
+		}
+		return true;
 	}
 	
 	private List<int> neighborsForPosition(int x, int y)
@@ -534,7 +566,7 @@ public class DLLTest : MonoBehaviour {
 		int previousStateY = Mathf.RoundToInt(previousState.z);
 		int newStateX = Mathf.RoundToInt(newState.x);
 		int newStateY = Mathf.RoundToInt(newState.z);
-		if (minIndexOptimal) {
+		if (plannerType == PlannerType.MinIndex) {
 			StateStruct state = minIndexStates[previousStateY*columns+previousStateX];
 			state.f = NEEDSUPDATE; state.g = NEEDSUPDATE;
 			minIndexStates[previousStateY*columns+previousStateX] = state;
@@ -574,7 +606,7 @@ public class DLLTest : MonoBehaviour {
 		int newy = Mathf.RoundToInt(newState.z);
 		int prevx = Mathf.RoundToInt(previousState.x); 
 		int prevy = Mathf.RoundToInt(previousState.z);
-		if (minIndexOptimal) {
+		if (plannerType == PlannerType.MinIndex) {
 			StateStruct state = minIndexStates[prevy*columns+prevx];
 			state.f = NEEDSUPDATE; state.g = NEEDSUPDATE;
 			minIndexStates[prevy*columns+prevx] = state;
@@ -586,16 +618,15 @@ public class DLLTest : MonoBehaviour {
 			
 			computedCosts[prevy*columns+prevx] = NEEDSUPDATE;
 			computedCosts[newy*columns+newx] = OBSTACLESTATE;
+			updateSuccessorMinIndexCPU(minIndexStates[newy*columns+newx]);
+
 		} else {
 			insertValuesInMap(newx, newy, OBSTACLESTATE, 20.0f);
 			insertValuesInMap(prevx, prevy, NEEDSUPDATE, 1.0f);
 		}
 		foreach (StateStruct pathState in path) {
 			if (pathState.x == newx && pathState.y == newy) {
-				if (minIndexOptimal) {
-					int index = newy*columns+newx;
-					updateSuccessorMinIndexCPU(minIndexStates[index]);
-				} else {
+				if (plannerType != PlannerType.MinIndex) {
 					StateStruct stateToUpdate = stateAtPosition(newx, newy);
 					updateNeighborsToState(stateToUpdate);
 				}
