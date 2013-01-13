@@ -34,7 +34,7 @@ public class ARAstarPlanner : IPlannerInterface<Dictionary<DefaultState, ARAstar
 	public static bool obstacleMoved = false;					//!< Flag to determine if obstacle moved
 	public int _maxNumNodesToExpand;							//!< Maximum number of nodes to expand in a plan iteration
 	public bool usingHeap = true;								//!< Flag to determine if we sort with a heap (testing)
-	public float inflationFactor = 1.0f;						//!< Weight applied to heuristic
+	public float inflationFactor = 2.5f;						//!< Weight applied to heuristic
 	public bool firstTime = true;								//!< Flag to determine if it's the first iteration
 	public bool OneStep = false;								//!< Flag to determine if we run planner step by step
 	public List<PlanningDomainBase> _planningDomain;			//!< List of possible domains
@@ -139,7 +139,7 @@ public class ARAstarPlanner : IPlannerInterface<Dictionary<DefaultState, ARAstar
 		if(!stateReached.Equals(s))
 			Status = PathStatus.Incomplete;
 		while(!s.Equals(currentStart)){
-			if(Visited[s].g == Mathf.Infinity){
+			if(Visited.ContainsKey(s) && Visited[s].g == Mathf.Infinity){
 				return false;
 			}
 			if(!tempDic.ContainsKey(s)){
@@ -619,7 +619,7 @@ public class ARAstarPlanner : IPlannerInterface<Dictionary<DefaultState, ARAstar
 		ARAstarNode prevNode = new ARAstarNode(Mathf.Infinity, prevNodeH, Dstate, DprevNodeAction);
 		
 		if(Plan.ContainsState(currentObstacleState)) {
-			prevNode.highPriority = 3;	
+			//prevNode.highPriority = 3;	
 		}
 		
 		List<DefaultAction> possibleTransitions =  new List<DefaultAction>();
@@ -717,10 +717,14 @@ public class ARAstarPlanner : IPlannerInterface<Dictionary<DefaultState, ARAstar
 			// can we treat this like the obstacle movement splitting up the search graph 
 			firstTime = true; 
 			inflationFactor = 2.5f;
+			Open.Clear();
 			Close.Clear ();
 			Plan.Clear ();
 			Incons.Clear ();
-			
+			createStartNode(ref currentState, ref goalState);
+			Open.Insert (startNode);
+			Visited[currentState] = startNode;
+			Open.startState = startNode.action.state;
 		}
 		moved = false;
 	}
@@ -737,6 +741,17 @@ public class ARAstarPlanner : IPlannerInterface<Dictionary<DefaultState, ARAstar
 			float newh = selectedPlanningDomain.ComputeHEstimate(n.action.state, goalState);
 			n.h = newh;
 		}	
+	}
+	
+	public void restartPlanner()
+	{
+		firstTime = true;
+		stateReached = currentStart;
+		Open.Clear();
+		Incons.Clear();
+		Visited.Clear();
+		Close.Clear();
+		Plan.Clear();
 	}
 	
 	void showOpenList(float radius, Color color)

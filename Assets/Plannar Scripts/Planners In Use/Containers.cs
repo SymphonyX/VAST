@@ -359,6 +359,12 @@ public class OpenContainer
 		return openDictionary.ContainsKey(state);
 	}
 	
+	public void Clear()
+	{
+		openList.Clear();
+		openDictionary.Clear();
+	}
+	
 }
 
 //**********************************************************************//

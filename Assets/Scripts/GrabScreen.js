@@ -29,11 +29,13 @@ function Update ()
 	if (Input.GetKeyDown(KeyCode.R))
 	{
 		isRecording = !isRecording;
-		frameNumber = 0;
+		var filename = ".\\Results\\"+sceneName+"-screenshot"+PadDigits(frameNumber, 6)+".png";		
+		Application.CaptureScreenshot(filename);
+		frameNumber++;		
 		Debug.Log("Recording is "+isRecording);
 	}
 	
-	if (isRecording)
+	/*if (isRecording)
 	{
 		Time.captureFramerate = 60; // ASN DO I NEED THIS?		
 		var filename = ".\\Results\\"+sceneName+"-screenshot"+PadDigits(frameNumber, 6)+".png";		
@@ -43,7 +45,7 @@ function Update ()
 	else
 	{
 		Time.captureFramerate = 0;
-	}	
+	}	*/
 }
 
 function PadDigits(n, totalDigits) 

@@ -4,6 +4,7 @@
 *.pidb
 *.unityproj
 ProjectSettings/
+Results/
 Temp/
 *.csproj
 ADAPT sources/

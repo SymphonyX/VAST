@@ -429,7 +429,7 @@ public class ARAstarTest : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		
-		if(PlanStatus!=PathStatus.Optimal && Input.GetKeyDown(KeyCode.A)){
+		if(Input.GetKeyDown(KeyCode.A)){
 			Debug.Log("Planning");
 			DStartState = new ARAstarState(startObject.transform.position) as DefaultState;
 			DGoalState = new ARAstarState(goalObject.transform.position) as DefaultState;
@@ -441,7 +441,7 @@ public class ARAstarTest : MonoBehaviour {
 			Debug.Log("Status: " + PlanStatus);
 			if(PlanStatus == PathStatus.NoPath){
 				Debug.LogWarning("NO PLAN. PLANNING AGAIN");
-				inflationFactor = 2.5f;
+				//inflationFactor = 2.5f;
 				PlanStatus = planner.computePlan(ref DStartState, ref DGoalState, ref outputPlan, ref inflationFactor, 10.0f);
 			}
 			new WaitForEndOfFrame();
@@ -463,6 +463,12 @@ public class ARAstarTest : MonoBehaviour {
 			showIncons = !showIncons;	
 		}
 		
+		if(Input.GetKeyDown(KeyCode.Q)) {
+			DStartState = new ARAstarState(startObject.transform.position) as DefaultState;
+			PlanStatus = PathStatus.NoPath;
+			planner.restartPlanner();	
+		}
+		
 		if(Input.GetKeyDown(KeyCode.S))
 		{
 			Debug.Log("Planning");
@@ -482,41 +488,23 @@ public class ARAstarTest : MonoBehaviour {
 			if (actions.Count > 0) {
 				ARAstarAction action = actions.Pop();
 				Debug.Log("Direction: " + action.direction);
-				startObject.transform.Translate(action.direction);
+				Vector3 prevPost = startObject.transform.position;
+				startObject.transform.position = new Vector3(prevPost.x+action.direction.x, prevPost.y+action.direction.y, prevPost.z+action.direction.z);
 			}
 			ARAstarPlanner.moved = true;
 		}
 		if(selectedGameObject != null){ 
-			Vector3 temp = goalObject.transform.position;
 			if(Input.GetKeyDown(KeyCode.RightArrow)){
-				previousState = new ARAstarState(selectedGameObject.transform.position) as DefaultState;
-				selectedGameObject.transform.Translate(1.0f, 0.0f, 0.0f);
-				currentState = new ARAstarState(selectedGameObject.transform.position) as DefaultState;
-				inflationFactor = 2.5f;
+				moveSelectedObjectWithDirection(1.0f, 0.0f, 0.0f);
 			}
 			else if(Input.GetKeyDown(KeyCode.LeftArrow)){
-				previousState = new ARAstarState(selectedGameObject.transform.position) as DefaultState;
-				selectedGameObject.transform.Translate(-1.0f, 0.0f, 0.0f);
-				currentState = new ARAstarState(selectedGameObject.transform.position) as DefaultState;
-				inflationFactor = 2.5f;
+				moveSelectedObjectWithDirection(-1.0f, 0.0f, 0.0f);
 			}
 			else if(Input.GetKeyDown(KeyCode.UpArrow)){
-				previousState = new ARAstarState(selectedGameObject.transform.position) as DefaultState;
-				selectedGameObject.transform.Translate(0.0f, 0.0f, 1.0f);
-				currentState = new ARAstarState(selectedGameObject.transform.position) as DefaultState;
-				inflationFactor = 2.5f;
+				moveSelectedObjectWithDirection(0.0f, 0.0f, 1.0f);
 			}
 			else if(Input.GetKeyDown(KeyCode.DownArrow)){
-				previousState = new ARAstarState(selectedGameObject.transform.position) as DefaultState;
-				selectedGameObject.transform.Translate(0.0f, 0.0f, -1.0f);
-				currentState = new ARAstarState(selectedGameObject.transform.position) as DefaultState;
-				inflationFactor = 2.5f;
-			}
-			if(temp != goalObject.transform.position){
-				goalState = new ARAstarState(goalObject.transform.position);
-				prevGoalState = new ARAstarState(temp);
-				ARAstarPlanner.goalMoved = true;
-				planner.plannerFinished = false;
+				moveSelectedObjectWithDirection(0.0f, 0.0f, -1.0f);
 			}
 		}
 		
@@ -543,6 +531,23 @@ public class ARAstarTest : MonoBehaviour {
 		if(Input.GetKeyDown(KeyCode.P)){
 			DefaultState stateReached = planner.FillPlan();	
 			fillActionStack(stateReached);
+		}
+	}
+	
+	void moveSelectedObjectWithDirection(float x, float y, float z)
+	{
+		previousState = new ARAstarState(selectedGameObject.transform.position) as DefaultState;
+		Vector3 prevPos = selectedGameObject.transform.position;
+		selectedGameObject.transform.position = new Vector3(prevPos.x+x, prevPos.y+y, prevPos.z+z);
+		currentState = new ARAstarState(selectedGameObject.transform.position) as DefaultState;
+		//inflationFactor = 2.5f;
+		if (selectedGameObject == goalObject) {
+			goalState = new ARAstarState(goalObject.transform.position);
+			prevGoalState = new ARAstarState(prevPos);
+			ARAstarPlanner.goalMoved = true;
+			planner.plannerFinished = false;
+		} else if (selectedGameObject == startObject) {
+			ARAstarPlanner.moved = true;
 		}
 	}
 	
@@ -590,6 +595,8 @@ public class ARAstarTest : MonoBehaviour {
 	
 			
 	}
+	
+	
 	
 		
 
