@@ -685,13 +685,13 @@ public class ARAstarPlanner : IPlannerInterface<Dictionary<DefaultState, ARAstar
 		createGoalNode(ref currentGoalState);
 		
 		//CHECK IF WE ONLY NEED TO UPDATE OPEN -- debug this 
-		//Plan.UpdateHeuristic(goalState);
-		//Open.UpdateHeuristic(goalState);
+		Plan.UpdateHeuristic(goalState);
+		Open.UpdateHeuristic(goalState);
 		
 		UpdateVisitedHeuristic();
 		
 		inflationFactor += 0.5f;
-		//inflationFactor = 2.5f;
+		inflationFactor = 2.5f;
 		
 		goalMoved = false;
 	}
@@ -716,7 +716,7 @@ public class ARAstarPlanner : IPlannerInterface<Dictionary<DefaultState, ARAstar
 			// TODO : what if the current state is not part of the plan ? 
 			// can we treat this like the obstacle movement splitting up the search graph 
 			firstTime = true; 
-			inflationFactor = 2.5f;
+			inflationFactor += .5f;
 			Open.Clear();
 			Close.Clear ();
 			Plan.Clear ();
