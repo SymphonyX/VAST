@@ -75,6 +75,32 @@ public class CloseContainer
 	}
 }
 
+public class VisitedContainer
+{
+	public Dictionary<DefaultState, ARAstarNode> dictionary;
+	
+	public VisitedContainer()
+	{
+		dictionary = new Dictionary<DefaultState, ARAstarNode>();
+	}
+	
+	public bool ContainsState(DefaultState state)
+	{
+		return dictionary.ContainsKey(state);	
+	}
+	
+	public ARAstarNode nodeForState(DefaultState state)
+	{
+		return dictionary[state];	
+	}
+	
+	public void insertNode(ref ARAstarNode node)
+	{
+		dictionary[node.action.state] = node;
+	}
+		
+}
+
 //*******************************************************************//
 //*******************   OPEN CONTAINER   ****************************//
 //*******************************************************************//
