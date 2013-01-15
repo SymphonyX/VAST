@@ -218,6 +218,9 @@ public class ARAstarPlanner : IPlannerInterface<Dictionary<DefaultState, ARAstar
 			Close.Clear ();
 			Open.clearHighPriority();	
 			Debug.Log ("Updating weight. Plan again");
+			if (inflationFactor >= 1.5f) {
+				inflationFactor -= .5f;
+			}
 			return;
 		}
 		else
@@ -262,6 +265,9 @@ public class ARAstarPlanner : IPlannerInterface<Dictionary<DefaultState, ARAstar
 			prevTime = actualTime;
 		}
 		
+		if (inflationFactor >= 1.5f) {
+				inflationFactor -= .5f;
+		}
 		// TODO : use openListEmpty to send failure signal 
 		if(firstTime)
 			firstTime = false;
@@ -308,7 +314,7 @@ public class ARAstarPlanner : IPlannerInterface<Dictionary<DefaultState, ARAstar
 		//domain.clearAtBeginningOfEveryPlanIteration ();
 			
 		if (firstTime) {
-			inflationFactor = inflation;
+			//inflationFactor = inflation;
 			InitializeValues (ref currentState, ref goalState, inflation);
 			Plan = new PlanContainer(plan);
 			if(OneStep)
@@ -338,7 +344,6 @@ public class ARAstarPlanner : IPlannerInterface<Dictionary<DefaultState, ARAstar
 			if (inflationFactor == 1.0f)
 				plannerFinished = true;
 		}
-		inflationFactor -= .5f;
 		//TODO: please return Status here 
 		//return true;
 		return Status;
@@ -487,11 +492,11 @@ public class ARAstarPlanner : IPlannerInterface<Dictionary<DefaultState, ARAstar
 		if(Close == null)
 			Close = new CloseContainer();
 		if(Open == null)
-			Open = new OpenContainer (this, selectedPlanningDomain, usingHeap);
+			Open = new OpenContainer (this, usingHeap);
 		if(Incons == null)
 			Incons = new Incons ();
 		if(Visited == null)
-			Visited = new VisitedContainer ();
+			Visited = new VisitedContainer (selectedPlanningDomain);
 	}
 	
 	/// <summary>
@@ -604,8 +609,6 @@ public class ARAstarPlanner : IPlannerInterface<Dictionary<DefaultState, ARAstar
 		float prevNodeH = selectedPlanningDomain.ComputeHEstimate(prevObstacleState, goalNode.action.state);
 		float curNodeH = selectedPlanningDomain.ComputeHEstimate(prevObstacleState, goalNode.action.state);
 		
-		//ARAstarAction action = new ARAstarAction(prevObstacleState, currentObstacleState);
-		//DefaultAction Daction = action as DefaultAction;
 		DefaultAction Daction = selectedPlanningDomain.generateAction(prevObstacleState,currentObstacleState);
 		
 		DefaultState Dstate = default(DefaultState);
@@ -647,8 +650,6 @@ public class ARAstarPlanner : IPlannerInterface<Dictionary<DefaultState, ARAstar
 			Visited.dictionary[currentObstacleState].g = Mathf.Infinity;
 			if(Close.Contains(currentObstacleState))
 			{
-				//List<DefaultState> neighborsList = new List<DefaultState>();
-				//domain.generateNeighbors(currentObstacleState, ref neighborsList);
 				List<DefaultAction> transitions = new List<DefaultAction>();
 				selectedPlanningDomain.generatePredecessors(currentObstacleState, ref transitions);
 				foreach(DefaultAction action in transitions)
@@ -689,9 +690,7 @@ public class ARAstarPlanner : IPlannerInterface<Dictionary<DefaultState, ARAstar
 		Open.UpdateHeuristic(goalState);
 		
 		UpdateVisitedHeuristic();
-		
 		inflationFactor += 0.5f;
-		inflationFactor = 2.5f;
 		
 		goalMoved = false;
 	}
@@ -708,15 +707,19 @@ public class ARAstarPlanner : IPlannerInterface<Dictionary<DefaultState, ARAstar
 		if (Plan.ContainsState(currentState))
 		{
 			float actionCost = Plan.Node(currentState).action.cost;
-			Plan.UpdateCosts(actionCost);
-			Open.UpdateList (Plan.Node(currentState));
+			foreach (ARAstarNode node in Plan.Elements().Values)
+			{
+				node.g -= actionCost;	
+			}
+
+			Visited.UpdateList(Plan.Node(currentState));
 		}
 		else
 		{
 			// TODO : what if the current state is not part of the plan ? 
 			// can we treat this like the obstacle movement splitting up the search graph 
 			firstTime = true; 
-			inflationFactor += .5f;
+			inflationFactor = 2.5f;
 			Open.Clear();
 			Close.Clear ();
 			Plan.Clear ();

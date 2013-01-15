@@ -78,10 +78,13 @@ public class CloseContainer
 public class VisitedContainer
 {
 	public Dictionary<DefaultState, ARAstarNode> dictionary;
+	PlanningDomainBase domain;
+	DefaultState startState;
 	
-	public VisitedContainer()
+	public VisitedContainer(PlanningDomainBase d)
 	{
 		dictionary = new Dictionary<DefaultState, ARAstarNode>();
+		domain = d;
 	}
 	
 	public bool ContainsState(DefaultState state)
@@ -99,6 +102,101 @@ public class VisitedContainer
 		dictionary[node.action.state] = node;
 	}
 		
+	public void UpdateList (ARAstarNode currentState)
+	{
+		startState = currentState.action.state;
+		Queue<ARAstarNode> queue = new Queue<ARAstarNode> ();
+		queue.Enqueue (currentState);
+		int n = 0;
+		while (queue.Count > 0) {
+			ARAstarNode state = queue.Dequeue ();
+			UpdateState (ref state, ref queue);
+			n++;
+		}
+		
+		foreach (ARAstarNode node in dictionary.Values) {
+			node.isDirty = false;
+			node.touched = false;
+			node.updated = false;
+			dictionary[node.action.state].isDirty = false;
+			dictionary[node.action.state].touched = false;
+			dictionary[node.action.state].updated = false;
+		}
+	}
+
+	void UpdateState (ref ARAstarNode state, ref Queue<ARAstarNode> queue)
+	{
+		List<DefaultAction> neighborsList = new List<DefaultAction>();
+		domain.generatePredecessors(state.action.state, ref neighborsList);
+		foreach (DefaultAction action in neighborsList) {
+			if(dictionary.ContainsKey(action.state) && !dictionary[action.state].updated)
+			{
+				UpdateCost (ref state, action.state);
+				UpdateReference (action.state);
+				if(!dictionary[action.state].updated)
+					dictionary[action.state].updated = true;
+					queue.Enqueue (dictionary[action.state]);
+			}
+		}
+	}
+
+	void UpdateCost (ref ARAstarNode node, DefaultState successor)
+	{
+		if(!dictionary[successor].touched)
+		{
+			dictionary[successor].g = 
+				node.g + Vector3.Distance((node.action.state as ARAstarState).state,(successor as ARAstarState).state);
+			dictionary[successor].touched = true;
+			dictionary[successor].g = dictionary[successor].rhs;
+		}
+		else if(dictionary[successor].g > 
+		        node.g + Vector3.Distance((node.action.state as ARAstarState).state, (successor as ARAstarState).state))
+		{
+			dictionary[successor].g = 
+				node.g + Vector3.Distance((node.action.state as ARAstarState).state, (successor as ARAstarState).state);
+			dictionary[successor].g = dictionary[successor].rhs;
+		}
+		
+	}
+
+	void UpdateReference (DefaultState successor)
+	{
+		
+		List<DefaultAction> neighborsList = new List<DefaultAction>();
+		domain.generatePredecessors(successor, ref neighborsList);
+		foreach (DefaultAction action in neighborsList) {
+			if (isNeighborToStartAndPreviousStateIsNotStart (successor, action.state)) {
+				dictionary[successor].previousState = startState;
+				
+				//openDictionary[successor].action = new ARAstarAction(neighbor, successor);
+				dictionary[successor].action = domain.generateAction(action.state, successor);
+				dictionary[successor].isDirty = true;
+				break;
+			} else if (dictionary.ContainsKey(action.state) && dictionary[action.state].isDirty) {
+				if (dictionary[successor].previousState != null && predIsDirtyWithLeastCost (successor, action.state)) {
+					dictionary[successor].previousState = action.state;					
+					
+					//openDictionary[successor].action = new ARAstarAction(neighbor, successor);
+					dictionary[successor].action = domain.generateAction(action.state, successor);
+					dictionary[successor].isDirty = true;
+				}
+			}
+			
+		}
+	}
+	
+	bool predIsDirtyWithLeastCost (DefaultState successor, DefaultState neighbor)
+	{
+		
+		DefaultState prevState = dictionary[successor].previousState;
+		if(!dictionary.ContainsKey(prevState)) return false;
+		return (dictionary[prevState].g > dictionary[neighbor].g);
+	}
+	
+	bool isNeighborToStartAndPreviousStateIsNotStart (DefaultState successor, DefaultState neighbor)
+	{
+		return (neighbor.Equals(startState) && !dictionary[successor].previousState.Equals(startState));
+	}
 }
 
 //*******************************************************************//
@@ -110,19 +208,17 @@ public class OpenContainer
 	List<ARAstarNode> openList;
 	ARAstarHeap openHeap;
 	Dictionary<DefaultState, ARAstarNode> openDictionary;
-	PlanningDomainBase domain;
 	ARAstarPlanner parentPlanner;
 	bool useHeap;
 	public DefaultState startState;
 	int debug = 0;
 
-	public OpenContainer (ARAstarPlanner planner, PlanningDomainBase _domain, bool _useHeap = true)
+	public OpenContainer (ARAstarPlanner planner, bool _useHeap = true)
 	{
 		parentPlanner = planner;
 		openList = new List<ARAstarNode> ();
 		openHeap = new ARAstarHeap(planner.inflationFactor);
 		openDictionary = new Dictionary<DefaultState, ARAstarNode> ();
-		domain = _domain;
 		useHeap = _useHeap;
 		Debug.Log("Using Heap: " + useHeap);
 	}
@@ -249,102 +345,7 @@ public class OpenContainer
 	}
 
 
-	public void UpdateList (ARAstarNode currentState)
-	{
-		startState = currentState.action.state;
-		Queue<ARAstarNode> queue = new Queue<ARAstarNode> ();
-		queue.Enqueue (currentState);
-		while (queue.Count > 0) {
-			ARAstarNode state = queue.Dequeue ();
-			UpdateState (state, ref queue);
-		}
-		
-		if(useHeap){
-			foreach (ARAstarHeapNode heapNode in openHeap.heap) {
-				ARAstarNode node = heapNode.node;
-				node.isDirty = false;
-				node.touched = false;
-				node.updated = false;
-				openDictionary[node.action.state].isDirty = false;
-				openDictionary[node.action.state].touched = false;
-				openDictionary[node.action.state].updated = false;
-			}
-		} else{
-			foreach (ARAstarNode node in openList) {
-				node.isDirty = false;
-				node.touched = false;
-				node.updated = false;
-				openDictionary[node.action.state].isDirty = false;
-				openDictionary[node.action.state].touched = false;
-				openDictionary[node.action.state].updated = false;
-			}
-			
-		}
-	}
-
-	void UpdateState (ARAstarNode state, ref Queue<ARAstarNode> queue)
-	{
-		List<DefaultState> neighborsList = new List<DefaultState>();
-		domain.generateNeighbors(state.action.state, ref neighborsList);
-		foreach (DefaultState successor in neighborsList) {
-			if(openDictionary.ContainsKey(successor) && !openDictionary[successor].updated)
-			{
-				UpdateCost (state, successor);
-				UpdateReference (successor);
-				if(!openDictionary[successor].updated)
-					openDictionary[successor].updated = true;
-					queue.Enqueue (openDictionary[successor]);
-			}
-		}
-	}
-
-	void UpdateCost (ARAstarNode node, DefaultState successor)
-	{
-		if(!openDictionary[successor].touched)
-		{
-			openDictionary[successor].g = 
-				node.g + Vector3.Distance((node.action.state as ARAstarState).state,(successor as ARAstarState).state);
-			openDictionary[successor].touched = true;
-		}
-		else if(openDictionary[successor].g > 
-		        node.g + Vector3.Distance((node.action.state as ARAstarState).state, (successor as ARAstarState).state))
-		{
-			openDictionary[successor].g = 
-				node.g + Vector3.Distance((node.action.state as ARAstarState).state, (successor as ARAstarState).state);	
-		}
-		
-		if(useHeap)
-			openHeap.Remove(openDictionary[successor]);
-		else
-			openList.Remove(openDictionary[successor]);
-		Insert(node);
-	}
-
-	void UpdateReference (DefaultState successor)
-	{
-		
-		List<DefaultState> neighborsList = new List<DefaultState>();
-		domain.generateNeighbors(successor, ref neighborsList);
-		foreach (DefaultState neighbor in neighborsList) {
-			if (isNeighborToStartAndPreviousStateIsNotStart (successor, neighbor)) {
-				openDictionary[successor].previousState = startState;
-				
-				//openDictionary[successor].action = new ARAstarAction(neighbor, successor);
-				openDictionary[successor].action = domain.generateAction(neighbor, successor);
-				openDictionary[successor].isDirty = true;
-				break;
-			} else if (openDictionary.ContainsKey(neighbor) && openDictionary[neighbor].isDirty) {
-				if (openDictionary[successor].previousState != null && predIsDirtyWithLeastCost (successor, neighbor)) {
-					openDictionary[successor].previousState = neighbor;					
-					
-					//openDictionary[successor].action = new ARAstarAction(neighbor, successor);
-					openDictionary[successor].action = domain.generateAction(neighbor, successor);
-					openDictionary[successor].isDirty = true;
-				}
-			}
-			
-		}
-	}
+	
 	
 	public void UpdateHeuristic(DefaultState goal)
 	{
@@ -364,20 +365,6 @@ public class OpenContainer
 				openDictionary[n.action.state].h = newh;
 			}	
 		}
-	}
-
-	bool isNeighborToStartAndPreviousStateIsNotStart (DefaultState successor, DefaultState neighbor)
-	{
-		return (neighbor.Equals(startState) && !openDictionary[successor].previousState.Equals(startState));
-	}
-
-	bool predIsDirtyWithLeastCost (DefaultState successor, DefaultState neighbor)
-	{
-		
-		DefaultState prevState = openDictionary[successor].previousState;
-		if(!openDictionary.ContainsKey(prevState)) return false;
-		return (openDictionary[prevState].g > 
-		        openDictionary[neighbor].g);
 	}
 	
 	public bool ContainsState(DefaultState state)
