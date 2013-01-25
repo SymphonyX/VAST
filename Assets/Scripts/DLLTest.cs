@@ -302,7 +302,6 @@ public class DLLTest : MonoBehaviour {
 
 		runKernel();
 		
-		path = constructPath();
 		generateHMap();
 		generateGMap();
 		generateFMap();	
@@ -313,6 +312,10 @@ public class DLLTest : MonoBehaviour {
 	void Update () {
 		if(Input.GetMouseButtonDown(0)){
 			selectGameObject();
+		}
+		
+		if (Input.GetKeyDown(KeyCode.Return)) {
+			path = constructPath();	
 		}
 		
 		if (selectedGameObject != null) {
@@ -557,7 +560,6 @@ public class DLLTest : MonoBehaviour {
 			}
 		}
 		runKernel();
-		path = constructPath();
 	}
 	
 	void handleGoalMovement (Vector3 previousState, Vector3 newState)
@@ -582,7 +584,6 @@ public class DLLTest : MonoBehaviour {
 			updateNeighborsToState(stateToUpdate);
 		}
 		runKernel();
-		path = constructPath();
 	}
 	
 	void updateNeighborsToState(StateStruct state)
@@ -635,7 +636,6 @@ public class DLLTest : MonoBehaviour {
 		}
 
  		runKernel();
-		path = constructPath();
 	}
 	
 	bool stateIsNotAnObstacle(StateStruct state)
@@ -649,6 +649,22 @@ public class DLLTest : MonoBehaviour {
 	}
 	
 	void OnDrawGizmos() {
+		if (stateCostValues != null) {
+			for (int i = 0; i < rows; i++) {
+				for (int j = 0; j < columns; j++) {
+					StateStruct state = stateAtPosition(j, i);
+					if (stateIsNotAnObstacle(state)) {
+						Vector3 nodePosition = new Vector3((float)j, 0.5f, (float)i);
+						Vector3 predPosition = new Vector3((float)state.predx, 0.5f, (float)state.predy);
+						Vector3 direction = nodePosition - predPosition;
+						Gizmos.color = Color.red;
+						Gizmos.DrawSphere(nodePosition, 0.25f);	
+						DrawArrow.ForGizmo(predPosition, direction, Color.black);
+					}
+				}
+			}
+		}
+		
 		if(path	!= null) {
 			foreach(StateStruct state in path) {
 				Gizmos.color = Color.blue;
@@ -722,7 +738,6 @@ public class DLLTest : MonoBehaviour {
 				}
 			}
 		}
-		
 		
 	}
 	
