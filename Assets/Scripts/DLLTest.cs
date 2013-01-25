@@ -351,23 +351,23 @@ public class DLLTest : MonoBehaviour {
 	void handleUpdateForGameObjectWithDirection(GameObject selectedGameObject, Direction direction)
 	{
 		Vector3 previousState = selectedGameObject.transform.position;
-		Vector3 translation = new Vector3(0.0f, 0.0f, 0.0f);
+		Vector3 position = selectedGameObject.transform.position;
 		switch (direction) {
 		case Direction.Left:
-			translation.x = -1.0f;
+			position.x -= 1.0f;
 			break;
 		case Direction.Right:
-			translation.x = 1.0f;
+			position.x += 1.0f;
 			break;
 		case Direction.Up:
-			translation.z = 1.0f;
+			position.z += 1.0f;
 			break;
 		case Direction.Down:
-			translation.z = -1.0f;
+			position.z -= 1.0f;
 			break;
 		}
+		selectedGameObject.transform.position = position;
 		
-		selectedGameObject.transform.Translate(translation);
 		if (selectedGameObject == goal) {
 			insertGoal(Mathf.RoundToInt(goal.transform.position.x), Mathf.RoundToInt(goal.transform.position.z), 1.0f);
 			generateHMap();	
