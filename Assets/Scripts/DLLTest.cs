@@ -43,7 +43,7 @@ public class DLLTest : MonoBehaviour {
 	private float[] hMap, gMap, costMap;
 	private StateStruct[] minIndexStates;
 	private float minh, maxh, minf, maxf, ming, maxg, minCost, maxCost;
-	public bool showHMap, showFMap, showGMap, showCostMap;
+	public bool showHMap, showFMap, showGMap, showCostMap, showStates;
 	List<StateStruct> path;
 	
 	[DllImport("CUDA-DLL")]
@@ -374,7 +374,7 @@ public class DLLTest : MonoBehaviour {
 			handleGoalMovement(previousState, goal.transform.position);
 		}  else if (selectedGameObject == start) {
 			handleStartMovement(previousState, start.transform.position);	
-		} else {
+		} else if (selectedGameObject.tag == "movable obstacle") {
 			handleObstacleMovement(previousState, selectedGameObject.transform.position);
 		}
 		generateFMap();
@@ -649,7 +649,7 @@ public class DLLTest : MonoBehaviour {
 	}
 	
 	void OnDrawGizmos() {
-		if (stateCostValues != null) {
+		if (stateCostValues != null && showStates) {
 			for (int i = 0; i < rows; i++) {
 				for (int j = 0; j < columns; j++) {
 					StateStruct state = stateAtPosition(j, i);
