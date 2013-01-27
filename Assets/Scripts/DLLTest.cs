@@ -26,7 +26,6 @@ public enum PlannerType {Optimal = 0, SubOptimal = 1, MinIndex = 2};
 public class DLLTest : MonoBehaviour {
 	
 	const float NEEDSUPDATE = -1.0f;
-	const float GOALSTATE = -3.0f;
 	const float STARTSTATE = 0.0f;
 	const float OBSTACLESTATE = 50000.0f;
 	
@@ -87,6 +86,9 @@ public class DLLTest : MonoBehaviour {
 	
 	[DllImport("CUDA-DLL")]
 	private static extern void returnCostMap(float[] costMap);
+	
+	[DllImport("CUDA-DLL")]
+	private static extern void updateAfterGoalMovementCuda(int goalx, int goaly, float goalcost);
 	
 	private void getCostsMarshal()
 	{
@@ -223,12 +225,12 @@ public class DLLTest : MonoBehaviour {
 		List<StateStruct> statePath = new List<StateStruct>();
 		List<StateStruct> neighbors = new List<StateStruct>();
 		List<int> neighborsForMinIndex = new List<int>();
-		StateStruct state = stateAtPosition(Mathf.RoundToInt(goal.transform.position.x), Mathf.RoundToInt(goal.transform.position.z));
+		StateStruct state = stateAtPosition(Mathf.RoundToInt(start.transform.position.x), Mathf.RoundToInt(start.transform.position.z));
 		if (plannerType == PlannerType.MinIndex) {
-			state = minIndexStates[Mathf.RoundToInt(goal.transform.position.z)*columns+Mathf.RoundToInt(goal.transform.position.x)];	
+			state = minIndexStates[Mathf.RoundToInt(start.transform.position.z)*columns+Mathf.RoundToInt(start.transform.position.x)];	
 		}
-		float x = goal.transform.position.x;
-		float y = goal.transform.position.z;
+		float x = start.transform.position.x;
+		float y = start.transform.position.z;
 		do {
 			statePath.Add(state);
 			StateStruct predecessor = new StateStruct();
@@ -243,7 +245,7 @@ public class DLLTest : MonoBehaviour {
 			state = predecessor;
 			x = predecessor.x;
 			y = predecessor.y;
-		} while(x != start.transform.position.x || y != start.transform.position.z);
+		} while(x != goal.transform.position.x || y != goal.transform.position.z);
 		
 		return statePath;
 	}
@@ -258,24 +260,18 @@ public class DLLTest : MonoBehaviour {
 		return true;
 	}
 	
-
-	// Use this for initialization
-	void Start () {
-		generateTexture(rows, columns);
+	
+	void restartMinindexStates()
+	{
 		int goalx = Mathf.RoundToInt(goal.transform.position.x);
 		int goaly = Mathf.RoundToInt(goal.transform.position.z);
-		insertGoal(goalx, goaly, 1.0f);
-		
-		int startx = Mathf.RoundToInt(start.transform.position.x); 
-		int starty = Mathf.RoundToInt(start.transform.position.z);
-		insertStart(startx, starty, 1.0f);
-		
+	
 		minIndexStates = new StateStruct[rows*columns];
 		for (int i = 0; i < rows; i++) {
 			for (int j = 0; j < columns; j++) {
 				StateStruct state = new StateStruct();
 				state.x = j; state.y = i;
-				if (i == startx && j == starty) {
+				if (j == goalx && i == goaly) {
 					state.f = STARTSTATE; state.g = STARTSTATE;
 				} else {
 					state.f = NEEDSUPDATE; state.g = NEEDSUPDATE;
@@ -283,9 +279,6 @@ public class DLLTest : MonoBehaviour {
 				minIndexStates[i*columns+j] = state;
 			}
 		}
-		
-		
-
 		
 		obstacles = GameObject.FindGameObjectsWithTag("movable obstacles");
 		for(int i = 0; i < obstacles.Length; ++i) {
@@ -297,9 +290,29 @@ public class DLLTest : MonoBehaviour {
 			state.predx = -1; state.predy = -1;
 			minIndexStates[obstacley*columns+obstaclex] = state;
 		}
-				
-		getCostsMarshal();
-
+	}
+	
+	void initStart()
+	{
+		int startx = Mathf.RoundToInt(start.transform.position.x); 
+		int starty = Mathf.RoundToInt(start.transform.position.z);
+		insertStart(startx, starty, 1.0f);
+	}
+	
+	void initGoal()
+	{
+		int goalx = Mathf.RoundToInt(goal.transform.position.x);
+		int goaly = Mathf.RoundToInt(goal.transform.position.z);
+		insertGoal(goalx, goaly, 1.0f);
+	}
+	
+	// Use this for initialization
+	void Start () {
+		generateTexture(rows, columns);
+		initGoal();
+		initStart();
+		
+		restartMinindexStates();
 		runKernel();
 		
 		generateHMap();
@@ -369,10 +382,9 @@ public class DLLTest : MonoBehaviour {
 		selectedGameObject.transform.position = position;
 		
 		if (selectedGameObject == goal) {
-			insertGoal(Mathf.RoundToInt(goal.transform.position.x), Mathf.RoundToInt(goal.transform.position.z), 1.0f);
-			generateHMap();	
-			handleGoalMovement(previousState, goal.transform.position);
+			handleGoalMovement();
 		}  else if (selectedGameObject == start) {
+			generateHMap();	
 			handleStartMovement(previousState, start.transform.position);	
 		} else if (selectedGameObject.tag == "movable obstacle") {
 			handleObstacleMovement(previousState, selectedGameObject.transform.position);
@@ -390,7 +402,7 @@ public class DLLTest : MonoBehaviour {
 	void runKernel()
 	{
 		if (plannerType == PlannerType.Optimal) {
-			computeCostsOptimal();	
+			computeCostsOptimal();	;
 			getCostsMarshal();
 		} else if (plannerType == PlannerType.SubOptimal) {
 			computeCostsSubOptimal();	
@@ -400,11 +412,11 @@ public class DLLTest : MonoBehaviour {
 			int minIndex = 0;
 			int goalIndex = Mathf.RoundToInt(goal.transform.position.z*columns+goal.transform.position.x);
 			do {
-				StateStruct goalState = minIndexStates[goalIndex];
-				goalState.f = NEEDSUPDATE; goalState.g = NEEDSUPDATE;
-				minIndexStates[goalIndex] = goalState;
+				StateStruct startState = minIndexStates[startIndex];
+				startState.f = NEEDSUPDATE; startState.g = NEEDSUPDATE;
+				minIndexStates[startIndex] = startState;
 				minIndex = computeCostsMinIndexCPU();	
-			} while (minIndex != goalIndex && !statesAreConsistentMinIndexCPU());
+			} while (minIndex != startIndex && !statesAreConsistentMinIndexCPU());
 			//computeCostsMinIndex();
 		}
 	}
@@ -505,8 +517,8 @@ public class DLLTest : MonoBehaviour {
 				
 				Vector2 vec1 = new Vector2((float)state.x, (float)state.y);
 				Vector2 vec2 = new Vector2((float)neighbor.x, (float)neighbor.y);
-				Vector2 goalVec = new Vector2(goal.transform.position.x, goal.transform.position.z);
-				float newCost = neighbor.g+Vector2.Distance(vec1, vec2)+Vector2.Distance(vec1,goalVec);
+				Vector2 startVec = new Vector2(start.transform.position.x, start.transform.position.z);
+				float newCost = neighbor.g+Vector2.Distance(vec1, vec2)+Vector2.Distance(vec1,startVec);
 				
 				if (neighbor.f != NEEDSUPDATE && (newCost < state.f || state.f < 0)) {
 					computedCosts[updateIndex] = newCost;
@@ -549,10 +561,8 @@ public class DLLTest : MonoBehaviour {
 	
 	void handleStartMovement (Vector3 previousState, Vector3 newState)
 	{
-		int newStateX = Mathf.RoundToInt(newState.x);
-		int newStateY = Mathf.RoundToInt(newState.z);
-		insertStart(newStateX, newStateY, 1.0f);
-		StateStruct state = stateAtPosition(newStateX, newStateY);
+		initStart();
+		StateStruct state = stateAtPosition(Mathf.RoundToInt(newState.x), Mathf.RoundToInt(newState.z));
 		List<StateStruct> neighbors = getStateNeighbors(state);
 		foreach (StateStruct neighbor in neighbors) {
 			if (stateIsNotAnObstacle(neighbor)) {
@@ -562,26 +572,14 @@ public class DLLTest : MonoBehaviour {
 		runKernel();
 	}
 	
-	void handleGoalMovement (Vector3 previousState, Vector3 newState)
+	void handleGoalMovement ()
 	{	
-		int previousStateX = Mathf.RoundToInt(previousState.x);
-		int previousStateY = Mathf.RoundToInt(previousState.z);
-		int newStateX = Mathf.RoundToInt(newState.x);
-		int newStateY = Mathf.RoundToInt(newState.z);
 		if (plannerType == PlannerType.MinIndex) {
-			StateStruct state = minIndexStates[previousStateY*columns+previousStateX];
-			state.f = NEEDSUPDATE; state.g = NEEDSUPDATE;
-			minIndexStates[previousStateY*columns+previousStateX] = state;
-			
-			state = minIndexStates[newStateY*columns+newStateX];
-			state.f = NEEDSUPDATE; state.g = NEEDSUPDATE;
-			minIndexStates[newStateY*columns+newStateX] = state;
-			computedCosts[previousStateY*columns+previousStateX] = NEEDSUPDATE;
-			computedCosts[newStateY*columns+newStateX] = NEEDSUPDATE;
+			restartMinindexStates();
 		} else {
-			StateStruct stateToUpdate = stateAtPosition(previousStateX, previousStateY);
-			insertValuesInMap(previousStateX, previousStateY, NEEDSUPDATE, 1.0f);	
-			updateNeighborsToState(stateToUpdate);
+			updateAfterGoalMovementCuda(Mathf.RoundToInt(goal.transform.position.x), Mathf.RoundToInt(goal.transform.position.z), 1.0f);
+			initGoal();			
+			initStart();
 		}
 		runKernel();
 	}
@@ -649,17 +647,22 @@ public class DLLTest : MonoBehaviour {
 	}
 	
 	void OnDrawGizmos() {
-		if (stateCostValues != null && showStates) {
+		if ((stateCostValues != null || minIndexStates != null) && showStates) {
 			for (int i = 0; i < rows; i++) {
 				for (int j = 0; j < columns; j++) {
 					StateStruct state = stateAtPosition(j, i);
+					if (plannerType == PlannerType.MinIndex) {
+						state = minIndexStates[i*columns+j];	
+					}
 					if (stateIsNotAnObstacle(state)) {
 						Vector3 nodePosition = new Vector3((float)j, 0.5f, (float)i);
 						Vector3 predPosition = new Vector3((float)state.predx, 0.5f, (float)state.predy);
-						Vector3 direction = nodePosition - predPosition;
-						Gizmos.color = Color.red;
-						Gizmos.DrawSphere(nodePosition, 0.25f);	
-						DrawArrow.ForGizmo(predPosition, direction, Color.black);
+						if (state.g != NEEDSUPDATE && state.f != NEEDSUPDATE) {
+							Vector3 direction = nodePosition - predPosition;
+							Gizmos.color = Color.red;
+							Gizmos.DrawSphere(nodePosition, 0.25f);	
+							DrawArrow.ForGizmo(predPosition, direction, Color.black);
+						}
 					}
 				}
 			}
