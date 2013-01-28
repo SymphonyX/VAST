@@ -226,19 +226,14 @@ public class DLLTest : MonoBehaviour {
 		List<StateStruct> neighbors = new List<StateStruct>();
 		List<int> neighborsForMinIndex = new List<int>();
 		StateStruct state = stateAtPosition(Mathf.RoundToInt(start.transform.position.x), Mathf.RoundToInt(start.transform.position.z));
-		if (plannerType == PlannerType.MinIndex) {
-			state = minIndexStates[Mathf.RoundToInt(start.transform.position.z)*columns+Mathf.RoundToInt(start.transform.position.x)];	
-		}
+		
 		float x = start.transform.position.x;
 		float y = start.transform.position.z;
 		do {
 			statePath.Add(state);
 			StateStruct predecessor = new StateStruct();
-			if (plannerType == PlannerType.MinIndex) {
-				predecessor = minIndexStates[state.predy*columns+state.predx];
-			} else {
-				predecessor = stateAtPosition(state.predx, state.predy);
-			}
+			predecessor = stateAtPosition(state.predx, state.predy);
+			
 			float f = Mathf.Infinity;
 			float g = Mathf.Infinity;
 			
@@ -411,13 +406,14 @@ public class DLLTest : MonoBehaviour {
 			int startIndex = Mathf.RoundToInt(start.transform.position.z*columns+start.transform.position.x);
 			int minIndex = 0;
 			int goalIndex = Mathf.RoundToInt(goal.transform.position.z*columns+goal.transform.position.x);
-			do {
+			/*do {
 				StateStruct startState = minIndexStates[startIndex];
 				startState.f = NEEDSUPDATE; startState.g = NEEDSUPDATE;
 				minIndexStates[startIndex] = startState;
 				minIndex = computeCostsMinIndexCPU();	
-			} while (minIndex != startIndex && !statesAreConsistentMinIndexCPU());
-			//computeCostsMinIndex();
+			} while (minIndex != startIndex && !statesAreConsistentMinIndexCPU());*/
+			computeCostsMinIndex();
+			getCostsMarshal();
 		}
 	}
 	
@@ -647,13 +643,10 @@ public class DLLTest : MonoBehaviour {
 	}
 	
 	void OnDrawGizmos() {
-		if ((stateCostValues != null || minIndexStates != null) && showStates) {
+		if (stateCostValues != null && showStates) {
 			for (int i = 0; i < rows; i++) {
 				for (int j = 0; j < columns; j++) {
 					StateStruct state = stateAtPosition(j, i);
-					if (plannerType == PlannerType.MinIndex) {
-						state = minIndexStates[i*columns+j];	
-					}
 					if (stateIsNotAnObstacle(state)) {
 						Vector3 nodePosition = new Vector3((float)j, 0.5f, (float)i);
 						Vector3 predPosition = new Vector3((float)state.predx, 0.5f, (float)state.predy);
