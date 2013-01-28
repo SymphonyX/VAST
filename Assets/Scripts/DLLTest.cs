@@ -558,11 +558,13 @@ public class DLLTest : MonoBehaviour {
 	void handleStartMovement (Vector3 previousState, Vector3 newState)
 	{
 		initStart();
-		StateStruct state = stateAtPosition(Mathf.RoundToInt(newState.x), Mathf.RoundToInt(newState.z));
-		List<StateStruct> neighbors = getStateNeighbors(state);
-		foreach (StateStruct neighbor in neighbors) {
-			if (stateIsNotAnObstacle(neighbor)) {
-				insertValuesInMap(neighbor.x, neighbor.y, NEEDSUPDATE, 1.0f);	
+		if (plannerType == PlannerType.Optimal) {
+			StateStruct state = stateAtPosition(Mathf.RoundToInt(newState.x), Mathf.RoundToInt(newState.z));
+			List<StateStruct> neighbors = getStateNeighbors(state);
+			foreach (StateStruct neighbor in neighbors) {
+				if (stateIsNotAnObstacle(neighbor)) {
+					insertValuesInMap(neighbor.x, neighbor.y, NEEDSUPDATE, 1.0f);	
+				}
 			}
 		}
 		runKernel();
@@ -570,13 +572,9 @@ public class DLLTest : MonoBehaviour {
 	
 	void handleGoalMovement ()
 	{	
-		if (plannerType == PlannerType.MinIndex) {
-			restartMinindexStates();
-		} else {
-			updateAfterGoalMovementCuda(Mathf.RoundToInt(goal.transform.position.x), Mathf.RoundToInt(goal.transform.position.z), 1.0f);
-			initGoal();			
-			initStart();
-		}
+		updateAfterGoalMovementCuda(Mathf.RoundToInt(goal.transform.position.x), Mathf.RoundToInt(goal.transform.position.z), 1.0f);
+		initGoal();			
+		initStart();
 		runKernel();
 	}
 	
