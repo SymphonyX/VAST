@@ -19,6 +19,7 @@ public struct StateStruct {
 	public float costToReach;
 	public int predx;
 	public int predy;
+	public bool inconsistent;
 };
 
 public enum PlannerType {Optimal = 0, SubOptimal = 1, MinIndex = 2};
@@ -31,7 +32,7 @@ public class DLLTest : MonoBehaviour {
 	
 	enum Direction {Left, Right, Up, Down};
 	
-	public GameObject start, goal;
+	public GameObject start, goal, ObstaclePrefab;
 	public PlannerType plannerType = PlannerType.Optimal;
 	public int rows, columns;
 	private GameObject[] obstacles;
@@ -55,7 +56,7 @@ public class DLLTest : MonoBehaviour {
 	private static extern void insertGoal(int x, int y, float costToReach);
 	
 	[DllImport("CUDA-DLL")]
-	private static extern void insertValuesInMap(int x, int y, float cost, float costToReach);
+	private static extern void insertValuesInMap(int x, int y, float g, float f, float costToReach, bool inconsistent);
 	
 	[DllImport("CUDA-DLL")]
 	private static extern void computeCostsSubOptimal();
@@ -275,11 +276,10 @@ public class DLLTest : MonoBehaviour {
 			}
 		}
 		
-		obstacles = GameObject.FindGameObjectsWithTag("movable obstacles");
 		for(int i = 0; i < obstacles.Length; ++i) {
 			int obstaclex = Mathf.RoundToInt(obstacles[i].transform.position.x);
 			int obstacley = Mathf.RoundToInt(obstacles[i].transform.position.z);
-			insertValuesInMap(obstaclex, obstacley, OBSTACLESTATE, 20.0f);	
+			insertValuesInMap(obstaclex, obstacley, OBSTACLESTATE, OBSTACLESTATE, 20.0f, false);	
 			StateStruct state = minIndexStates[obstacley*columns+obstaclex];
 			state.f = OBSTACLESTATE; state.g = OBSTACLESTATE;
 			state.predx = -1; state.predy = -1;
@@ -303,11 +303,37 @@ public class DLLTest : MonoBehaviour {
 	
 	// Use this for initialization
 	void Start () {
-		generateTexture(rows, columns);
+		System.IO.StreamReader file = new System.IO.StreamReader("Mazes/maze_2.map");
+		string line;
+		int row = 0;
+		while ((line = file.ReadLine()) != null)
+		{
+			if (line.Contains("height")) {
+				line = line.Substring(7, line.Length - 7);
+				rows = int.Parse(line);
+			} else if (line.Contains("width")) {
+				line = line.Substring(6, line.Length - 6);
+				columns = int.Parse(line);
+				generateTexture(rows, columns);
+			} else if (line.StartsWith("@") || line.StartsWith(".")) {
+				char[] charLine = line.ToCharArray();
+				for (int column = 0; column < line.Length; column++) {
+					if (charLine[column] == '@') {
+						GameObject obstacle = (GameObject)Instantiate(ObstaclePrefab, new Vector3(column, 0.5f, (rows-1)-row), Quaternion.identity);
+						insertValuesInMap(column, (rows-1)-row, OBSTACLESTATE, OBSTACLESTATE, 20.0f, false);
+					}
+				}
+				row++;
+			}
+		}
+		file.Close();
+		
+		obstacles = GameObject.FindGameObjectsWithTag("movable obstacles");
+		
 		initGoal();
 		initStart();
 		
-		restartMinindexStates();
+		//restartMinindexStates();
 		runKernel();
 		
 		generateHMap();
@@ -381,7 +407,7 @@ public class DLLTest : MonoBehaviour {
 		}  else if (selectedGameObject == start) {
 			generateHMap();	
 			handleStartMovement(previousState, start.transform.position);	
-		} else if (selectedGameObject.tag == "movable obstacle") {
+		} else if (selectedGameObject.tag == "movable obstacles") {
 			handleObstacleMovement(previousState, selectedGameObject.transform.position);
 		}
 		generateFMap();
@@ -563,7 +589,7 @@ public class DLLTest : MonoBehaviour {
 			List<StateStruct> neighbors = getStateNeighbors(state);
 			foreach (StateStruct neighbor in neighbors) {
 				if (stateIsNotAnObstacle(neighbor)) {
-					insertValuesInMap(neighbor.x, neighbor.y, NEEDSUPDATE, 1.0f);	
+					insertValuesInMap(neighbor.x, neighbor.y, NEEDSUPDATE, NEEDSUPDATE, 1.0f, false);	
 				}
 			}
 		}
@@ -588,7 +614,7 @@ public class DLLTest : MonoBehaviour {
 			}
 		}
 		foreach (StateStruct updateNeighbor in listToUpdate) {
-			insertValuesInMap(updateNeighbor.x, updateNeighbor.y, NEEDSUPDATE, 1.0f);	
+			insertValuesInMap(updateNeighbor.x, updateNeighbor.y, NEEDSUPDATE, NEEDSUPDATE, 1.0f, false);	
 			updateNeighborsToState(updateNeighbor);
 		}
 	}
@@ -598,32 +624,26 @@ public class DLLTest : MonoBehaviour {
 		int newx = Mathf.RoundToInt(newState.x); 
 		int newy = Mathf.RoundToInt(newState.z);
 		int prevx = Mathf.RoundToInt(previousState.x); 
-		int prevy = Mathf.RoundToInt(previousState.z);
+		int prevy = Mathf.RoundToInt(previousState.z); 
+		insertValuesInMap(newx, newy, OBSTACLESTATE, OBSTACLESTATE, 20.0f, false);
+		insertValuesInMap(prevx, prevy, NEEDSUPDATE, NEEDSUPDATE, 1.0f, true);
 		if (plannerType == PlannerType.MinIndex) {
-			StateStruct state = minIndexStates[prevy*columns+prevx];
-			state.f = NEEDSUPDATE; state.g = NEEDSUPDATE;
-			minIndexStates[prevy*columns+prevx] = state;
-			
-			state = minIndexStates[newy*columns+newx];
-			state.f = OBSTACLESTATE; state.g = OBSTACLESTATE;
-			state.predx = -1; state.predy = -1;
-			minIndexStates[newy*columns+newx] = state;
-			
-			computedCosts[prevy*columns+prevx] = NEEDSUPDATE;
-			computedCosts[newy*columns+newx] = OBSTACLESTATE;
-			updateSuccessorMinIndexCPU(minIndexStates[newy*columns+newx]);
-
+			StateStruct nState = stateAtPosition(newx,newy);
+			List<StateStruct> neighbors = getStateNeighbors(nState);
+			foreach (StateStruct neighbor in neighbors) {
+				if (stateIsNotAnObstacle(neighbor)) {
+					if (neighbor.predx == newx && neighbor.predy == newy) {
+						insertValuesInMap(neighbor.x, neighbor.y, NEEDSUPDATE, NEEDSUPDATE, 1.0f, true);
+					}
+				}
+			}
 		} else {
-			insertValuesInMap(newx, newy, OBSTACLESTATE, 20.0f);
-			insertValuesInMap(prevx, prevy, NEEDSUPDATE, 1.0f);
-		}
-		foreach (StateStruct pathState in path) {
-			if (pathState.x == newx && pathState.y == newy) {
-				if (plannerType != PlannerType.MinIndex) {
+			foreach (StateStruct pathState in path) {
+				if (pathState.x == newx && pathState.y == newy) {
 					StateStruct stateToUpdate = stateAtPosition(newx, newy);
 					updateNeighborsToState(stateToUpdate);
+					break;
 				}
-				break;
 			}
 		}
 
@@ -645,7 +665,7 @@ public class DLLTest : MonoBehaviour {
 			for (int i = 0; i < rows; i++) {
 				for (int j = 0; j < columns; j++) {
 					StateStruct state = stateAtPosition(j, i);
-					if (stateIsNotAnObstacle(state)) {
+					if (state.f != OBSTACLESTATE) {
 						Vector3 nodePosition = new Vector3((float)j, 0.5f, (float)i);
 						Vector3 predPosition = new Vector3((float)state.predx, 0.5f, (float)state.predy);
 						if (state.g != NEEDSUPDATE && state.f != NEEDSUPDATE) {
