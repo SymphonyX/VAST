@@ -33,6 +33,7 @@ public class DLLTest : MonoBehaviour {
 	enum Direction {Left, Right, Up, Down};
 	
 	public GameObject start, goal, ObstaclePrefab;
+	public string maze_filename;
 	public PlannerType plannerType = PlannerType.Optimal;
 	public int rows, columns;
 	private GameObject[] obstacles;
@@ -303,7 +304,7 @@ public class DLLTest : MonoBehaviour {
 	
 	// Use this for initialization
 	void Start () {
-		System.IO.StreamReader file = new System.IO.StreamReader("Mazes/maze_2.map");
+		System.IO.StreamReader file = new System.IO.StreamReader("Mazes/" + maze_filename);
 		string line;
 		int row = 0;
 		while ((line = file.ReadLine()) != null)
