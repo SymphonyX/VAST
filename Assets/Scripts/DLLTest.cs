@@ -8,6 +8,40 @@ using UnityEditor;
 using System.Linq;
 using System.Runtime.InteropServices;
 
+public class Agent
+{
+	[DllImport("CUDA-DLL")]
+	private static extern void insertStart(int x, int y, float costToReach);
+	
+	[DllImport("CUDA-DLL")]
+	private static extern void insertValuesInMap(int x, int y, float g, float f, float costToReach, bool inconsistent);
+	
+	public GameObject gameObject;
+	public Queue<Vector2> path;
+	bool executingPlan;
+
+	public Agent(int position_x, int position_z, GameObject startObject)
+	{
+		gameObject = startObject;
+		insertStart(position_x, position_z, 1.0f);
+	}
+	
+	public void Reset()
+	{
+		int x = Mathf.RoundToInt(gameObject.transform.position.x);
+		int z = Mathf.RoundToInt(gameObject.transform.position.z);
+		insertValuesInMap(x, z, -3.0f, -3.0f, 1.0f, false);
+	}
+	
+	public void executeStep()
+	{
+		if (path.Count > 0) {
+			Vector2 newPosition = path.Dequeue(); 
+			gameObject.transform.position = new Vector3(newPosition.x, 0.5f, newPosition.y);
+		}
+	}
+}
+
 
 
 [StructLayout(LayoutKind.Sequential)]
@@ -37,7 +71,7 @@ public class DLLTest : MonoBehaviour {
 	public PlannerType plannerType = PlannerType.Optimal;
 	public int rows, columns;
 	private GameObject[] obstacles;
-	private GameObject[] agents;
+	private List<Agent> agents;
 	private GameObject selectedGameObject;
 	private float[] computedCosts;
 	private float[] stateHValues, stateGValues, stateCostValues;
@@ -45,14 +79,10 @@ public class DLLTest : MonoBehaviour {
 	private float[] hMap, gMap, costMap;
 	private StateStruct[] minIndexStates;
 	private float minh, maxh, minf, maxf, ming, maxg, minCost, maxCost;
-	public bool showHMap, showFMap, showGMap, showCostMap, showStates;
-	List<Vector2> path;
+	public bool showHMap, showFMap, showGMap, showCostMap, showStates, execute;
 	
 	[DllImport("CUDA-DLL")]
 	private static extern void generateTexture(int rows, int columns);
-	
-	[DllImport("CUDA-DLL")]
-	private static extern void insertStart(int x, int y, float costToReach);
 	
 	[DllImport("CUDA-DLL")]
 	private static extern void insertGoal(int x, int y, float costToReach);
@@ -228,48 +258,62 @@ public class DLLTest : MonoBehaviour {
 		return gMap[y*columns+x];	
 	}
 	
-	Vector2 mingNeighborForPosition(int x, int y)
+	bool agentExistAtPosition(int x, int y, List<Agent> agentList)
 	{
+		foreach (Agent a in agentList) 
+		{
+			if (Mathf.RoundToInt(a.gameObject.transform.position.x) == x && Mathf.RoundToInt(a.gameObject.transform.position.z) == y) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	Vector2 mingNeighborForPosition(int x, int y, Agent agent)
+	{
+		List<Agent> otherAgents = new List<Agent>();
+		foreach(Agent otherAgent in agents)
+		{
+			if (otherAgent != agent) {otherAgents.Add(otherAgent);}	
+		}
+		
 		int minx = x+1; int miny = y; float ming = Mathf.Infinity;
-		if (x+1 < columns) {
+		if (x+1 < columns && !agentExistAtPosition(x+1, y, otherAgents)) {
 			ming = gMapValueForPosition(x+1, y);	
 		}
-		if (x-1 >= 0) {
+		if (x-1 >= 0 && !agentExistAtPosition(x-1, y, otherAgents)) {
 			if (gMapValueForPosition(x-1, y) < ming) { ming = gMapValueForPosition(x-1, y); minx = x-1; miny = y;}
 		}
-		if (y+1 < rows) {
+		if (y+1 < rows && !agentExistAtPosition(x, y+1, otherAgents)) {
 			if (gMapValueForPosition(x, y+1) < ming) { ming = gMapValueForPosition(x, y+1); minx = x; miny = y+1;}
 		}
-		if (y-1 >= 0) {
+		if (y-1 >= 0 && !agentExistAtPosition(x, y-1, otherAgents)) {
 			if (gMapValueForPosition(x, y-1) < ming) { ming = gMapValueForPosition(x, y-1); minx = x; miny = y-1;}
 		}
-		if (y+1 < rows && x+1 < columns) {
+		if (y+1 < rows && x+1 < columns && !agentExistAtPosition(x+1, y+1, otherAgents)) {
 			if (gMapValueForPosition(x+1, y+1) < ming) { ming = gMapValueForPosition(x+1, y+1); minx = x+1; miny = y+1;}
 		}
-		if (y+1 < rows && x-1 >= 0) {
+		if (y+1 < rows && x-1 >= 0 && !agentExistAtPosition(x+1, y-1, otherAgents)) {
 			if (gMapValueForPosition(x-1, y+1) < ming) {ming = gMapValueForPosition(x-1, y+1); minx = x-1; miny = y+1;}
 		}
-		if (y-1 >= 0 && x-1 >= 0) {
+		if (y-1 >= 0 && x-1 >= 0 && !agentExistAtPosition(x-1, y-1, otherAgents)) {
 			if (gMapValueForPosition(x-1, y-1) < ming) {ming = gMapValueForPosition(x-1, y-1); minx = x-1; miny = y-1;}
 		}
-		if (y-1 >= 0 && x+1 < columns) {
+		if (y-1 >= 0 && x+1 < columns && !agentExistAtPosition(x-1, y+1, otherAgents)) {
 			if (gMapValueForPosition(x+1, y-1) < ming) {ming = gMapValueForPosition(x+1, y-1); minx = x+1; miny = y-1;}
 		}
 		return new Vector2(minx, miny);
 	}
 	
-	private List<Vector2> constructPath()
+	private Queue<Vector2> constructPathForAgent(Agent agent)
 	{
-		List<Vector2> statePath = new List<Vector2>();
-		foreach (GameObject agent in agents) {
-			Vector2 state = new Vector2(agent.transform.position.x, agent.transform.position.z);
-			float x = start.transform.position.x;
-			float y = start.transform.position.z;
-			do {
-				statePath.Add(state);
-				state = mingNeighborForPosition(Mathf.RoundToInt(state.x), Mathf.RoundToInt(state.y));
-			} while(state.x != goal.transform.position.x || state.y != goal.transform.position.z);
-		}
+		Queue<Vector2> statePath = new Queue<Vector2>();
+		Vector2 state = mingNeighborForPosition(Mathf.RoundToInt(agent.gameObject.transform.position.x), Mathf.RoundToInt(agent.gameObject.transform.position.z), agent);
+		while(state.x != goal.transform.position.x || state.y != goal.transform.position.z)
+		{
+			statePath.Enqueue(state);
+			state = mingNeighborForPosition(Mathf.RoundToInt(state.x), Mathf.RoundToInt(state.y), agent);
+		} 
 		
 		return statePath;
 	}
@@ -315,25 +359,20 @@ public class DLLTest : MonoBehaviour {
 		}
 	}
 	
-	void initStart()
-	{
-		int startx = Mathf.RoundToInt(start.transform.position.x); 
-		int starty = Mathf.RoundToInt(start.transform.position.z);
-		insertStart(startx, starty, 1.0f);
-	}
-	
 	void initGoal()
 	{
-		int goalx = Mathf.RoundToInt(goal.transform.position.x);
-		int goaly = Mathf.RoundToInt(goal.transform.position.z);
-		insertGoal(goalx, goaly, 1.0f);
-	}
+		int x = Mathf.RoundToInt(goal.transform.position.x);
+		int z = Mathf.RoundToInt(goal.transform.position.z);
+		insertGoal(x, z, 1.0f);
+	}	
+	
 	
 	// Use this for initialization
 	void Start () {
 		System.IO.StreamReader file = new System.IO.StreamReader("Mazes/" + maze_filename);
 		string line;
-		int row = 0;
+		int row = 0, agentCount = 0;
+		agents = new List<Agent>();
 		while ((line = file.ReadLine()) != null)
 		{
 			if (line.Contains("height")) {
@@ -350,8 +389,9 @@ public class DLLTest : MonoBehaviour {
 						GameObject obstacle = (GameObject)Instantiate(ObstaclePrefab, new Vector3(column, 0.5f, (rows-1)-row), Quaternion.identity);
 						insertValuesInMap(column, (rows-1)-row, OBSTACLESTATE, OBSTACLESTATE, 20.0f, false);
 					} else if (charLine[column] == 'S') {
-						start = (GameObject)Instantiate(StartPrefab, new Vector3(column, 0.5f, (rows-1)-row), Quaternion.identity);
-						insertStart(column, (rows-1)-row, 1.0f);
+						GameObject startObject = (GameObject)Instantiate(StartPrefab, new Vector3(column, 0.5f, (rows-1)-row), Quaternion.identity);
+						Agent agent = new Agent(column, (rows-1)-row, startObject);
+						agents.Add(agent);
 					} else if (charLine[column] == 'G') {
 						goal = (GameObject)Instantiate(GoalPrefab, new Vector3(column, 0.5f, (rows-1)-row), Quaternion.identity);
 						insertGoal(column, (rows-1)-row, 1.0f);
@@ -363,12 +403,7 @@ public class DLLTest : MonoBehaviour {
 		file.Close();
 		
 		obstacles = GameObject.FindGameObjectsWithTag("movable obstacles");
-		agents = GameObject.FindGameObjectsWithTag("Start Object");
 		
-		//initGoal();
-		//initStart();
-		
-		//restartMinindexStates();
 		runKernel();
 		
 		generateHMap();
@@ -382,9 +417,16 @@ public class DLLTest : MonoBehaviour {
 		if(Input.GetMouseButtonDown(0)){
 			selectGameObject();
 		}
-		
 		if (Input.GetKeyDown(KeyCode.Return)) {
-			path = constructPath();	
+			foreach(Agent agent in agents) {
+				agent.path = constructPathForAgent(agent);	
+			}
+		}
+
+		if (Input.GetKeyDown(KeyCode.P)) {
+			foreach(Agent agent in agents) {
+				agent.executeStep();
+			}
 		}
 		
 		if (selectedGameObject != null) {
@@ -402,6 +444,7 @@ public class DLLTest : MonoBehaviour {
 				handleUpdateForGameObjectWithDirection(selectedGameObject, Direction.Down);
 			}
 		}
+		
 	}
 	
 	void selectGameObject()
@@ -439,9 +482,9 @@ public class DLLTest : MonoBehaviour {
 		
 		if (selectedGameObject == goal) {
 			handleGoalMovement();
-		}  else if (selectedGameObject == start) {
+		}  else if (selectedGameObject.tag == "Start Object") {
 			generateHMap();	
-			handleStartMovement(previousState, start.transform.position);	
+			handleStartMovement(previousState, selectedGameObject.transform.position);	
 		} else if (selectedGameObject.tag == "movable obstacles") {
 			handleObstacleMovement(previousState, selectedGameObject.transform.position);
 		}
@@ -618,7 +661,7 @@ public class DLLTest : MonoBehaviour {
 	
 	void handleStartMovement (Vector3 previousState, Vector3 newState)
 	{
-		initStart();
+		//initStart();
 		if (plannerType == PlannerType.Optimal) {
 			StateStruct state = stateAtPosition(Mathf.RoundToInt(newState.x), Mathf.RoundToInt(newState.z));
 			List<StateStruct> neighbors = getStateNeighbors(state);
@@ -635,7 +678,9 @@ public class DLLTest : MonoBehaviour {
 	{	
 		updateAfterGoalMovementCuda(Mathf.RoundToInt(goal.transform.position.x), Mathf.RoundToInt(goal.transform.position.z), 1.0f);
 		initGoal();			
-		initStart();
+		foreach(Agent agent in agents) {
+			agent.Reset();	
+		}
 		runKernel();
 	}
 	
@@ -673,11 +718,13 @@ public class DLLTest : MonoBehaviour {
 				}
 			}
 		} else {
-			foreach (Vector2 pathState in path) {
-				if (pathState.x == newState.x && pathState.y == newState.y) {
-					StateStruct stateToUpdate = stateAtPosition(newx, newy);
-					updateNeighborsToState(stateToUpdate);
-					break;
+			foreach(Agent agent in agents) {
+				foreach (Vector2 pathState in agent.path) {
+					if (pathState.x == newState.x && pathState.y == newState.y) {
+						StateStruct stateToUpdate = stateAtPosition(newx, newy);
+						updateNeighborsToState(stateToUpdate);
+						break;
+					}
 				}
 			}
 		}
@@ -714,10 +761,14 @@ public class DLLTest : MonoBehaviour {
 			}
 		}
 		
-		if(path	!= null) {
-			foreach(Vector2 state in path) {
-				Gizmos.color = Color.blue;
-				Gizmos.DrawSphere(new Vector3(state.x, 0.5f, state.y), 0.25f);	
+		if (agents != null && agents.Count > 0) {
+			foreach(Agent agent in agents) {
+				if (agent.path != null) {
+					foreach(Vector2 state in agent.path) {
+						Gizmos.color = Color.blue;
+						Gizmos.DrawSphere(new Vector3(state.x, 0.5f, state.y), 0.25f);	
+					}
+				}
 			}
 		}
 		Gizmos.color = Color.yellow;
