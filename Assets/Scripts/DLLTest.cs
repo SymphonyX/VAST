@@ -19,11 +19,15 @@ public class Agent
 	public GameObject gameObject;
 	public Queue<Vector2> path;
 	bool executingPlan;
-
+	float deltax;
+	float deltaz;
+	private Vector2 lastPosition;
+	
 	public Agent(int position_x, int position_z, GameObject startObject)
 	{
 		gameObject = startObject;
 		insertStart(position_x, position_z, 1.0f);
+		lastPosition = new Vector2(gameObject.transform.position.x, gameObject.transform.position.z);
 	}
 	
 	public void Reset()
@@ -36,9 +40,24 @@ public class Agent
 	public void executeStep()
 	{
 		if (path.Count > 0) {
-			Vector2 newPosition = path.Dequeue(); 
-			gameObject.transform.position = new Vector3(newPosition.x, 0.5f, newPosition.y);
+			if (equals(lastPosition.x, gameObject.transform.position.x, lastPosition.y, gameObject.transform.position.z)) {
+				Vector2 newPosition = lastPosition = path.Dequeue(); 
+				deltax = Time.deltaTime * (newPosition.x - gameObject.transform.position.x);
+				deltaz = Time.deltaTime * (newPosition.y - gameObject.transform.position.z);
+			}
 		}
+		if (!equals(lastPosition.x, gameObject.transform.position.x, lastPosition.y, gameObject.transform.position.z)) {
+			gameObject.transform.Translate(deltax, 0.0f, deltaz);
+		}
+
+	}
+	
+	private bool equals(float x, float x1, float z, float z1)
+	{
+		if (Mathf.Abs(x - x1) < 0.1f && Mathf.Abs(z1 - z) < 0.1f) {
+			return true;	
+		}
+		return false;
 	}
 }
 
@@ -277,31 +296,32 @@ public class DLLTest : MonoBehaviour {
 			if (otherAgent != agent) {otherAgents.Add(otherAgent);}	
 		}
 		
-		int minx = x+1; int miny = y; float ming = Mathf.Infinity;
-		if (x+1 < columns && !agentExistAtPosition(x+1, y, otherAgents)) {
-			ming = gMapValueForPosition(x+1, y);	
+		List<Vector2> availablePositions = new List<Vector2>();
+		if (!agentExistAtPosition(x+1, y, otherAgents)) { availablePositions.Add(new Vector2(x+1, y)); }
+		if (!agentExistAtPosition(x, y+1, otherAgents)) { availablePositions.Add(new Vector2(x, y+1)); }
+		if (!agentExistAtPosition(x+1, y+1, otherAgents)) { availablePositions.Add(new Vector2(x+1, y+1)); }
+		if (!agentExistAtPosition(x-1, y, otherAgents)) { availablePositions.Add(new Vector2(x-1, y)); }
+		if (!agentExistAtPosition(x, y-1, otherAgents)) { availablePositions.Add(new Vector2(x, y-1)); }
+		if (!agentExistAtPosition(x-1, y-1, otherAgents)) { availablePositions.Add(new Vector2(x-1, y-1)); }
+		if (!agentExistAtPosition(x+1, y-1, otherAgents)) { availablePositions.Add(new Vector2(x+1, y-1)); }
+		if (!agentExistAtPosition(x-1, y+1, otherAgents)) { availablePositions.Add(new Vector2(x-1, y+1)); }
+		
+		int minx = x; int miny = y; float ming = Mathf.Infinity;
+		foreach(Vector2 positions in availablePositions)
+		{
+			if (positions.x >= 0 && positions.x < columns && positions.y >= 0 && positions.y < rows)
+			{
+				int posx = Mathf.RoundToInt(positions.x);
+				int posy = Mathf.RoundToInt(positions.y);
+				if (gMapValueForPosition(posx, posy) < ming)
+				{
+					minx = posx;
+					miny = posy;
+					ming = gMapValueForPosition(posx, posy);
+				}
+			}
 		}
-		if (x-1 >= 0 && !agentExistAtPosition(x-1, y, otherAgents)) {
-			if (gMapValueForPosition(x-1, y) < ming) { ming = gMapValueForPosition(x-1, y); minx = x-1; miny = y;}
-		}
-		if (y+1 < rows && !agentExistAtPosition(x, y+1, otherAgents)) {
-			if (gMapValueForPosition(x, y+1) < ming) { ming = gMapValueForPosition(x, y+1); minx = x; miny = y+1;}
-		}
-		if (y-1 >= 0 && !agentExistAtPosition(x, y-1, otherAgents)) {
-			if (gMapValueForPosition(x, y-1) < ming) { ming = gMapValueForPosition(x, y-1); minx = x; miny = y-1;}
-		}
-		if (y+1 < rows && x+1 < columns && !agentExistAtPosition(x+1, y+1, otherAgents)) {
-			if (gMapValueForPosition(x+1, y+1) < ming) { ming = gMapValueForPosition(x+1, y+1); minx = x+1; miny = y+1;}
-		}
-		if (y+1 < rows && x-1 >= 0 && !agentExistAtPosition(x+1, y-1, otherAgents)) {
-			if (gMapValueForPosition(x-1, y+1) < ming) {ming = gMapValueForPosition(x-1, y+1); minx = x-1; miny = y+1;}
-		}
-		if (y-1 >= 0 && x-1 >= 0 && !agentExistAtPosition(x-1, y-1, otherAgents)) {
-			if (gMapValueForPosition(x-1, y-1) < ming) {ming = gMapValueForPosition(x-1, y-1); minx = x-1; miny = y-1;}
-		}
-		if (y-1 >= 0 && x+1 < columns && !agentExistAtPosition(x-1, y+1, otherAgents)) {
-			if (gMapValueForPosition(x+1, y-1) < ming) {ming = gMapValueForPosition(x+1, y-1); minx = x+1; miny = y-1;}
-		}
+
 		return new Vector2(minx, miny);
 	}
 	
@@ -403,11 +423,10 @@ public class DLLTest : MonoBehaviour {
 		file.Close();
 		
 		obstacles = GameObject.FindGameObjectsWithTag("movable obstacles");
-		
+		initGoal();
 		runKernel();
 		
 		generateHMap();
-		generateGMap();
 		generateFMap();	
 		generateCostMap();
 	}
@@ -417,16 +436,12 @@ public class DLLTest : MonoBehaviour {
 		if(Input.GetMouseButtonDown(0)){
 			selectGameObject();
 		}
-		if (Input.GetKeyDown(KeyCode.Return)) {
-			foreach(Agent agent in agents) {
-				agent.path = constructPathForAgent(agent);	
-			}
-		}
 
-		if (Input.GetKeyDown(KeyCode.P)) {
-			foreach(Agent agent in agents) {
-				agent.executeStep();
-			}
+
+		foreach(Agent agent in agents) {
+			agent.path = constructPathForAgent(agent);	
+			agent.executeStep();
+			handleAgentMovement(agent);
 		}
 		
 		if (selectedGameObject != null) {
@@ -484,12 +499,11 @@ public class DLLTest : MonoBehaviour {
 			handleGoalMovement();
 		}  else if (selectedGameObject.tag == "Start Object") {
 			generateHMap();	
-			handleStartMovement(previousState, selectedGameObject.transform.position);	
+		//	handleStartMovement(previousState, selectedGameObject.transform.position);	
 		} else if (selectedGameObject.tag == "movable obstacles") {
 			handleObstacleMovement(previousState, selectedGameObject.transform.position);
 		}
 		generateFMap();
-		generateGMap();
 		generateCostMap();
 	}
 	
@@ -502,10 +516,8 @@ public class DLLTest : MonoBehaviour {
 	{
 		if (plannerType == PlannerType.Optimal) {
 			computeCostsOptimal();	;
-			getCostsMarshal();
 		} else if (plannerType == PlannerType.SubOptimal) {
 			computeCostsSubOptimal();	
-			getCostsMarshal();
 		} else if (plannerType == PlannerType.MinIndex) {
 			int startIndex = Mathf.RoundToInt(start.transform.position.z*columns+start.transform.position.x);
 			int minIndex = 0;
@@ -517,8 +529,9 @@ public class DLLTest : MonoBehaviour {
 				minIndex = computeCostsMinIndexCPU();	
 			} while (minIndex != startIndex && !statesAreConsistentMinIndexCPU());*/
 			computeCostsMinIndex();
-			getCostsMarshal();
 		}
+		getCostsMarshal();
+		generateGMap();
 	}
 	
 	bool statesAreConsistentMinIndexCPU()
@@ -655,18 +668,22 @@ public class DLLTest : MonoBehaviour {
 		}
 	}
 	
+	bool stateEqualsGoal(StateStruct state)
+	{
+		return (state.x == goal.transform.position.x && state.y == goal.transform.position.z);
+	}
+	
 	/********************************
 	****** MOVEMENT HANDLING ********
 	*********************************/
 	
-	void handleStartMovement (Vector3 previousState, Vector3 newState)
+	void handleAgentMovement (Agent agent)
 	{
-		//initStart();
 		if (plannerType == PlannerType.Optimal) {
-			StateStruct state = stateAtPosition(Mathf.RoundToInt(newState.x), Mathf.RoundToInt(newState.z));
+			StateStruct state = stateAtPosition(Mathf.RoundToInt(agent.gameObject.transform.position.x), Mathf.RoundToInt(agent.gameObject.transform.position.z));
 			List<StateStruct> neighbors = getStateNeighbors(state);
 			foreach (StateStruct neighbor in neighbors) {
-				if (stateIsNotAnObstacle(neighbor)) {
+				if (stateIsNotAnObstacle(neighbor) && !stateEqualsGoal(neighbor)) {
 					insertValuesInMap(neighbor.x, neighbor.y, NEEDSUPDATE, NEEDSUPDATE, 1.0f, false);	
 				}
 			}
@@ -689,12 +706,12 @@ public class DLLTest : MonoBehaviour {
 		List<StateStruct> neighbors = getStateNeighbors(state);
 		List<StateStruct> listToUpdate = new List<StateStruct>();
 		foreach (StateStruct neighbor in neighbors) {
-			if (neighbor.predx == state.x && neighbor.predy == state.y) {
+			if (neighbor.predx == state.x && neighbor.predy == state.y && !stateEqualsGoal(neighbor)) {
 				listToUpdate.Add(neighbor);	
 			}
 		}
 		foreach (StateStruct updateNeighbor in listToUpdate) {
-			insertValuesInMap(updateNeighbor.x, updateNeighbor.y, NEEDSUPDATE, NEEDSUPDATE, 1.0f, false);	
+			insertValuesInMap(updateNeighbor.x, updateNeighbor.y, NEEDSUPDATE, NEEDSUPDATE, 1.0f, true);	
 			updateNeighborsToState(updateNeighbor);
 		}
 	}
@@ -712,7 +729,7 @@ public class DLLTest : MonoBehaviour {
 			List<StateStruct> neighbors = getStateNeighbors(nState);
 			foreach (StateStruct neighbor in neighbors) {
 				if (stateIsNotAnObstacle(neighbor)) {
-					if (neighbor.predx == newx && neighbor.predy == newy) {
+					if (neighbor.predx == newx && neighbor.predy == newy && !stateEqualsGoal(neighbor)) {
 						insertValuesInMap(neighbor.x, neighbor.y, NEEDSUPDATE, NEEDSUPDATE, 1.0f, true);
 					}
 				}
